@@ -4,5 +4,7 @@ coverage/
 *.tgz
 .dsh/
 .tmp/
+.research-ledger/
+research-reports/
 *.log
 .DS_Store
