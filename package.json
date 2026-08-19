@@ -60,7 +60,7 @@
     },
     "permissions": [
       "fs:workspace-write",
-      "network:via-ctx.web-only",
+      "network:ctx-web-only",
       "session:read",
       "session:write",
       "native-code:none"
@@ -72,7 +72,7 @@
     },
     "capability": {
       "id": "research-report",
-      "kind": "verifiable-reporting",
+      "kind": "service",
       "invocation": "mount the dsh-research-report bundle row",
       "expected": "provides ctx.researchReport (assemble), the evidence_add / research_report / ledger_query tools, and a content-addressed evidence ledger with tamper-evident sealed reports under the workspace"
     },
