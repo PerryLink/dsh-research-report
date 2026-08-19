@@ -96,13 +96,13 @@
 - 徽章（License/DSH/Node/CI/Version/npm version/npm downloads）✅；Contributors 段 ✅。
 - P0：`.github/ISSUE_TEMPLATE/bug_report.yml`、`feature_request.yml`、`PULL_REQUEST_TEMPLATE.md`、`SECURITY.md` 已存在 ✅。
 - Discussions 开启 + 欢迎帖 ✅。
-- ⚠️ **main 分支保护未核实**（匿名 API 401）。待发布会话用管理员权限执行，完整 JSON（CI 为矩阵 job `gates`，6 个上下文名）：
+- ✅ **main 分支保护已存在**（2026-08-19 push 实测：远端返回 `Bypassed rule violations for refs/heads/main: Required status check "gates" is expected`，即已配置 required_status_checks `gates`；本会话凭据具备旁路权限，enforce_admins=false 或等价）。完整 JSON 需管理员核对（匿名 API 401）：
 
 ```bash
-gh api -X PUT repos/PerryLink/dsh-research-report/branches/main/protection -f required_status_checks.strict=false -f required_status_checks.contexts[]="gates (ubuntu-latest, 22)" -f required_status_checks.contexts[]="gates (macos-latest, 22)" -f required_status_checks.contexts[]="gates (windows-latest, 22)" -f required_status_checks.contexts[]="gates (ubuntu-latest, 24)" -f required_status_checks.contexts[]="gates (macos-latest, 24)" -f required_status_checks.contexts[]="gates (windows-latest, 24)" -f enforce_admins=false -f allow_force_pushes=true -f required_pull_request_reviews=null -f restrictions=null
+gh api repos/PerryLink/dsh-research-report/branches/main/protection
+# 若需重建/补齐，参考 JSON（contexts 用 CI 实际报告的 check 名，矩阵 job gates 展开为 "gates (<os>, <node>)"）：
+# required_status_checks: {strict:false, contexts:[...]}, enforce_admins:false, allow_force_pushes:true, required_pull_request_reviews: null, restrictions: null
 ```
-
-（若只想用字面 job 名也可改 contexts 为 `gates`，但矩阵展开后的检查名才是 CI 实际报告的 status context；以管理员在 Settings→Branches 里核对实际 check 名为准。）
 
 ### 步骤 2 · 标准件 A：生态投递执行状态
 
@@ -196,16 +196,15 @@ curl -s https://raw.githubusercontent.com/bruc3van/awesome-dsh-plugin/main/CATAL
 curl -s https://raw.githubusercontent.com/AdamPlatin123/awesome-dsh-plugins/main/PLUGINS.md | grep -c dsh-research-report
 ```
 
-### 步骤 3 · 标准件 C：发布状态
+### 步骤 3 · 标准件 C：发布状态（已执行完毕）
 
-已完成：`main` 推送 ✅、tag `v0.1.0` ✅、npm `0.1.0` ✅、GitHub Release ✅。
-本会话补做（已本地完成）：`fix:` dshWorkshop 合规 + `ci:` provenance 修复 + `docs:` 交接文档 3 个 commit；`node scripts/release.mjs 0.1.1`（bump + CHANGELOG 落日期 + 全门禁 + commit `chore(release): 0.1.1` + tag `v0.1.1`）。**待推送命令**：
+- `main` 已推送 ✅（`3ecd2ce..fc6d882`，含 `fix:` dshWorkshop 合规 / `ci:` provenance / `docs:` 交接 / `chore(release): 0.1.1` / 固定提交 5 个 commit）。
+- tag `v0.1.0` ✅ + `v0.1.1` ✅（`git push origin main --follow-tags`）。
+- npm：`0.1.0` ✅（无 provenance，无法回补）+ **`0.1.1` ✅ 带 provenance**（release.yml `npm publish --access public --provenance` 生效；registry attestations 端点实测 `dsh-research-report@0.1.1: attestations=2, predicate https://github.com/npm/attestation/tree/main/specs/publish/v0.1`）。
+- GitHub Release `v0.1.0` ✅ + `v0.1.1` ✅（2026-08-19T16:39:33Z）；Release workflow 双 job（publish/release）success。
+- 远端 push 回执证实 main 分支保护已配置（required_status_checks `gates`，本会话凭据以 bypass 通过）。
 
-```bash
-git push origin main --follow-tags   # 推送后 release.yml 自动执行：门禁 + npm publish --access public --provenance + GitHub Release
-```
-
-说明：npm 0.1.0 已发布且无 provenance，同一版本无法重发；0.1.1 由修复后的 workflow 带 provenance 发布（若仓库 NPM_TOKEN secret 缺失，publish 步骤会跳过并在 workflow 日志注明——届时由发布会话补发，不伪造成功）。
+**遗留（仅剩 GitHub API 写操作，本会话无 gh/API 凭据且不提取令牌，交接发布会话执行）**：0xsline 双语条目 PR（patch 已备）、OMDSH hub `[Submission] dsh-research-report@0.1.1` Issue（清单已验证）、官方 Discussions showcase 帖（草稿已备）、bruc3van 自荐（stars>10 后）、分支保护完整 JSON 管理员读回核对。逐一命令与草稿见上面各节。
 
 ### 人工待办（无法自动化）
 
