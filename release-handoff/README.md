@@ -21,17 +21,16 @@ the credentialed steps are handed over here. See SUMMARY.md, section
 
 - `omdsh-submission.json` — complete `omdsh-workshop-submission/v2` manifest
   for `omdsh-dev/dsh-hub-workshop` (issue title
-  `[Submission] dsh-research-report@0.1.0`). It passed the hub's official
+  `[Submission] dsh-research-report@0.1.1`). It passed the hub's official
   validator locally (`submission accepted for pending review`; workshop
   HEAD `928cb55b8bb876b8b5d6f278eb849fbefc285dba`).
 
-  IMPORTANT: `release.ref` is the placeholder
-  `REPLACE_WITH_PINNED_COMMIT_SHA_40HEX`. Push the local commits listed in
-  SUMMARY.md first, then replace the placeholder with the full 40-char SHA
-  of the pushed HEAD — the `packageManifest` block contains the corrected
-  `dshWorkshop` and must match `package.json#dshWorkshop` at that commit
-  byte-for-byte. Never submit with the placeholder or with an unpushed
-  commit.
+  `release.ref` is pinned to `b95f2d187b43945693f808382cc3cad6536c5bda`
+  (the v0.1.1 release commit on `main`). The `packageManifest` block
+  matches `package.json#dshWorkshop` at that commit byte-for-byte. If the
+  release session publishes a further version before creating the issue,
+  either keep this pinned commit (immutable snapshots remain valid) or
+  regenerate the record with `add-release` for the newer version.
 
 ## Sanitization
 

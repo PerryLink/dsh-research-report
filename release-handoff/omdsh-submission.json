@@ -17,12 +17,12 @@
     "license": "Apache-2.0"
   },
   "release": {
-    "version": "0.1.0",
-    "ref": "REPLACE_WITH_PINNED_COMMIT_SHA_40HEX",
-    "updatedAt": "2026-08-19T14:15:44Z",
+    "version": "0.1.1",
+    "ref": "b95f2d187b43945693f808382cc3cad6536c5bda",
+    "updatedAt": "2026-08-19T16:37:59Z",
     "channel": "stable",
     "compatibility": "0.1.0-rc.6",
-    "changelog": "First release: ctx.researchReport service seam with the byte-frozen assemble contract, content-addressed evidence ledger with tamper-evident reads, byte-level claim verification plus the optional ctx.dataQuality numeric bridge, versioned sealed reports (report.md + manifest.json) with visible [未核实]/[与证据矛盾] markers, and the evidence_add / research_report / ledger_query model tools.",
+    "changelog": "Releases 0.1.0 and 0.1.1: ctx.researchReport service seam with the byte-frozen assemble contract, content-addressed evidence ledger with tamper-evident reads, byte-level claim verification plus the optional ctx.dataQuality numeric bridge, versioned sealed reports (report.md + manifest.json) with visible [鏈牳瀹瀅/[涓庤瘉鎹煕鐩綸 markers, and the evidence_add / research_report / ledger_query model tools.",
     "capabilities": {
       "requiresFabric": false,
       "deepHook": false,
@@ -30,7 +30,7 @@
     },
     "profileBundle": {
       "packageName": "dsh-research-report",
-      "spec": "0.1.0"
+      "spec": "0.1.1"
     },
     "updateFrom": null
   },

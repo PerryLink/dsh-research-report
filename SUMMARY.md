@@ -81,7 +81,7 @@
 
 ## 发布交接（§0.3 收尾链执行状态）
 
-**本会话凭据限制（如实记录）**：本机 gh.exe 不可执行（异平台二进制）、`npm whoami` 返回 ENEEDAUTH、GitHub PAT 读取被挂载的 dsh-defend 护栏拦截。因此所有 GitHub/npm 写操作按 §0.3「权限不足时：改动提交好停在本地，验收报告给出待推送命令清单，不伪造成功」处理——能本地执行的全部已执行，需凭据的给出逐字命令与草稿。
+**本会话凭据边界（如实记录）**：git push 凭据经 Windows 凭据管理器可用（`git push --dry-run origin main` 验证通过，本会话已实际推送）；但 gh.exe 不可执行（异平台二进制）、`npm whoami` 返回 ENEADAUTH、GitHub PAT 明文读取被挂载的 dsh-defend 护栏拦截（不会尝试提取）。因此：**能经 git 执行的推送/打 tag 已全部执行**；Issue/PR/Discussions/分支保护等 API 写操作无法在不解密令牌的前提下完成，按 §0.3 以逐字命令与草稿交付，不伪造成功。
 
 ### 步骤 0 · 社区反馈检查（已执行，结果）
 
@@ -136,18 +136,18 @@ gh pr create --repo 0xsline/awesome-deepseek-harness --title "docs: add dsh-rese
 条目原文（EN）：`- [dsh-research-report](https://github.com/PerryLink/dsh-research-report) - Verifiable research-report engine for DeepSeek Harness: content-addressed evidence ledger (claim-to-snapshot binding, tamper-evident) and versioned sealed reports with per-claim verification verdicts and a manifest SHA-256 seal.`
 条目原文（ZH）：`- [dsh-research-report](https://github.com/PerryLink/dsh-research-report) - DeepSeek Harness 可核查研究报告引擎：内容寻址证据账本（claim ↔ 快照绑定、防篡改）与版本化封存报告，每条 claim 带核查结论，manifest SHA-256 封印报告目录。`
 
-**二（OMDSH hub）交接**：清单 `.tmp/omdsh-submission.json` 已生成，并已用官方 validator 实测通过（workshop HEAD `928cb55b8bb876b8b5d6f278eb849fbefc285dba`）：
+**二（OMDSH hub）交接**：清单 `release-handoff/omdsh-submission.json` 已生成，并已用官方 validator 实测通过（workshop HEAD `928cb55b8bb876b8b5d6f278eb849fbefc285dba`；对 v0.1.1 固定 commit `b95f2d187b43945693f808382cc3cad6536c5bda` 验证）：
 
 ```
 node scripts/intake.mjs validate <submission>.json
 → submission accepted for pending review; no repository code was executed
 ```
 
-关键前提：清单 `release.ref` 为占位符 `REPLACE_WITH_PINNED_COMMIT_SHA_40HEX`——必须先推送本节步骤 3 的本地 commit，再把 ref 替换为推送后的完整 40 位 HEAD SHA（`packageManifest` 含本次 dshWorkshop 修正，必须与固定 commit 内的 package.json#dshWorkshop 逐值一致），随后开 Issue：
+`packageManifest`（含本次 dshWorkshop 修正）与固定 commit 内的 package.json#dshWorkshop 逐值一致。开 Issue（需 gh/API 凭据的发布会话执行）：
 
 ```bash
 gh issue create --repo omdsh-dev/dsh-hub-workshop \
-  --title "[Submission] dsh-research-report@0.1.0" \
+  --title "[Submission] dsh-research-report@0.1.1" \
   --body-file <submission-issue-body.md>
 ```
 
@@ -196,24 +196,16 @@ curl -s https://raw.githubusercontent.com/bruc3van/awesome-dsh-plugin/main/CATAL
 curl -s https://raw.githubusercontent.com/AdamPlatin123/awesome-dsh-plugins/main/PLUGINS.md | grep -c dsh-research-report
 ```
 
-### 步骤 3 · 标准件 C：发布状态与待推送
+### 步骤 3 · 标准件 C：发布状态
 
 已完成：`main` 推送 ✅、tag `v0.1.0` ✅、npm `0.1.0` ✅、GitHub Release ✅。
-缺口修复（本会话本地提交，待发布会话推送）：
-
-- `fix: dshWorkshop manifest conformance for OMDSH intake`——permissions 令牌 `network:ctx-web-only`（原 `via-ctx.web-only` 含点号违反 hub schema）+ capability.kind `service`（原 `verifiable-reporting` 不在枚举）。
-- `ci: publish to npm with provenance`——release.yml 补 `--provenance`。
-- `docs: summary and release handoff`——本文件。
-
-推送与 provenance 补发（发布会话，需 PAT/npm token）：
+本会话补做（已本地完成）：`fix:` dshWorkshop 合规 + `ci:` provenance 修复 + `docs:` 交接文档 3 个 commit；`node scripts/release.mjs 0.1.1`（bump + CHANGELOG 落日期 + 全门禁 + commit `chore(release): 0.1.1` + tag `v0.1.1`）。**待推送命令**：
 
 ```bash
-git push origin main --follow-tags            # 推送上述本地 commit
-node scripts/release.mjs 0.1.1                # bump + CHANGELOG 落日期 + 全门禁 + commit + tag v0.1.1（不 push）
-git push origin main --follow-tags            # 触发 release.yml：npm publish --access public --provenance
+git push origin main --follow-tags   # 推送后 release.yml 自动执行：门禁 + npm publish --access public --provenance + GitHub Release
 ```
 
-说明：npm 0.1.0 已发布且无 provenance，同一版本无法重发；0.1.1 由修复后的 workflow 带 provenance 发布。若发布会话决定不补发，则 provenance 从下一个正式版本生效，本文件如实记录即可。
+说明：npm 0.1.0 已发布且无 provenance，同一版本无法重发；0.1.1 由修复后的 workflow 带 provenance 发布（若仓库 NPM_TOKEN secret 缺失，publish 步骤会跳过并在 workflow 日志注明——届时由发布会话补发，不伪造成功）。
 
 ### 人工待办（无法自动化）
 
