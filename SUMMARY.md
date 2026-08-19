@@ -77,4 +77,149 @@
 1. 宿主支持 `ignorable` 或插件事件注册面后，移除 `KNOWN_SESSION_EVENT_TYPES` 自适应门（事件定义已就绪）。
 2. fetch provider 进入默认部署后，`gather` 的候选捕获率自动提升；可在 README 补一节部署方配置示例。
 3. v2 可评估：引文定位增强（更多引号风格/跨段数字归一）、`ctx.dataQuality` 命中时的 CSV 列名启发式自动映射、报告目录的 attachment 化（待官方附件 seam 支持通用文件）。
-4. 发布会话按 PHASE2-GROUP-PROMPTS.md §0.3 收尾链执行（社区反馈检查 → 标准件 B → 标准件 A → 标准件 C）；本仓库 10 个本地 conventional commits 待推送，`node scripts/release.mjs 0.1.0` 可待发布时直接 stamp。
+4. 发布会话按 PHASE2-GROUP-PROMPTS.md §0.3 收尾链执行（社区反馈检查 → 标准件 B → 标准件 A → 标准件 C）。截至本摘要更新：仓库 14+ 个 conventional commit 已推送 `main`（tag `v0.1.0`、npm `0.1.0`、GitHub Release 均已存在）；收尾链执行状态与全部待办/草稿/命令清单见文末「## 发布交接（§0.3 收尾链执行状态）」，未完成项以「待发布会话执行」标注。
+
+## 发布交接（§0.3 收尾链执行状态）
+
+**本会话凭据限制（如实记录）**：本机 gh.exe 不可执行（异平台二进制）、`npm whoami` 返回 ENEEDAUTH、GitHub PAT 读取被挂载的 dsh-defend 护栏拦截。因此所有 GitHub/npm 写操作按 §0.3「权限不足时：改动提交好停在本地，验收报告给出待推送命令清单，不伪造成功」处理——能本地执行的全部已执行，需凭据的给出逐字命令与草稿。
+
+### 步骤 0 · 社区反馈检查（已执行，结果）
+
+- 本仓库 0 issue / 0 PR（open/closed 均为空）→ 无未回复社区评论，无回复草稿需要。
+- Discussions 已开启，欢迎帖 #1（Announcements「Welcome to dsh-research-report」）已存在。
+- 外发 PR 状态：awesome-dsh-plugin [PR #1990](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/1990)（open，0 comments，0 review comments，等维护者合并）；AdamPlatin123 [PR #260](https://github.com/AdamPlatin123/awesome-dsh-plugins/pull/260)（closed=已合并，PLUGINS.md 在列）。
+- 无 bug 类反馈需要修复。
+
+### 步骤 1 · 标准件 B 现状（盘点完成）
+
+- topics（9 个，含 `dsh-plugin`）✅；About description ✅；homepage→npm ✅。
+- 徽章（License/DSH/Node/CI/Version/npm version/npm downloads）✅；Contributors 段 ✅。
+- P0：`.github/ISSUE_TEMPLATE/bug_report.yml`、`feature_request.yml`、`PULL_REQUEST_TEMPLATE.md`、`SECURITY.md` 已存在 ✅。
+- Discussions 开启 + 欢迎帖 ✅。
+- ⚠️ **main 分支保护未核实**（匿名 API 401）。待发布会话用管理员权限执行，完整 JSON（CI 为矩阵 job `gates`，6 个上下文名）：
+
+```bash
+gh api -X PUT repos/PerryLink/dsh-research-report/branches/main/protection -f required_status_checks.strict=false -f required_status_checks.contexts[]="gates (ubuntu-latest, 22)" -f required_status_checks.contexts[]="gates (macos-latest, 22)" -f required_status_checks.contexts[]="gates (windows-latest, 22)" -f required_status_checks.contexts[]="gates (ubuntu-latest, 24)" -f required_status_checks.contexts[]="gates (macos-latest, 24)" -f required_status_checks.contexts[]="gates (windows-latest, 24)" -f enforce_admins=false -f allow_force_pushes=true -f required_pull_request_reviews=null -f restrictions=null
+```
+
+（若只想用字面 job 名也可改 contexts 为 `gates`，但矩阵展开后的检查名才是 CI 实际报告的 status context；以管理员在 Settings→Branches 里核对实际 check 名为准。）
+
+### 步骤 2 · 标准件 A：生态投递执行状态
+
+阶段 0 合规自查：公开 ✅、`dsh-plugin` topic ✅、`dsh.bundle.patch`→cordis.patch.yml ✅、真实代码+LICENSE+中英 README ✅、npm 已发布 ✅。
+
+| 目标 | 状态 | 交接物 |
+|---|---|---|
+| 一-1 awesome-dsh-plugin | PR #1990 open 待合并（无 review 意见） | 无需动作，跟踪合并 |
+| 一-2 AdamPlatin123 | ✅ 已收录（PR #260 merged） | 无 |
+| 一-3 0xsline/awesome-deepseek-harness | 🟡 patch 已备好并本地提交验证，待发布会话 fork+push+开 PR | 见下 |
+| 一-4 bruc3van 自荐区 | ⛔ 被规则阻塞：自荐要求 `stargazers_count > 10`，本仓库 0 stars，CI 会拒绝。规则原文（CONTRIBUTING.md）：「自荐仓库的 Star 数必须超过 10 个…不达标的 PR 将被拒绝。」→ 如实不投；其 topic 自动目录为每日快照，预期 ≤1 日收录（CATALOG.md 生成物，无需 PR） | 重投条件：stars>10 后按 CONTRIBUTING 自荐流程提交 |
+| 二（OMDSH hub） | 🟡 全量清单已生成并通过官方 validator 本地验证，待发布会话开 Issue | 见下 |
+| 三（官方 Discussions） | 🟡 类目「Show Your Plugins!」已确认存在（#20 起 6 帖），帖草稿已备 | 见下 |
+| 四（聚合仓核验） | Oh-My-DSH `PLUGINS.md`、YELEBAI `dsh-plugin-marketplace` 当前均无本插件；bruc3van/AdamPlatin 自动目录每日快照（预期 ≤8h~1d） | 复核命令见下 |
+
+**一-3（0xsline）交接**：双语条目 patch 已生成于 `.tmp/0xsline-dsh-research-report.patch`（对 `baa2debf23c9859e63e2163887036ecef530f691`，2 文件各 +1 行；类目 Output & Deliverables，中英同 PR）。执行：
+
+```bash
+# 在已登录 gh 的机器上：
+gh repo fork 0xsline/awesome-deepseek-harness --clone=false
+git clone https://github.com/PerryLink/awesome-deepseek-harness.git
+cd awesome-deepseek-harness
+git checkout -b add/dsh-research-report
+git apply /path/to/0xsline-dsh-research-report.patch
+git add README.md README.zh-CN.md
+git commit -m "docs: add dsh-research-report"
+git push -u origin add/dsh-research-report
+gh pr create --repo 0xsline/awesome-deepseek-harness --title "docs: add dsh-research-report" --body "Add the dsh-research-report plugin (PerryLink/dsh-research-report) to the Output & Deliverables category in both README.md and README.zh-CN.md. The repository carries the dsh-plugin topic and declares a full dsh.bundle manifest."
+```
+
+条目原文（EN）：`- [dsh-research-report](https://github.com/PerryLink/dsh-research-report) - Verifiable research-report engine for DeepSeek Harness: content-addressed evidence ledger (claim-to-snapshot binding, tamper-evident) and versioned sealed reports with per-claim verification verdicts and a manifest SHA-256 seal.`
+条目原文（ZH）：`- [dsh-research-report](https://github.com/PerryLink/dsh-research-report) - DeepSeek Harness 可核查研究报告引擎：内容寻址证据账本（claim ↔ 快照绑定、防篡改）与版本化封存报告，每条 claim 带核查结论，manifest SHA-256 封印报告目录。`
+
+**二（OMDSH hub）交接**：清单 `.tmp/omdsh-submission.json` 已生成，并已用官方 validator 实测通过（workshop HEAD `928cb55b8bb876b8b5d6f278eb849fbefc285dba`）：
+
+```
+node scripts/intake.mjs validate <submission>.json
+→ submission accepted for pending review; no repository code was executed
+```
+
+关键前提：清单 `release.ref` 为占位符 `REPLACE_WITH_PINNED_COMMIT_SHA_40HEX`——必须先推送本节步骤 3 的本地 commit，再把 ref 替换为推送后的完整 40 位 HEAD SHA（`packageManifest` 含本次 dshWorkshop 修正，必须与固定 commit 内的 package.json#dshWorkshop 逐值一致），随后开 Issue：
+
+```bash
+gh issue create --repo omdsh-dev/dsh-hub-workshop \
+  --title "[Submission] dsh-research-report@0.1.0" \
+  --body-file <submission-issue-body.md>
+```
+
+Issue 正文模板（替换 ref 后把完整 JSON 贴入代码块）：
+
+```
+### Author Studio manifest
+
+```json
+<完整 omdsh-workshop-submission/v2 JSON，替换 ref 后原文>
+```
+
+### Submission boundary
+
+- This request contains only public, immutable source coordinates and the generated structured manifest.
+- Automated intake may create a pending-review PR, but cannot approve the project or grant Registry installation authority.
+
+### Confirmations
+
+- [x] The repository and pinned commit are public.
+- [x] Permissions, tests, compatibility, and external effects are declared from verifiable evidence.
+- [x] No credential, private path, or private data is included.
+```
+
+**三（官方 Discussions）交接**——类目：`Show Your Plugins!`。帖草稿：
+标题：`Showcase: dsh-research-report — 可核查研究报告引擎（证据账本 + 版本化封存报告）`
+正文：
+```
+一句话定位：把「写得准、可审计」做成插件——每条 claim 都必须绑定证据快照、逐条给出核查结论，报告目录用 manifest SHA-256 封印。
+
+解决什么问题：agent 写研究报告时的引用漂移、数字编造与不可回溯。证据按内容寻址去重存储（同内容只存一份），读取时重算哈希，篡改立刻报 contradicted；未核实/矛盾的 claim 在正文保留 [未核实]/[与证据矛盾] 标记并进附录核查表。
+
+安装：dsh plugin --profile web add dsh-research-report
+
+仓库：https://github.com/PerryLink/dsh-research-report
+npm：https://www.npmjs.com/package/dsh-research-report
+榜单收录：awesome-dsh-plugin（PR 待合并）/ AdamPlatin123/awesome-dsh-plugins（已收录）
+```
+执行：`gh api repos/deepseek-ai/deepseek-harness/discussions -f title="..." -f body="..." -F category-id=<Show Your Plugins! 类目 ID>`（先 `gh api graphql -f query='{repository(owner:"deepseek-ai",name:"deepseek-harness"){discussionCategories(first:20){nodes{id name}}}}'` 取类目 ID）。
+
+**四（聚合仓复核命令，发布会话执行）**：
+```bash
+curl -s https://raw.githubusercontent.com/like-study1/Oh-My-DSH/main/PLUGINS.md | grep -c dsh-research-report
+curl -s https://raw.githubusercontent.com/YELEBAI/dsh-plugin-marketplace/main/README.md | grep -c dsh-research-report
+curl -s https://raw.githubusercontent.com/bruc3van/awesome-dsh-plugin/main/CATALOG.md | grep -c dsh-research-report
+curl -s https://raw.githubusercontent.com/AdamPlatin123/awesome-dsh-plugins/main/PLUGINS.md | grep -c dsh-research-report
+```
+
+### 步骤 3 · 标准件 C：发布状态与待推送
+
+已完成：`main` 推送 ✅、tag `v0.1.0` ✅、npm `0.1.0` ✅、GitHub Release ✅。
+缺口修复（本会话本地提交，待发布会话推送）：
+
+- `fix: dshWorkshop manifest conformance for OMDSH intake`——permissions 令牌 `network:ctx-web-only`（原 `via-ctx.web-only` 含点号违反 hub schema）+ capability.kind `service`（原 `verifiable-reporting` 不在枚举）。
+- `ci: publish to npm with provenance`——release.yml 补 `--provenance`。
+- `docs: summary and release handoff`——本文件。
+
+推送与 provenance 补发（发布会话，需 PAT/npm token）：
+
+```bash
+git push origin main --follow-tags            # 推送上述本地 commit
+node scripts/release.mjs 0.1.1                # bump + CHANGELOG 落日期 + 全门禁 + commit + tag v0.1.1（不 push）
+git push origin main --follow-tags            # 触发 release.yml：npm publish --access public --provenance
+```
+
+说明：npm 0.1.0 已发布且无 provenance，同一版本无法重发；0.1.1 由修复后的 workflow 带 provenance 发布。若发布会话决定不补发，则 provenance 从下一个正式版本生效，本文件如实记录即可。
+
+### 人工待办（无法自动化）
+
+1. Discord 分享（官方 Discord 无自动化渠道）。
+2. 中文渠道推广（掘金/知乎/公众号等，按发布方口径）。
+3. 跟踪 awesome-dsh-plugin PR #1990 合并；合并后 0xsline PR 描述中的榜单链接可回补。
+4. bruc3van 自荐：stars>10 后提交。
+5. OMDSH hub Issue 创建后：等待 bot 生成 pending-review 与审核 PR；维护者侧补运行证据（`intake/evidence/`，profile 生命周期需 macOS sandbox-exec 或等价隔离执行器，Windows 环境无法直接产出该项证据——如实申报）。
+6. 「项目总览」现状更新建议一行：`dsh-research-report：开发完成、门禁全绿、v0.1.0 已发 npm；生态投递进行中（AdamPlatin123 已收录、awesome-dsh-plugin PR #1990 待合并）；待办：0xsline/bruc3van 投递、OMDSH hub INTAKE、官方 Discussions showcase、npm provenance 补发（0.1.1）、分支保护核实。`

@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `dshWorkshop` manifest conformance for OMDSH Workshop intake: permission token `network:ctx-web-only` (schema-safe, no dots) and capability kind `service` (enum).
+- Release workflow now publishes to npm with provenance (`npm publish --access public --provenance`); the 0.1.0 tarball predates this fix, so provenance applies from the next release.
+
 ## [0.1.0] - 2026-08-19
 
 ### Added

@@ -1,0 +1,90 @@
+{
+  "schema": "omdsh-workshop-submission/v2",
+  "operation": "create-project",
+  "project": {
+    "id": "dsh-research-report",
+    "displayName": "dsh-research-report",
+    "summary": "Verifiable research-report engine for DeepSeek Harness: a content-addressed evidence ledger (claim-to-snapshot binding, tamper-evident) plus versioned sealed reports where every claim carries a verification verdict and the manifest hash seals the directory.",
+    "kind": "extension",
+    "category": "workflow",
+    "tags": ["research", "evidence-ledger", "verifiable-report", "audit", "citation-verification"],
+    "repository": "https://github.com/PerryLink/dsh-research-report",
+    "path": null,
+    "author": {
+      "name": "PerryLink",
+      "url": "https://github.com/PerryLink"
+    },
+    "license": "Apache-2.0"
+  },
+  "release": {
+    "version": "0.1.0",
+    "ref": "REPLACE_WITH_PINNED_COMMIT_SHA_40HEX",
+    "updatedAt": "2026-08-19T14:15:44Z",
+    "channel": "stable",
+    "compatibility": "0.1.0-rc.6",
+    "changelog": "First release: ctx.researchReport service seam with the byte-frozen assemble contract, content-addressed evidence ledger with tamper-evident reads, byte-level claim verification plus the optional ctx.dataQuality numeric bridge, versioned sealed reports (report.md + manifest.json) with visible [未核实]/[与证据矛盾] markers, and the evidence_add / research_report / ledger_query model tools.",
+    "capabilities": {
+      "requiresFabric": false,
+      "deepHook": false,
+      "restartRequired": true
+    },
+    "profileBundle": {
+      "packageName": "dsh-research-report",
+      "spec": "0.1.0"
+    },
+    "updateFrom": null
+  },
+  "management": {
+    "method": "profile-bundle",
+    "protocol": "harness-profile",
+    "label": "dsh-research-report profile bundle",
+    "instructions": "Add the bundle row to the profile and restart: `dsh plugin --profile <name> add dsh-research-report` (npm tarball; install scripts stay disabled). After restart the row mounts `ctx.researchReport` and the evidence_add / research_report / ledger_query tools. Optional runtime peers are resolved via ctx.get at call time and are not required to mount.",
+    "source": null
+  },
+  "declarations": {
+    "permissions": "fs:workspace-write; network:ctx-web-only (every HTTP path goes through the harness ctx.web seam); session:read; session:write; native-code:none.",
+    "testing": "69 vitest cases (9 spec files) against the real 0.1.0-rc.6 Context/Session/ToolRuntime/LocalJobRegistry/WebRuntime peers; keyless fixture end-to-end (evidence_add x3 -> sealed research_report -> tamper -> contradicted); smoke install in a scratch DSH_HOME profile; full gate: typecheck + typecheck:ci + test + build + verify:self-contained + verify:artifacts + verify:frozen-contract + verify:readme-sync + pack:check (all green).",
+    "trustedPublisherRequested": false,
+    "installScriptsMustRemainDisabled": true
+  },
+  "packageManifest": {
+    "schema": "omdsh-workshop-package/v1",
+    "type": "plugin",
+    "integration": {
+      "protocol": "harness-profile",
+      "artifact": "cordis.patch.yml"
+    },
+    "install": {
+      "mode": "transactional",
+      "adapter": "profile-bundle",
+      "failurePolicy": "generation-rollback",
+      "touchesCurrentBeforeActivation": false
+    },
+    "lifecycle": {
+      "activation": "restart-profile",
+      "dispose": "supported"
+    },
+    "permissions": [
+      "fs:workspace-write",
+      "network:ctx-web-only",
+      "session:read",
+      "session:write",
+      "native-code:none"
+    ],
+    "compatibility": {
+      "dshVersions": ["0.1.0-rc.6"]
+    },
+    "capability": {
+      "id": "research-report",
+      "kind": "service",
+      "invocation": "mount the dsh-research-report bundle row",
+      "expected": "provides ctx.researchReport (assemble), the evidence_add / research_report / ledger_query tools, and a content-addressed evidence ledger with tamper-evident sealed reports under the workspace"
+    },
+    "evidence": {
+      "install": null,
+      "failureIsolation": null,
+      "hotReload": null,
+      "remove": null
+    }
+  }
+}
