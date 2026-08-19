@@ -1,0 +1,155 @@
+<div align="center">
+
+# 📑 dsh-research-report
+
+**Un motor de informes de investigación verificables para DeepSeek Harness.**
+
+*Cada afirmación (claim) queda vinculada a instantáneas de evidencia inmutables, se verifica byte a byte y se sella en un informe versionado cuyo hash de manifiesto cualquiera puede recomputar.*
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh-plugin-✅-green)](https://github.com/topics/dsh-plugin)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-research-report/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-research-report/actions)
+[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-research-report?label=version)](https://github.com/PerryLink/dsh-research-report/releases)
+[![npm version](https://img.shields.io/npm/v/dsh-research-report)](https://www.npmjs.com/package/dsh-research-report)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-research-report)](https://www.npmjs.com/package/dsh-research-report)
+
+[English](README.md) · [简体中文](README.zh.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
+
+</div>
+
+---
+
+## Compatibility
+
+- DeepSeek Harness `0.1.0-rc.6` (peers fijados a `0.1.0-rc.6`).
+- Node `^22.19.0 || >=24.0.0`, solo ESM (`"type": "module"`).
+- Dependencias peer: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, y `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` en `0.1.0-rc.6`.
+- Hermanos opcionales (nunca obligatorios): proveedores de `ctx.web` para captura URL/recolección, `ctx.jobs` para ensamblado en segundo plano, `ctx.dataQuality` (dsh-data-quality) para verificación de citas sobre datasets.
+
+## What you get
+
+- **Libro de evidencia (evidence ledger)** — almacén de instantáneas direccionado por contenido (`<ledgerRoot>/objects/<sha256>` + diarios JSONL). El mismo contenido se guarda una sola vez; las instantáneas son inmutables; cada lectura recomputa el hash, de modo que la manipulación o el borrado se detectan en lugar de confiarse.
+- **Vínculo claim ↔ evidencia** — los claims se registran con los ids de evidencia en que se apoyan; el libro conserva el vínculo y cada veredicto de verificación (gana el más reciente).
+- **Verificación a nivel de byte** — cada número y cada fragmento entrecomillado de un claim debe poder localizarse literalmente en las instantáneas vinculadas. Las citas ausentes marcan el claim como `unverified`; una etiqueta cuyo valor difiere en la instantánea (y el valor citado está ausente) lo marca `contradicted`. Sin semántica, sin embeddings — solo comprobaciones de bytes auditables.
+- **Puente numérico opcional** — cuando un claim cita un dataset estructurado del workspace (CSV/JSON) y `dsh-data-quality` está montado, las citas se verifican con tolerancias mediante su contrato congelado `verifyCitations`.
+- **Informes sellados versionados** — `<reportRoot>/<slug(topic)>/<YYYYMMDD-HHmmss>/report.md` + `manifest.json`; el hash de sellado es el SHA-256 del manifiesto, que a su vez lleva el hash del informe y los hashes de toda la evidencia.
+- **Brechas honestas** — los claims no verificados o contradichos conservan una marca visible `[未核实]` / `[与证据矛盾]` en el cuerpo del informe y se listan en el Apéndice A. Nada se aprueba en silencio.
+- **Sin bucle de deep-research** — la orquestación de recuperación se reutiliza deliberadamente: `ctx.web` para buscar/descargar, `ctx.jobs` para trabajos largos. La planificación y la síntesis quedan en el modelo (o en un plugin upstream).
+
+## Quick start
+
+### Canal git
+
+```sh
+# Desde un profile de pruebas (fija el commit; ejecuta el build `prepare` autocontenido)
+dsh plugin --profile demo add "github:YOUR_ORG/dsh-research-report#<sha>"
+# El primer add añade una entrada allowBuilds para dsh-research-report al pnpm-workspace.yaml del profile.
+```
+
+### Canal npm
+
+```sh
+dsh plugin --profile demo add dsh-research-report
+```
+
+Ambos canales instalan la fila del bundle (ver `cordis.patch.yml`) en la pila `dsh.profile.bundles` del profile y surten efecto al reiniciar.
+
+Luego, en una sesión:
+
+```
+evidence_add({ origin: "docs/market.md", title: "Market snapshot" })     # → ev-1a2b3c4d5e6f
+research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
+ledger_query({ claimId: "c1" })                                          # vínculos + veredicto
+```
+
+## Install & uninstall
+
+```sh
+dsh plugin --profile demo add dsh-research-report       # instalar
+dsh plugin --profile demo remove dsh-research-report    # desinstalar
+```
+
+Verifica que la fila se monta: `dsh --profile demo --dump-config | grep dsh-research-report`.
+
+## Configuration
+
+Todos los ajustes son campos `Config` de Schemastery; los valores inválidos fallan ruidosamente al cargar el profile. Las raíces relativas se resuelven contra el directorio de trabajo del harness (el workspace).
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `enabled` | `true` | Interruptor maestro; `false` no monta nada. |
+| `ledgerRoot` | `.research-ledger` | Directorio del libro de evidencia (objetos + diarios JSONL). |
+| `reportRoot` | `research-reports` | Raíz de informes sellados (versionados por tema y timestamp). |
+| `maxEvidenceBytes` | `2097152` | Tope duro de bytes UTF-8 por instantánea de evidencia. |
+| `maxEvidencePerReport` | `200` | Tope duro de evidencias vinculadas a un informe. |
+| `fetchTimeoutMs` | `20000` | Plazo (ms) de cada `ctx.web` fetch durante la captura. |
+
+## Tools & surfaces
+
+- **`evidence_add({ origin, content?, title? })`** — registra una instantánea de evidencia. Con `content` el texto se guarda literal; sin él, un origen URL se descarga vía `ctx.web` y una ruta relativa del workspace se lee de disco (las lecturas nunca escapan del workspace). Devuelve el id de evidencia y su hash SHA-256.
+- **`research_report({ topic, title?, sections, claims, evidenceRefs, gather?, depth?, background? })`** — ensambla y sella un informe: valida (las referencias a claims no registrados se rechazan ruidosamente), verifica cada claim, renderiza `report.md` con marcas visibles, escribe `manifest.json` y devuelve el hash de sellado. `gather: true` ejecuta UNA ronda de búsqueda sobre `ctx.web` y devuelve evidencia candidata capturada más una lista explícita de brechas — nunca ensambla automáticamente. `background: true` devuelve `{ kind: 'background', jobId }` sobre `ctx.jobs`.
+- **`ledger_query({ claimId? | evidenceId? })`** — consultas de solo lectura de vínculos/veredictos; la evidencia se re-hashea al leer, así que una instantánea manipulada o ausente se reporta explícitamente. Sin id, devuelve un resumen del libro.
+- **`ctx.researchReport.assemble(request)`** — la superficie de servicio congelada para plugins hermanos (ver `src/service.ts`; protegida byte a byte por `scripts/verify-frozen-contract.mjs`).
+
+## Permissions & data
+
+`dsh-research-report` consume solo seams públicos: `ctx.tools`, `ctx.systemPrompt`, y opcionalmente `ctx.web` / `ctx.jobs` / `ctx.dataQuality` (consultados en el momento de la llamada, nunca inyectados). Solo escribe dentro de las raíces de libro e informes configuradas (ambas por defecto son directorios locales del workspace), lee archivos del workspace solo dentro del workspace, y sale a la red exclusivamente por el seam web del harness — nunca un `fetch` directo. Las instantáneas de evidencia son inmutables y direccionadas por contenido; los registros de claims son inmutables; los veredictos son solo de anexado.
+
+## Security boundaries
+
+- **Evidencia de manipulación por construcción** — cada lectura de instantánea recomputa el SHA-256 contra el índice; una discrepancia verifica los claims vinculados como `contradicted` y `ledger_query` reporta `integrity: tampered`/`missing`.
+- **Confinamiento al workspace** — las lecturas locales de evidencia se resuelven contra la raíz del workspace y rechazan escapes (ambos lados pasan por `path.resolve` antes de comparar).
+- **Configuración que falla ruidosamente** — los límites inválidos lanzan al montar; las referencias a claims no registrados, ids de evidencia desconocidos y conflictos id/contenido lanzan al ensamblar.
+- **Sin manejo de credenciales, sin red oculta** — la captura de URLs pasa por `ctx.web` (la selección de proveedor, la taxonomía de errores y cualquier política SSRF quedan en los proveedores web del despliegue).
+- **Registros reversibles** — cada contribución pasa por `ctx.effect()` / `register()`, así que desinstalar y recargar en caliente son limpios.
+
+## Known limitations
+
+- **A nivel de byte, no semántico** — la comprobación incorporada localiza literales numéricos/entrecomillados verbatim; los claims parafraseados sin literal comprobable quedan `unverified`, y un claim verdadero cuyo número está ausente mientras su etiqueta aparece con otro valor queda `contradicted`. Es una decisión deliberada de v1 (auditable antes que listo).
+- **Eventos de sesión adaptativos** — el plugin declara los eventos de sesión tipados `research-report/evidence`, `research-report/verify` y `research-report/seal`, pero el `Session.append` de rc.6 no tiene marcador `ignorable` ni superficie de registro de eventos para plugins, así que los appends se activan solo cuando el build del host conoce los tipos (si no, la capa de persistencia rechazaría el log al restaurar). Los diarios del libro son siempre la fuente durable de verdad.
+- **Los profiles por defecto no montan proveedor de fetch** — el `dsh-base` distribuido monta solo búsqueda, así que la captura de URLs falla ruidosamente (`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`) hasta configurar un proveedor de fetch; el `gather` basado en búsqueda lista las fuentes no capturadas en la lista de brechas.
+- **Ámbito de un solo workspace** — las raíces de libro e informes se resuelven contra el directorio de trabajo del harness al montar; los despliegues multi-workspace deben configurar raíces absolutas por profile.
+
+## Development
+
+```sh
+pnpm install
+pnpm run typecheck && pnpm run typecheck:ci
+pnpm test
+pnpm run build
+pnpm run verify:self-contained && pnpm run verify:artifacts
+node scripts/check-readme-sync.mjs
+node scripts/verify-frozen-contract.mjs
+pnpm pack
+```
+
+- `typecheck` resuelve `@deepseek-ai/*` a través de los peers 0.1.0-rc.6 instalados; `typecheck:ci` desactiva `skipLibCheck` y activa `verbatimModuleSyntax` contra los tipos publicados. Ambos deben permanecer verdes.
+- Las pruebas usan los `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reales de los peers 0.1.0-rc.6; solo los backends de red son proveedores scriptados registrados a través de los registros reales de `ctx.web`.
+- Release: `node scripts/release.mjs <x.y.z>` (sube versión, sella CHANGELOG, re-ejecuta la puerta, commitea + etiqueta; nunca hace push).
+
+## Topics
+
+`dsh`, `dsh-plugin`, `deepseek-harness`, `cordis`, `research`, `evidence-ledger`, `verifiable-report`, `audit`, `citation-verification`
+
+## Contributors
+
+Contribuidores de `dsh-research-report`.
+
+## PerryLink DSH Plugin Family
+
+Este proyecto es uno de los plugins de DeepSeek Harness mantenidos por [PerryLink](https://github.com/PerryLink). Si este te sirve, probablemente los demás también:
+
+| Plugin | One-liner |
+|---|---|
+| [dsh-data-quality](https://github.com/PerryLink/dsh-data-quality) | Comprobaciones de calidad de datasets y verificación de citas (el puente numérico opcional consumido aquí) |
+| [dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck) | Guardia de disciplina de ingeniería: interrogación de requisitos, puertas de tests, revisión adversaria |
+| [dsh-fast](https://github.com/PerryLink/dsh-fast) | Diagnóstico de rendimiento de solo lectura para DeepSeek Harness. |
+| [dsh-industry-research](https://github.com/PerryLink/dsh-industry-research) | Orquestación de investigación sectorial que sella sus entregables mediante el `ctx.researchReport.assemble` de este plugin |
+| [dsh-memento](https://github.com/PerryLink/dsh-memento) | Memoria entre sesiones con puerta de aprobación: seam ctx.memory + SQLite + herramienta memory |
+| [dsh-score](https://github.com/PerryLink/dsh-score) | Puntuación de calidad multidimensional para plugins de DeepSeek Harness. |
+| [dsh-test-drive](https://github.com/PerryLink/dsh-test-drive) | Pruebas de instalación y humo aisladas para plugins de DeepSeek Harness. |
+
+## License
+
+Apache-2.0 — ver [LICENSE](LICENSE).
