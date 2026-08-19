@@ -1,0 +1,24 @@
+# dsh-research-report bundle patch: mount the verifiable research-report engine.
+#
+# Every key below is a Config field (Schemastery schema); invalid values fail
+# the profile load loudly. See README.md "Configuration" for the full table.
+# The plugin writes only inside the workspace (ledger + sealed reports), so it
+# defaults to enabled.
+- insert:
+    - id: dsh-research-report
+      name: dsh-research-report
+      config:
+        # Master switch. On by default; `false` mounts nothing at all.
+        enabled: true
+        # Evidence ledger directory (content-addressed objects + JSONL index),
+        # resolved against the harness working directory when relative.
+        ledgerRoot: .research-ledger
+        # Sealed-report root; each assemble writes
+        # <reportRoot>/<slug(topic)>/<YYYYMMDD-HHmmss>/{report.md,manifest.json}.
+        reportRoot: research-reports
+        # Hard cap on one evidence snapshot's UTF-8 byte size.
+        maxEvidenceBytes: 2097152
+        # Hard cap on how many evidence items one report may bind.
+        maxEvidencePerReport: 200
+        # Deadline (ms) for one ctx.web fetch during evidence capture.
+        fetchTimeoutMs: 20000
