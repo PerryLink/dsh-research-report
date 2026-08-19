@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest a capability for dsh-research-report
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What cannot be done today, and for whom.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected behavior
+      description: How the plugin should behave once the feature exists.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds or partial solutions you tried.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, screenshots, or notes that help scope the change.

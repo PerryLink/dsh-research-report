@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible defect in dsh-research-report
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report. Please strip any
+        secrets/tokens/headers from pasted logs before submitting (see SECURITY.md).
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      description: The package version from package.json (or the installed tarball/npm version).
+      placeholder: e.g. 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Runtime environment
+      description: Which host profile/composition is running the plugin (e.g. dsh-base + dsh-headless profile).
+      placeholder: e.g. dsh-headless profile with dsh-base
+    validations:
+      required: true
+  - type: input
+    id: os-node
+    attributes:
+      label: OS and Node versions
+      description: e.g. Windows 11, Node v22.22.3 (run `node --version`).
+      placeholder: e.g. Windows 11 / Node v22.22.3
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The exact commands or tool calls that trigger the bug.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened, including any error output.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Optional relevant log excerpts.
+      value: |
+        **WARNING: redact tokens, keys, and request headers before pasting.**
