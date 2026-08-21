@@ -22,9 +22,9 @@
 
 ## Compatibility
 
-- DeepSeek Harness `0.1.0-rc.6` (peer डिपेंडेंसी `0.1.0-rc.6` पर पिन)।
+- DeepSeek Harness `0.1.0-rc.8` (peer डिपेंडेंसी `0.1.0-rc.8` पर पिन)।
 - Node `^22.19.0 || >=24.0.0`, केवल ESM (`"type": "module"`)।
-- Peer डिपेंडेंसी: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, तथा `0.1.0-rc.6` के `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs`।
+- Peer डिपेंडेंसी: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, तथा `0.1.0-rc.8` के `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs`।
 - वैकल्पिक सहयोगी (कभी अनिवार्य नहीं): URL कैप्चर/गैदर के लिए `ctx.web` provider; बैकग्राउंड असेंबली के लिए `ctx.jobs`; डेटासेट उद्धरण जाँच के लिए `ctx.dataQuality` (dsh-data-quality)।
 
 ## What you get
@@ -107,7 +107,7 @@ dsh plugin --profile demo remove dsh-research-report    # अनइंस्ट�
 ## Known limitations
 
 - **बाइट-स्तरीय, सिमैंटिक नहीं** — अंतर्निर्मित जाँच अंक/उद्धरण शाब्दिक मिलान करती है; बिना जाँच-योग्य शाब्दिक वाले पुनःपरिभाषित claim `unverified` रहते हैं, और जिस claim का अंक अनुपस्थित है पर लेबल दूसरे मान के साथ मिलता है वह `contradicted` पढ़ा जाता है। यह v1 का जानबूझ निर्णय है (चतुर से बढ़कर ऑडिट-योग्य)।
-- **अनुकूली सत्र-इवेंट** — प्लगिन टाइप किए गए `research-report/evidence`, `research-report/verify`, `research-report/seal` सत्र-इवेंट घोषित करता है, पर rc.6 का `Session.append` में `ignorable` मार्कर नहीं और न ही प्लगिन इवेंट-पंजीकरण सतह है; अतः append तभी सक्रिय होते हैं जब होस्ट बिल्ड उन प्रकारों को जानता हो (वरना persistence परत रिस्टोर पर लॉग अस्वीकार कर देगी)। बही-खाता जर्नल ही सदैव टिकाऊ सत्य का स्रोत है।
+- **अनुकूली सत्र-इवेंट** — प्लगिन टाइप किए गए `research-report/evidence`, `research-report/verify`, `research-report/seal` सत्र-इवेंट घोषित करता है, पर rc.8 के `Session.append` में `ignorable` विकल्प नहीं और न ही प्लगिन इवेंट-पंजीकरण सतह है; अतः append तभी सक्रिय होते हैं जब होस्ट बिल्ड उन प्रकारों को जानता हो (वरना persistence परत रिस्टोर पर लॉग अस्वीकार कर देगी)। बही-खाता जर्नल ही सदैव टिकाऊ सत्य का स्रोत है।
 - **डिफ़ॉल्ट profile में fetch provider नहीं** — shipped `dsh-base` केवल search माउंट करता है, इसलिए fetch provider कॉन्फ़िगर होने तक URL कैप्चर ठोंककर विफल होता है (`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`); search-आधारित `gather` अकैप्चर स्रोतों को गैप-सूची में डालता है।
 - **एकल-workspace दायरा** — बही-खाता व रिपोर्ट रूट माउंट पर harness वर्किंग डायरेक्टरी के सापेक्ष resolve होते हैं; बहु-workspace डिप्लॉयमेंट को प्रति-profile निरपेक्ष रूट कॉन्फ़िगर करने चाहिए।
 
@@ -124,8 +124,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` इंस्टॉल किए गए 0.1.0-rc.6 peers से `@deepseek-ai/*` resolve करता है; `typecheck:ci` प्रकाशित टाइप्स के विरुद्ध `skipLibCheck` बंद और `verbatimModuleSyntax` चालू करता है। दोनों हरे रहने चाहिए।
-- टेस्ट 0.1.0-rc.6 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्री में पंजीकृत scripted providers हैं।
+- `typecheck` इंस्टॉल किए गए 0.1.0-rc.8 peers से `@deepseek-ai/*` resolve करता है; `typecheck:ci` प्रकाशित टाइप्स के विरुद्ध `skipLibCheck` बंद और `verbatimModuleSyntax` चालू करता है। दोनों हरे रहने चाहिए।
+- टेस्ट 0.1.0-rc.8 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्री में पंजीकृत scripted providers हैं।
 - रिलीज़: `node scripts/release.mjs <x.y.z>` (वर्ज़न बम्प, CHANGELOG स्टैम्प, गेट पुनःचालन, कमिट + टैग; कभी push नहीं)।
 
 ## Topics

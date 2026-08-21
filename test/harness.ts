@@ -2,7 +2,7 @@
  * Shared test harness: REAL Cordis `Context`, REAL `SessionStore`/`Session`,
  * the REAL `SystemPrompt`/`ToolRuntime` registries, and the REAL process-local
  * job registry (`LocalJobRegistry` with a test controller attached) from the
- * 0.1.0-rc.6 peers. Nothing here is a hand-written mock of a service.
+ * 0.1.0-rc.8 peers. Nothing here is a hand-written mock of a service.
  * @module dsh-research-report/test/harness
  */
 

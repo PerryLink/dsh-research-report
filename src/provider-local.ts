@@ -56,12 +56,13 @@ export class ResearchReportError extends Error {
 }
 
 /**
- * rc.6's persistence layer refuses a session log carrying an event type it
- * does not know, and rc.6 offers no plugin event-registration surface — so the
- * research-report/* events are appended only when the host build already knows
- * them. The ledger journals are always the durable source of truth; these
- * events are the in-log audit mirror and activate automatically once the host
- * learns the vocabulary.
+ * The rc.8 persistence layer still refuses a session log carrying an event
+ * type it does not know (unless the event carries the envelope's `ignorable`
+ * marker, which live `Session.append` does not expose), and rc.8 offers no
+ * plugin event-registration surface — so the research-report/* events are
+ * appended only when the host build already knows them. The ledger journals
+ * are always the durable source of truth; these events are the in-log audit
+ * mirror and activate automatically once the host learns the vocabulary.
  * @param session - the owning session, when known.
  * @param type - the event type.
  * @param append - the typed append thunk.
