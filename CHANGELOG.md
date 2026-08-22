@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Upgrade the `@deepseek-ai/dsh-*` peer family from `0.1.0-rc.8` to `0.1.1-rc.2`: devDependencies pin `0.1.1-rc.2` exactly, peerDependencies stay `>=0.1.0-rc.8 <0.2.0`, and the compat workflow pins the rc.2 family. No plugin API surface changed — the adaptive session-event mirror still applies, because the live `Session.append` still exposes no `ignorable` option and `research-report/*` events remain outside the host's `KNOWN_SESSION_EVENT_TYPES` (the ledger journals stay the durable source of truth).
+- The five-language READMEs, `AGENTS.md`, and `THIRD_PARTY_NOTICES.md` now document the `0.1.1-rc.2` peer family.
+
 ## [0.1.2] - 2026-08-21
 
 ### Changed

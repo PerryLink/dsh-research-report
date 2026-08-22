@@ -29,7 +29,7 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck (published 0.1.0-rc.8 peers)
+      - name: Typecheck (published 0.1.1-rc.2 peers)
         run: pnpm run typecheck:ci
 
       - name: Test
