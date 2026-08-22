@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📑 dsh-research-report
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-research-report)
 
 **A verifiable research-report engine for DeepSeek Harness.**
 
