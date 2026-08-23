@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Close the §2.32 "confirm or add" checklist items with executable assertions (no functional change): a tool triple-interface suite (U2 — parameter schema + canonical output schema + content-block render for `evidence_add` / `research_report` / `ledger_query`), a Loader-level `maxEvidencePerReport` out-of-range negative (U4), a dispose test proving the service and all three tools unregister on unmount (C1), a `FETCH_TIMEOUT` path test over the real `ctx.web` seam (U5/U6), and a frozen `CitationCheckRequest` boundary assertion in the `dsh-data-quality` bridge suite (cross-plugin bridge).
+
+### Changed
+
+- Confirm the frozen `CitationCheckRequest` / `CitationCheckResult` block is byte-identical to the real `dsh-data-quality` Service Definition (already gated byte-for-byte by `scripts/verify-frozen-contract.mjs`).
+
 ## [0.1.3] - 2026-08-22
 
 ### Changed
