@@ -134,7 +134,7 @@ pnpm pack
 
 ## Contributors
 
-`dsh-research-report` contributors。
+- [PerryLink](https://github.com/PerryLink) —— 原作者与维护者：插件架构、证据账本、字节级核验、密封报告、五语文档、CI 与发布自动化。
 
 ## PerryLink DSH Plugin Family
 

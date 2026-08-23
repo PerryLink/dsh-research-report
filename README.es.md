@@ -134,7 +134,7 @@ pnpm pack
 
 ## Contributors
 
-Contribuidores de `dsh-research-report`.
+- [PerryLink](https://github.com/PerryLink) — autor original y mantenedor: arquitectura del plugin, ledger de evidencias, verificación a nivel de byte, informes sellados, documentación en cinco idiomas y automatización de CI/publicación.
 
 ## PerryLink DSH Plugin Family
 
