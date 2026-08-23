@@ -85,6 +85,30 @@ describe('capture through the real web seam', () => {
     if (!result.ok) expect(result.error.code).toBe('FETCH_FAILED')
   })
 
+  it('times out a hung fetch after the configured fetchTimeoutMs', async () => {
+    const base = await mountBase('gather-fetch-timeout')
+    bases.push(base)
+    fibers.push(await base.ctx.plugin(WebRuntime))
+    fibers.push(await mountPlugin(base, { fetchTimeoutMs: 30 }))
+    // A fetch backend that never settles but honors the abort signal the seam
+    // fuses from the deadline — the timeout path must classify it as a timeout,
+    // not a generic provider failure.
+    base.ctx.web.registerFetchProvider({
+      id: 'hanging-fetch',
+      available: () => true,
+      async fetch(_request, signal) {
+        await new Promise<never>((_resolve, reject) => {
+          if (signal?.aborted) reject(signal.reason)
+          else signal?.addEventListener('abort', () => reject(signal.reason), { once: true })
+        })
+        throw new Error('unreachable: the abort above always rejects first')
+      },
+    })
+    const result = valueOf<EvidenceAddValue>(await executeTool(base, 'evidence_add', { origin: 'https://example.com/slow' }))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.error.code).toBe('FETCH_TIMEOUT')
+  })
+
   it('fails loud when the seam is mounted but no fetch provider is usable', async () => {
     const base = await setup('gather-no-provider')
     const result = valueOf<EvidenceAddValue>(await executeTool(base, 'evidence_add', { origin: 'https://example.com/x' }))

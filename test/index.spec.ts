@@ -51,6 +51,21 @@ describe('apply', () => {
     expect(base.ctx.get('researchReport')).toBeUndefined()
     expect(base.ctx.tools.get('evidence_add')).toBeUndefined()
   })
+
+  it('unregisters the service and all three tools on dispose (reversible registration)', async () => {
+    const base = await mountBase('index-dispose')
+    bases.push(base)
+    const fiber = await mountPlugin(base)
+    expect(base.ctx.get('researchReport')).toBeDefined()
+    expect(base.ctx.tools.get('evidence_add')).toBeDefined()
+
+    await fiber.dispose()
+
+    expect(base.ctx.get('researchReport')).toBeUndefined()
+    expect(base.ctx.tools.get('evidence_add')).toBeUndefined()
+    expect(base.ctx.tools.get('research_report')).toBeUndefined()
+    expect(base.ctx.tools.get('ledger_query')).toBeUndefined()
+  })
 })
 
 describe('evidence_add', () => {

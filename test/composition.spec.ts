@@ -87,6 +87,7 @@ describe('Loader composition (built entry)', () => {
     const cases = [
       { lines: ["enabled: 'yes'"], reason: /expected boolean|enabled/u },
       { lines: ['maxEvidenceBytes: 0'], reason: /maxEvidenceBytes|positive/u },
+      { lines: ['maxEvidencePerReport: -1'], reason: /maxEvidencePerReport|positive/u },
       { lines: ['fetchTimeoutMs: -5'], reason: /fetchTimeoutMs|positive/u },
     ]
     for (const entry of cases) {
