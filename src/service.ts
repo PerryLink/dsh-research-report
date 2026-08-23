@@ -53,8 +53,13 @@ export interface AssembleReportResult {
 
 // ── Extended internal vocabulary (not part of the frozen block) ─────────────
 
-/** The three-state verification verdict of one claim. */
-export type VerdictStatus = 'verified' | 'unverified' | 'contradicted'
+/**
+ * The verification verdict of one claim (byte-level + optional numeric bridge).
+ * `disproven` means the bound evidence content explicitly falsifies the claim
+ * (a label-anchored value differs); it is distinct from `contradicted`
+ * (evidence integrity failure or numeric-bridge cross-check mismatch).
+ */
+export type VerdictStatus = 'verified' | 'unverified' | 'contradicted' | 'insufficient' | 'disproven'
 
 /** One claim's verification outcome (same fields as the frozen result item). */
 export interface ClaimVerdict {
@@ -64,6 +69,23 @@ export interface ClaimVerdict {
   status: VerdictStatus
   /** Human-readable evidence note (missing citations, contradiction detail, …). */
   note?: string
+}
+
+/**
+ * The in-package assemble result for the tool/manifest layers. The frozen
+ * `AssembleReportResult` surface keeps the three-state verdict vocabulary for
+ * sibling plugins; this detail carries the full vocabulary (including
+ * `insufficient`) plus the pre-delivery re-audit's drift count.
+ */
+export interface AssembleReportDetail {
+  /** Workspace path of the sealed report directory (report.md + manifest.json + journals). */
+  reportDir: string
+  /** SHA-256 content hash of manifest.json. */
+  sealHash: string
+  /** Per-claim verification verdicts (full vocabulary). */
+  verdicts: ClaimVerdict[]
+  /** Claims whose verdict drifted from a prior verified state during the re-audit. */
+  driftCount: number
 }
 
 /**
@@ -99,12 +121,32 @@ export interface AddEvidenceInput {
   id?: string
   /** Display title. */
   title: string
-  /** Where the evidence came from (URL or workspace path). */
+  /** Where the evidence came from (URL, DOI, or workspace path). */
   origin: string
   /** Verbatim content snapshot used for byte-level checks. */
   content: string
   /** ISO-8601 capture time; defaults to the registration clock. */
   capturedAt?: string
+  /** Journal name (optional; used by the requireJournalMetadata gate for DOI evidence). */
+  journal?: string
+  /** Publication year (optional; used by the requireJournalMetadata gate for DOI evidence). */
+  year?: string
+  /** Session-event anchor (optional): the session log range that is the authoritative source. */
+  sessionRef?: SessionRef
+}
+
+/**
+ * A session-event anchor: the session log range that is the authoritative
+ * source of an evidence snapshot. Session-anchored evidence is not byte-verified
+ * against a durable snapshot — it is marked `unverified` and must be re-checked
+ * against the session log manually (an honest declaration, not fabricated
+ * verifiability).
+ */
+export interface SessionRef {
+  /** The session whose log holds the source events. */
+  sessionId: string
+  /** The inclusive event range `[start, end]` within that session's log. */
+  eventRange: { start: number; end: number }
 }
 
 /** Durable ledger facts of one evidence snapshot. */
@@ -115,12 +157,18 @@ export interface EvidenceRecord {
   hash: string
   /** Display title. */
   title: string
-  /** Where the evidence came from (URL or workspace path). */
+  /** Where the evidence came from (URL, DOI, or workspace path). */
   origin: string
   /** ISO-8601 capture time. */
   capturedAt: string
   /** UTF-8 byte length of the snapshot. */
   bytes: number
+  /** Journal name, when provided for DOI evidence. */
+  journal?: string
+  /** Publication year, when provided for DOI evidence. */
+  year?: string
+  /** Session-event anchor, when the evidence is anchored to a session log range. */
+  sessionRef?: SessionRef
 }
 
 /** Integrity state of a stored snapshot, recomputed on every read. */
@@ -200,7 +248,7 @@ declare module '@deepseek-ai/dsh-session/types' {
      * Log-only audit record; `verdicts.jsonl` is the durable source of truth.
      * @mode emit
      * @param claimId - the verified claim.
-     * @param status - verified | unverified | contradicted.
+     * @param status - verified | unverified | contradicted | insufficient.
      * @param note - human-readable evidence note.
      * @param evidenceIds - the bindings the verdict was computed over.
      */
@@ -236,6 +284,8 @@ declare module '@deepseek-ai/dsh-jobs' {
   interface JobKindMap {
     /** Report assembly jobs started by the research_report tool. */
     'research-report': 'research-report'
+    /** Read-only sealed-report verification jobs (the optional verifier loop). */
+    'research-report-verify': 'research-report-verify'
   }
 }
 

@@ -43,6 +43,7 @@ export { ResearchReportService } from './service.ts'
 export type {
   AddEvidenceInput,
   AssembleContext,
+  AssembleReportDetail,
   AssembleReportRequest,
   AssembleReportResult,
   ClaimRegistration,
@@ -54,11 +55,14 @@ export type {
   EvidenceView,
   LedgerSummary,
   ReportSectionInput,
+  SessionRef,
   StoredVerdict,
   VerdictStatus,
 } from './service.ts'
 export { EvidenceLedger, LedgerError, sha256Of } from './ledger.ts'
-export type { LedgerClaimLine, LedgerIndexLine, LedgerVerdictLine } from './ledger.ts'
+export type { LedgerClaimLine, LedgerDisproofLine, LedgerIndexLine, LedgerVerdictLine } from './ledger.ts'
+export { isDoiOrigin, normalizeDoi, validateDoi } from './doi.ts'
+export type { DoiValidation } from './doi.ts'
 export {
   combineOutcomes,
   contextLabelOf,
@@ -76,18 +80,22 @@ export type {
 } from './verify.ts'
 export {
   CONTRADICTED_MARK,
+  DISPROVEN_MARK,
+  INSUFFICIENT_MARK,
   MANIFEST_SCHEMA,
   RequestValidationError,
   UNVERIFIED_MARK,
   buildManifest,
   configFingerprint,
   renderReportMarkdown,
+  serializeDisconfirmationJournal,
   serializeManifest,
+  serializeVerificationJournal,
   slugify,
   validateAssembleRequest,
   versionIdOf,
 } from './assemble.ts'
-export type { ReportManifest, ReportPlan } from './assemble.ts'
+export type { DisconfirmationEntry, ReportManifest, ReportPlan, VerificationEntry } from './assemble.ts'
 export {
   CaptureError,
   GATHER_DEPTH_RESULTS,
@@ -100,12 +108,14 @@ export {
   toWorkspaceRelative,
 } from './gather.ts'
 export type { CaptureDeps, GatherCandidate, GatherOutcome } from './gather.ts'
-export { LocalResearchReportService, ResearchReportError } from './provider-local.ts'
+export { renderMachineCheckMarkdown, verifySealedReport } from './verify-sealed.ts'
+export type { SealedVerificationClaim, SealedVerificationDeps, SealedVerificationResult } from './verify-sealed.ts'
+export { LocalResearchReportService, ResearchReportError, SealBlockedError } from './provider-local.ts'
 
 /** The short prompt section: one role statement plus the workflow. */
 const PROMPT_SECTION = [
   'You have a verifiable research-report engine (dsh-research-report) whose reports prove every claim against stored evidence bytes.',
-  'When asked for a research deliverable: register evidence snapshots with evidence_add (URL or workspace path), then call research_report with sections whose paragraphs cite claim ids bound to those evidence ids. Every claim is verified against the stored snapshot bytes; unverified or contradicted claims stay visibly marked in the sealed report — never paper over them. ledger_query reads bindings and verdicts back.',
+  'When asked for a research deliverable: register evidence snapshots with evidence_add (URL, DOI, or workspace path; DOI evidence needs inline content plus optional journal/year), then call research_report with sections whose paragraphs cite claim ids bound to those evidence ids. Every claim is verified against the stored snapshot bytes; unverified, insufficient, contradicted, or disproven claims stay visibly marked in the sealed report — never paper over them. ledger_query reads bindings and verdicts back.',
 ].join('\n')
 
 /**

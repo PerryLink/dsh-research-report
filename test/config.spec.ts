@@ -16,6 +16,7 @@ describe('resolveConfig', () => {
     expect(resolved.maxEvidenceBytes).toBe(2 * 1024 * 1024)
     expect(resolved.maxEvidencePerReport).toBe(200)
     expect(resolved.fetchTimeoutMs).toBe(20_000)
+    expect(resolved.requireJournalMetadata).toBe(false)
   })
 
   it('resolves relative roots against the working directory and keeps absolute ones', () => {

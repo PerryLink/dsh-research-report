@@ -52,6 +52,23 @@ const evidenceViewSchema = {
     capturedAt: { type: 'string', required: true },
     bytes: { type: 'integer', required: true },
     integrity: { type: 'string', required: true, enum: ['ok', 'tampered', 'missing'] },
+    journal: { type: 'string' },
+    year: { type: 'string' },
+    sessionRef: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        sessionId: { type: 'string', required: true },
+        eventRange: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            start: { type: 'integer', required: true },
+            end: { type: 'integer', required: true },
+          },
+        },
+      },
+    },
   },
 } as const
 
@@ -69,7 +86,7 @@ const claimViewSchema = {
       additionalProperties: false,
       properties: {
         claimId: { type: 'string', required: true },
-        status: { type: 'string', required: true, enum: ['verified', 'unverified', 'contradicted'] },
+        status: { type: 'string', required: true, enum: ['verified', 'unverified', 'contradicted', 'insufficient', 'disproven'] },
         note: { type: 'string' },
         at: { type: 'string', required: true },
       },

@@ -5,6 +5,34 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Pre-delivery re-audit with verdict drift detection: `assemble` re-runs the byte-level (and optional numeric-bridge) verification for every bound claim offline before sealing, journals each re-audit to `verification.jsonl` (claim hash + evidence object hashes + timestamp + verdict + prior/drift flags, deterministically serialized), and downgrades a claim whose stored verdict was `verified` but whose re-audit no longer confirms to `contradicted` (counted in the report summary and the tool result). The journal is sealed with the report and registered in the manifest as an optional `verification` field, so the seal hash covers it.
+- Explicit `insufficient` verdict state in the claim/verdict layer (evidence is bound but insufficient to confirm or falsify — a citation not locatable with no contradiction signal); rendered with the `[证据不足]` body marker and the `🔍 insufficient` Appendix A row. The frozen `CitationCheckRequest`/`CitationCheckResult` block and the frozen three-state `AssembleReportResult` surface are unchanged; `insufficient` folds to `unverified` only at the frozen cross-plugin projection.
+- `disconfirmation.jsonl` falsification ledger in the sealed directory: every contradicted claim with its evidence references and contradiction note, deterministically serialized, re-hashable, registered in the manifest as an optional `disconfirmation` field, and rendered as the `Appendix D: Disconfirmation log (证伪记录)` section.
+- Pre-seal interception (no tunable): before writing `report.md`/`manifest.json`, the pre-delivery re-audit's hard signals — verdict drift, tampered/missing bound evidence, or an audit-journal serialization failure — block the seal and fail loud (`SealBlockedError`) with the concrete reasons listed.
+- `disproven` verdict state: the byte-level check now marks a label-anchored value mismatch as `disproven` (evidence content explicitly falsifies the claim), and the numeric-bridge mismatch maps to `disproven` too, while `contradicted` is reserved for tampered/missing evidence. Rendered with the `[已证伪]` body marker and the `🚫 disproven` Appendix A/D row.
+- Negative-knowledge ledger (`disproofs.jsonl`, keyed by claim content hash): a disproven claim is remembered; the same text re-reported against unchanged evidence is forced back to `disproven` (blocking a re-report as `verified`), and only re-verifies once the bound evidence changes. `disconfirmation.jsonl` now records both `contradicted` and `disproven` entries.
+- Deterministic DOI validation (zero network) for `evidence_add`: `10.xxxx/xxxx` structure, a recognized-prefix whitelist, and a DOI character-set constraint; invalid DOIs fail loud (`INVALID_DOI`) and DOI evidence requires inline content (never fetched).
+- `requireJournalMetadata` config (default `false`): when enabled, DOI-typed evidence missing a journal name or publication year fails loud (`MISSING_JOURNAL_METADATA`); non-DOI evidence is never gated.
+- Read-only verifier loop: after sealing, a deterministic `verifySealedReport` fallback (zero network, zero model) recomputes the seal hash, the report hash, and the audit-journal hashes, re-runs the byte-level + integrity check for every claim, and confirms the gap/disproof sections; its machine-check section is written to `verifier-note.md`. When `ctx.jobs` is mounted a read-only `research-report-verify` job is also spawned (the model review is an enhancement); without jobs it is skipped gracefully (`verifier: skipped (jobs unavailable)`).
+- `sessionRef` evidence anchor: `evidence_add` accepts an optional `sessionId` + `eventRange` anchor (validated loud), stored in the ledger, rendered in Appendix B, and registered in the manifest and `verification.jsonl`. Session-anchored evidence verifies honestly as `unverified` with the note `会话锚定证据需人工回查会话日志` (no fabricated verifiability).
+
+### Changed
+
+- `VerdictStatus` is now five states (`verified`/`unverified`/`insufficient`/`contradicted`/`disproven`); `projectFrozenVerdict` keeps the frozen three-state `AssembleReportResult` surface unchanged (`insufficient` → `unverified`, `disproven` → `contradicted`).
+
+### Deviations
+
+Explicitly not implemented (and why):
+
+- **(a) Online three-source cross-validation (Crossref / Semantic Scholar / OpenAlex)** — this repository performs no direct network access; a lookup would ride `ctx.web` and therefore depend on the host's web providers. The offline deterministic re-audit already covers the anti-fabrication mainline, so the online cross-check was deliberately left out.
+- **(b) Interactive evidence-ledger Slot UI** — a visual ledger panel needs a new client-side surface and packaging changes; it is out of scope for this batch.
+- **(c) Zotero literature-library integration** — depends on an external application protocol.
+- **(d) Lean 4 / formal-verification channel** — a heavy, domain-specific asset outside this plugin's scope.
+
 ## [0.1.4] - 2026-08-23
 
 ### Added

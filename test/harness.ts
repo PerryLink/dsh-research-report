@@ -34,18 +34,22 @@ export interface BaseHarness {
  * Mount the real services the plugin injects, plus a real session and a
  * minimal agent for scoped tool resolution. The temp root is fresh per base.
  * @param sessionId - session id to create (defaults to `rr-harness`).
+ * @param options - `jobs: false` mounts without the local job registry (for
+ *   the "no jobs" verifier path).
  * @returns the mounted base.
  */
-export async function mountBase(sessionId = 'rr-harness'): Promise<BaseHarness> {
+export async function mountBase(sessionId = 'rr-harness', options: { jobs?: boolean } = {}): Promise<BaseHarness> {
   const ctx = new Context()
   await ctx.plugin(SessionStore)
   const session = ctx.sessions.create(SessionId(sessionId))
   await ctx.plugin(SystemPrompt, { persona: '' })
   await ctx.plugin(ToolRuntime)
-  await ctx.plugin(LocalJobRegistry, { maxConcurrentJobsPerOwner: 10 })
-  // A root-attached controller serves every owner (dsh-tool-jobs plays this
-  // role in the shipped profiles).
-  ctx.jobs.attachController('test')
+  if (options.jobs !== false) {
+    await ctx.plugin(LocalJobRegistry, { maxConcurrentJobsPerOwner: 10 })
+    // A root-attached controller serves every owner (dsh-tool-jobs plays this
+    // role in the shipped profiles).
+    ctx.jobs.attachController('test')
+  }
   const root = await mkdtemp(path.join(tmpdir(), 'rr-test-'))
   const agent = {
     id: session.id,

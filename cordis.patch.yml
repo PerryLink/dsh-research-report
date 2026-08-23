@@ -22,3 +22,7 @@
         maxEvidencePerReport: 200
         # Deadline (ms) for one ctx.web fetch during evidence capture.
         fetchTimeoutMs: 20000
+        # When true, DOI-typed evidence (academic source) must carry a journal
+        # name and publication year at registration, otherwise it fails loud.
+        # Defaults to false so non-academic evidence is never gated.
+        requireJournalMetadata: false

@@ -29,6 +29,12 @@ export interface Config {
   maxEvidencePerReport?: number
   /** Deadline (ms) for one `ctx.web` fetch during evidence capture. */
   fetchTimeoutMs?: number
+  /**
+   * When true, DOI-typed evidence (academic source) must carry a journal name
+   * and publication year at registration, otherwise it fails loud. Defaults
+   * to false so non-academic evidence is never gated by journal metadata.
+   */
+  requireJournalMetadata?: boolean
 }
 
 /** Fully resolved config handed to the runtime; roots are absolute paths. */
@@ -39,6 +45,7 @@ export interface ResolvedConfig {
   readonly maxEvidenceBytes: number
   readonly maxEvidencePerReport: number
   readonly fetchTimeoutMs: number
+  readonly requireJournalMetadata: boolean
 }
 
 /** Schemastery schema: the loader validates and fills defaults before `apply`. */
@@ -49,6 +56,7 @@ export const Config: z<Config> = z.object({
   maxEvidenceBytes: z.number().default(2 * 1024 * 1024),
   maxEvidencePerReport: z.number().default(200),
   fetchTimeoutMs: z.number().default(20_000),
+  requireJournalMetadata: z.boolean().default(false),
 })
 
 /** Throw unless `value` is a positive safe integer. */
@@ -93,5 +101,6 @@ export function resolveConfig(config: Config = {}): ResolvedConfig {
     maxEvidenceBytes,
     maxEvidencePerReport,
     fetchTimeoutMs,
+    requireJournalMetadata: config.requireJournalMetadata ?? false,
   }
 }

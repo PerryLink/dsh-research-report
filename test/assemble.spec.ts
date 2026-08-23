@@ -8,18 +8,21 @@ import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import {
   CONTRADICTED_MARK,
+  INSUFFICIENT_MARK,
   MANIFEST_SCHEMA,
   RequestValidationError,
   UNVERIFIED_MARK,
   buildManifest,
   configFingerprint,
   renderReportMarkdown,
+  serializeDisconfirmationJournal,
   serializeManifest,
+  serializeVerificationJournal,
   slugify,
   validateAssembleRequest,
   versionIdOf,
 } from '../src/assemble.ts'
-import type { ReportPlan } from '../src/assemble.ts'
+import type { DisconfirmationEntry, ReportPlan, VerificationEntry } from '../src/assemble.ts'
 import type { AssembleReportRequest } from '../src/service.ts'
 
 /** A minimal valid request factory. */
@@ -62,6 +65,7 @@ function planOf(overrides: Partial<ReportPlan> = {}): ReportPlan {
     generatedAt: '2026-08-19T01:02:03.000Z',
     fingerprint: configFingerprint(LIMITS),
     pluginVersion: '0.1.0',
+    driftCount: 0,
     ...overrides,
   }
 }
@@ -130,6 +134,30 @@ describe('renderReportMarkdown', () => {
     expect(renderReportMarkdown(contradicted)).toContain(CONTRADICTED_MARK)
     expect(renderReportMarkdown(contradicted)).toContain('❌ contradicted')
   })
+
+  it('keeps a visible marker and appendix row for insufficient claims', () => {
+    const plan = planOf({
+      verdicts: [{ claimId: 'c1', status: 'insufficient', note: 'insufficient evidence: 9,999 not found' }],
+    })
+    const text = renderReportMarkdown(plan)
+    expect(text).toContain(`市场规模为 1,280 亿元。 ${INSUFFICIENT_MARK}`)
+    expect(text).toContain('🔍 insufficient')
+    expect(text).toContain('0 verified / 0 unverified / 0 contradicted / 1 insufficient')
+  })
+
+  it('renders the disconfirmation log section with contradicted and disproven claims', () => {
+    const text = renderReportMarkdown(planOf({
+      verdicts: [
+        { claimId: 'c1', status: 'contradicted', note: 'snapshot says otherwise' },
+        { claimId: 'c2', status: 'disproven', note: 'disproves the claim' },
+      ],
+    }))
+    expect(text).toContain('## Appendix D: Disconfirmation log (证伪记录)')
+    expect(text).toContain('| c1 | ❌ contradicted | ev-a | snapshot says otherwise |')
+    expect(text).toContain('| c2 | 🚫 disproven |  |')
+    const clean = renderReportMarkdown(planOf())
+    expect(clean).toContain('No claims were contradicted or disproven.')
+  })
 })
 
 describe('manifest + seal', () => {
@@ -145,6 +173,57 @@ describe('manifest + seal', () => {
     const sealA = createHash('sha256').update(text, 'utf8').digest('hex')
     const sealB = createHash('sha256').update(serializeManifest(buildManifest(planOf(), reportSha256)), 'utf8').digest('hex')
     expect(sealA).toBe(sealB)
+  })
+
+  it('keeps the seal deterministic when verification/disconfirmation registrations and drift are present', () => {
+    const overrides = {
+      driftCount: 2,
+      verification: { file: 'verification.jsonl', sha256: 'a'.repeat(64), entries: 3 },
+      disconfirmation: { file: 'disconfirmation.jsonl', sha256: 'b'.repeat(64), entries: 1 },
+    }
+    const plan = planOf(overrides)
+    const reportText = renderReportMarkdown(plan)
+    const reportSha256 = createHash('sha256').update(reportText, 'utf8').digest('hex')
+    const sealA = createHash('sha256').update(serializeManifest(buildManifest(plan, reportSha256)), 'utf8').digest('hex')
+    const sealB = createHash('sha256').update(serializeManifest(buildManifest(planOf(overrides), reportSha256)), 'utf8').digest('hex')
+    expect(sealA).toBe(sealB)
+    const manifest = buildManifest(plan, reportSha256)
+    expect(manifest.driftCount).toBe(2)
+    expect(manifest.verification).toEqual(overrides.verification)
+    expect(manifest.disconfirmation).toEqual(overrides.disconfirmation)
+  })
+})
+
+describe('audit journal serialization', () => {
+  const verification: VerificationEntry = {
+    claimId: 'c1',
+    claimHash: 'c'.repeat(64),
+    evidenceHashes: ['d'.repeat(64)],
+    at: '2026-08-19T00:00:00.000Z',
+    status: 'verified',
+    priorStatus: null,
+    drifted: false,
+  }
+  const disconfirmation: DisconfirmationEntry = {
+    claimId: 'c1',
+    claimHash: 'c'.repeat(64),
+    evidenceIds: ['ev-a'],
+    evidenceHashes: ['d'.repeat(64)],
+    at: '2026-08-19T00:00:00.000Z',
+    status: 'contradicted',
+    note: 'contradicts the snapshot',
+  }
+
+  it('serializes the verification journal deterministically (one line per entry)', () => {
+    expect(serializeVerificationJournal([verification])).toBe(`${JSON.stringify(verification)}\n`)
+    expect(serializeVerificationJournal([verification, verification])).toBe(
+      `${JSON.stringify(verification)}\n${JSON.stringify(verification)}\n`,
+    )
+  })
+
+  it('serializes the disconfirmation journal deterministically', () => {
+    expect(serializeDisconfirmationJournal([disconfirmation])).toBe(`${JSON.stringify(disconfirmation)}\n`)
+    expect(serializeDisconfirmationJournal([])).toBe('')
   })
 })
 

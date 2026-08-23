@@ -31,10 +31,16 @@
 
 - **Livro-razão de evidência** — armazenamento de snapshots endereçado por conteúdo (`<ledgerRoot>/objects/<sha256>` + diários JSONL). O mesmo conteúdo é guardado exatamente uma vez; snapshots são imutáveis; cada leitura recomputa o hash, de modo que adulteração ou remoção é detetada em vez de confiada.
 - **Vínculo claim ↔ evidência** — claims registam-se com os ids de evidência em que se apoiam; o livro guarda o vínculo e cada veredito de verificação (o mais recente vence).
-- **Verificação ao nível do byte** — cada número e cada trecho entre aspas de um claim tem de ser localizável literalmente nos snapshots vinculados. Citações em falta marcam o claim como `unverified`; um rótulo cujo valor difere no snapshot (estando o valor citado ausente) marca-o como `contradicted`. Sem semântica, sem embeddings — apenas verificações de bytes auditáveis.
-- **Ponte numérica opcional** — quando um claim cita um dataset estruturado do workspace (CSV/JSON) e o `dsh-data-quality` está montado, as citações são verificadas com tolerâncias através do seu contrato congelado `verifyCitations`.
-- **Relatórios selados versionados** — `<reportRoot>/<slug(topic)>/<YYYYMMDD-HHmmss>/report.md` + `manifest.json`; o hash de selo é o SHA-256 do manifesto, que por sua vez carrega o hash do relatório e os hashes de toda a evidência.
-- **Lacunas honestas** — claims não verificados ou contraditos mantêm uma marca visível `[未核实]` / `[与证据矛盾]` no corpo do relatório e são listados no Apêndice A. Nada passa em silêncio.
+- **Verificação ao nível do byte** — cada número e cada trecho entre aspas de um claim tem de ser localizável literalmente nos snapshots vinculados. Sem evidência vinculada, ou sem literal verificável, o claim marca-se `unverified`; evidência vinculada que não consegue confirmar nem desmentir os literais citados marca-o `insufficient`; um rótulo cujo valor difere no snapshot (estando o valor citado ausente) marca-o como `disproven`; snapshots adulterados/ausentes marcam-no `contradicted`. Sem semântica, sem embeddings — apenas verificações de bytes auditáveis.
+- **Ponte numérica opcional** — quando um claim cita um dataset estruturado do workspace (CSV/JSON) e o `dsh-data-quality` está montado, as citações são verificadas com tolerâncias através do seu contrato congelado `verifyCitations`; uma discrepância do dataset desmente (disproves) o claim.
+- **Evidência DOI (sem rede)** — origens DOI são validadas deterministicamente (estrutura `10.xxxx/xxxx`, lista branca de prefixos e conjunto de caracteres DOI); DOIs inválidos falham ruidosamente. Metadados opcionais de revista/ano são aceites, e `requireJournalMetadata` só restringe a evidência DOI académica quando ativado.
+- **Relatórios selados versionados** — `<reportRoot>/<slug(topic)>/<YYYYMMDD-HHmmss>/report.md` + `manifest.json` + `verification.jsonl` + `disconfirmation.jsonl`; o hash de selo é o SHA-256 do manifesto, que por sua vez carrega o hash do relatório, os hashes de toda a evidência e o hash de cada diário de auditoria.
+- **Reauditoria pré-entrega e interceção do selo** — antes de selar, cada claim vinculado é re-verificado offline e registado em `verification.jsonl`; drift de veredito, evidência vinculada adulterada/ausente, ou falha de serialização do diário bloqueiam o selo (falha ruidosamente, sem tunable).
+- **Livro de falsificação** — cada claim contradito ou desmentido é registado em `disconfirmation.jsonl` (claim + referências de evidência + motivo) e listado no apêndice `证伪记录` do relatório.
+- **Conhecimento negativo** — um claim desmentido é recordado pelo seu hash de conteúdo (`disproofs.jsonl`); o mesmo texto re-reportado contra evidência inalterada é forçado de volta a `disproven` e só se re-verifica quando a evidência muda.
+- **Ciclo de verificação de só-leitura** — após selar, o recurso determinista `verifySealedReport` (sem rede, sem modelo) recomputa o selo e os hashes de auditoria e re-verifica cada claim, escrevendo a secção de verificação de máquina em `verifier-note.md`; com `ctx.jobs` montado também é lançado um trabalho de verificação de só-leitura (a revisão do modelo é uma melhoria, nunca uma substituição).
+- **Evidência ancorada a sessão** — `evidence_add` aceita um `sessionRef` opcional (`sessionId` + `eventRange`, validado ruidosamente); a âncora é guardada e registada no Apêndice B, no manifesto e em `verification.jsonl`. A evidência ancorada a sessão verifica-se honestamente como `unverified` (`会话锚定证据需人工回查会话日志`).
+- **Lacunas honestas** — claims não verificados, insuficientes, contraditos ou desmentidos mantêm uma marca visível `[未核实]` / `[证据不足]` / `[与证据矛盾]` / `[已证伪]` no corpo do relatório e são listados no Apêndice A. Nada passa em silêncio.
 - **Sem ciclo de deep-research** — a orquestração de recuperação é deliberadamente reutilizada: `ctx.web` para pesquisa/download, `ctx.jobs` para trabalhos longos. Planeamento e síntese ficam com o modelo (ou um plugin a montante).
 
 ## Quick start
@@ -84,6 +90,7 @@ Todos os ajustes são campos `Config` de Schemastery; valores inválidos falham 
 | `maxEvidenceBytes` | `2097152` | Teto rígido de bytes UTF-8 por snapshot de evidência. |
 | `maxEvidencePerReport` | `200` | Teto rígido de evidências vinculadas a um relatório. |
 | `fetchTimeoutMs` | `20000` | Prazo (ms) de cada `ctx.web` fetch durante a captura. |
+| `requireJournalMetadata` | `false` | Quando `true`, a evidência de tipo DOI tem de trazer nome de revista e ano de publicação ao registar (falha ruidosamente caso contrário). |
 
 ## Tools & surfaces
 

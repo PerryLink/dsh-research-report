@@ -2,7 +2,7 @@
  * Keyless end-to-end acceptance flow: three local fixture documents become
  * evidence; a report assembles and seals; the appendix verification table is
  * complete; then one evidence object is deliberately tampered with and the
- * re-run verification path reports `contradicted`.
+ * re-run assemble is blocked (fail loud) on the tamper + drift hard signals.
  * @module dsh-research-report/test/e2e.spec
  */
 
@@ -28,7 +28,7 @@ function valueOf<T>(result: { isError: boolean; value?: unknown }): T {
   return result.value as T
 }
 
-describe('keyless end-to-end: fixtures → seal → tamper → contradicted', () => {
+describe('keyless end-to-end: fixtures → seal → tamper → blocked', () => {
   it('runs the complete acceptance flow', async () => {
     const base = await mountBase('e2e')
     bases.push(base)
@@ -76,7 +76,7 @@ describe('keyless end-to-end: fixtures → seal → tamper → contradicted', ()
     const sealed = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args))
     expect(sealed.kind).toBe('sealed')
     if (sealed.kind !== 'sealed') return
-    expect(sealed.counts).toEqual({ verified: 3, unverified: 0, contradicted: 0 })
+    expect(sealed.counts).toEqual({ verified: 3, unverified: 0, contradicted: 0, insufficient: 0, disproven: 0 })
 
     // 3. The versioned sealed directory: <reportRoot>/<slug>/<YYYYMMDD-HHmmss>/.
     expect(path.basename(path.dirname(sealed.reportDir))).toBe('示例行业概览')
@@ -106,16 +106,15 @@ describe('keyless end-to-end: fixtures → seal → tamper → contradicted', ()
     expect(queried.kind).toBe('evidence')
     if (queried.kind === 'evidence') expect(queried.evidence.integrity).toBe('tampered')
 
-    // 6b. Re-running the assemble path must verdict the bound claim contradicted.
-    const resealed = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args))
-    expect(resealed.kind).toBe('sealed')
-    if (resealed.kind !== 'sealed') return
-    const growthVerdict = resealed.verdicts.find(verdict => verdict.claimId === 'c-growth')
-    expect(growthVerdict?.status).toBe('contradicted')
-    expect(growthVerdict?.note).toContain('integrity')
-    // The marker is visible in the re-sealed body, and the summary query counts the failure.
-    const resealedReport = await readFile(resealed.reportFile, 'utf8')
-    expect(resealedReport).toContain('[与证据矛盾]')
+    // 6b. Re-running the assemble path must be blocked (fail loud) on the
+    // tamper + drift hard signals; nothing is re-sealed.
+    const resealed = await executeTool(base, 'research_report', args)
+    expect(resealed.isError).toBe(true)
+    const resealedText = resealed.content.map(block => ('text' in block ? block.text : '')).join('')
+    expect(resealedText).toContain('seal blocked')
+    expect(resealedText).toContain('verdict drift')
+    expect(resealedText).toContain('integrity failure')
+    // The ledger still reports the tamper through the live integrity re-check.
     const summary = valueOf<LedgerQueryValue>(await executeTool(base, 'ledger_query', {}))
     expect(summary.kind).toBe('summary')
     if (summary.kind === 'summary') expect(summary.tamperedCount).toBe(1)

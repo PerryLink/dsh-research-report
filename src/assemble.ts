@@ -25,6 +25,12 @@ export const UNVERIFIED_MARK = '[未核实]'
 /** Body marker appended after a paragraph per CONTRADICTED claim it cites. */
 export const CONTRADICTED_MARK = '[与证据矛盾]'
 
+/** Body marker appended after a paragraph per INSUFFICIENT claim it cites. */
+export const INSUFFICIENT_MARK = '[证据不足]'
+
+/** Body marker appended after a paragraph per DISPROVEN claim it cites. */
+export const DISPROVEN_MARK = '[已证伪]'
+
 /** A loud assemble-time request validation failure. */
 export class RequestValidationError extends Error {
   constructor(message: string) {
@@ -151,14 +157,22 @@ export interface ReportPlan {
   fingerprint: string
   /** The generator version. */
   pluginVersion: string
+  /** Claims whose verdict drifted from a prior verified state (re-audit). */
+  driftCount: number
+  /** Registration of `verification.jsonl`, when at least one claim was re-audited. */
+  verification?: { file: string; sha256: string; entries: number }
+  /** Registration of `disconfirmation.jsonl`, when at least one claim was contradicted. */
+  disconfirmation?: { file: string; sha256: string; entries: number }
 }
 
 /** The status mark used in the appendix table. */
 function statusMark(status: ClaimVerdict['status']): string {
   switch (status) {
     case 'verified': return '✅ verified'
+    case 'insufficient': return '🔍 insufficient'
     case 'unverified': return '⚠️ unverified'
     case 'contradicted': return '❌ contradicted'
+    case 'disproven': return '🚫 disproven'
   }
 }
 
@@ -168,14 +182,17 @@ function cell(text: string): string {
 }
 
 /**
- * Render `report.md`. Unverified/contradicted claims keep a visible body
- * marker after every paragraph that cites them — nothing is silently passed.
+ * Render `report.md`. Unverified/insufficient/contradicted claims keep a
+ * visible body marker after every paragraph that cites them — nothing is
+ * silently passed. The summary line carries the drift count and the four
+ * verdict counts; Appendix D lists every contradicted claim.
  * @param plan - the validated request plus verdicts and evidence records.
  * @returns the report markdown.
  */
 export function renderReportMarkdown(plan: ReportPlan): string {
   const verdictByClaim = new Map(plan.verdicts.map(verdict => [verdict.claimId, verdict]))
-  const counts = { verified: 0, unverified: 0, contradicted: 0 }
+  const claimById = new Map(plan.request.claims.map(claim => [claim.id, claim]))
+  const counts = { verified: 0, unverified: 0, contradicted: 0, insufficient: 0, disproven: 0 }
   for (const verdict of plan.verdicts) counts[verdict.status] += 1
 
   const lines: string[] = [
@@ -183,7 +200,8 @@ export function renderReportMarkdown(plan: ReportPlan): string {
     '',
     `- Topic: ${plan.request.topic}`,
     `- Generated: ${plan.generatedAt} (UTC)`,
-    `- Claims: ${counts.verified} verified / ${counts.unverified} unverified / ${counts.contradicted} contradicted`,
+    `- Claims: ${counts.verified} verified / ${counts.unverified} unverified / ${counts.contradicted} contradicted / ${counts.insufficient} insufficient / ${counts.disproven} disproven`,
+    `- Drift: ${plan.driftCount} claim(s) drifted from a prior verified verdict`,
     `- Generator: dsh-research-report ${plan.pluginVersion}`,
     '',
   ]
@@ -195,7 +213,9 @@ export function renderReportMarkdown(plan: ReportPlan): string {
       for (const claimId of paragraph.claimIds ?? []) {
         const verdict = verdictByClaim.get(claimId)
         if (verdict?.status === 'unverified') marks.push(UNVERIFIED_MARK)
+        if (verdict?.status === 'insufficient') marks.push(INSUFFICIENT_MARK)
         if (verdict?.status === 'contradicted') marks.push(CONTRADICTED_MARK)
+        if (verdict?.status === 'disproven') marks.push(DISPROVEN_MARK)
       }
       lines.push(marks.length === 0 ? paragraph.text : `${paragraph.text} ${marks.join(' ')}`, '')
     }
@@ -206,7 +226,6 @@ export function renderReportMarkdown(plan: ReportPlan): string {
     lines.push('No claims were registered.', '')
   } else {
     lines.push('| Claim | Verdict | Evidence | Note |', '|---|---|---|---|')
-    const claimById = new Map(plan.request.claims.map(claim => [claim.id, claim]))
     for (const verdict of plan.verdicts) {
       const claim = claimById.get(verdict.claimId)
       lines.push(
@@ -220,9 +239,12 @@ export function renderReportMarkdown(plan: ReportPlan): string {
   if (plan.evidence.length === 0) {
     lines.push('No evidence was bound.', '')
   } else {
-    lines.push('| Id | Title | Origin | SHA-256 | Captured |', '|---|---|---|---|---|')
+    lines.push('| Id | Title | Origin | SHA-256 | Captured | Session anchor |', '|---|---|---|---|---|---|')
     for (const record of plan.evidence) {
-      lines.push(`| ${cell(record.id)} | ${cell(record.title)} | ${cell(record.origin)} | \`${record.hash}\` | ${record.capturedAt} |`)
+      const anchor = record.sessionRef === undefined
+        ? ''
+        : `session ${record.sessionRef.sessionId} [${record.sessionRef.eventRange.start}-${record.sessionRef.eventRange.end}]`
+      lines.push(`| ${cell(record.id)} | ${cell(record.title)} | ${cell(record.origin)} | \`${record.hash}\` | ${record.capturedAt} | ${cell(anchor)} |`)
     }
     lines.push('')
   }
@@ -235,6 +257,20 @@ export function renderReportMarkdown(plan: ReportPlan): string {
     `- Generated: ${plan.generatedAt} (UTC)`,
     '',
   )
+
+  lines.push('## Appendix D: Disconfirmation log (证伪记录)', '')
+  const falsified = plan.verdicts.filter(verdict => verdict.status === 'contradicted' || verdict.status === 'disproven')
+  if (falsified.length === 0) {
+    lines.push('No claims were contradicted or disproven.', '')
+  } else {
+    lines.push('| Claim | Verdict | Evidence | Note |', '|---|---|---|---|')
+    for (const verdict of falsified) {
+      const claim = claimById.get(verdict.claimId)
+      lines.push(`| ${cell(verdict.claimId)} | ${statusMark(verdict.status)} | ${cell((claim?.evidenceIds ?? []).join(', '))} | ${cell(verdict.note ?? '')} |`)
+    }
+    lines.push('')
+  }
+
   return `${lines.join('\n').trimEnd()}\n`
 }
 
@@ -255,9 +291,54 @@ export interface ReportManifest {
     title: string
     capturedAt: string
     bytes: number
+    sessionRef?: { sessionId: string; eventRange: { start: number; end: number } }
   }>
   claims: Array<{ id: string; text: string; evidenceIds: string[] }>
   verdicts: ClaimVerdict[]
+  /** Claims whose verdict drifted from a prior verified state (re-audit). */
+  driftCount: number
+  /** `verification.jsonl` registration, present when the journal is non-empty. */
+  verification?: { file: string; sha256: string; entries: number }
+  /** `disconfirmation.jsonl` registration, present when the journal is non-empty. */
+  disconfirmation?: { file: string; sha256: string; entries: number }
+}
+
+/** One line of `verification.jsonl` — the pre-delivery re-audit record. */
+export interface VerificationEntry {
+  /** The claim id. */
+  claimId: string
+  /** SHA-256 of the claim text (content address). */
+  claimHash: string
+  /** SHA-256 object addresses of the bound evidence snapshots. */
+  evidenceHashes: string[]
+  /** ISO-8601 re-audit time (the report generation time). */
+  at: string
+  /** The fresh re-audit verdict. */
+  status: ClaimVerdict['status']
+  /** The ledger's prior verdict status, or null when the claim was never verified. */
+  priorStatus: ClaimVerdict['status'] | null
+  /** True when a prior verified verdict drifted to a non-verified re-audit. */
+  drifted: boolean
+  /** Session-event anchors of the bound evidence, when any. */
+  sessionRefs?: Array<{ evidenceId: string; sessionId: string; eventRange: { start: number; end: number } }>
+}
+
+/** One line of `disconfirmation.jsonl` — a falsified claim. */
+export interface DisconfirmationEntry {
+  /** The claim id. */
+  claimId: string
+  /** SHA-256 of the claim text (content address). */
+  claimHash: string
+  /** The bound evidence ids. */
+  evidenceIds: string[]
+  /** SHA-256 object addresses of the bound evidence snapshots. */
+  evidenceHashes: string[]
+  /** ISO-8601 record time (the report generation time). */
+  at: string
+  /** The falsification kind: contradicted (integrity/bridge) or disproven (content). */
+  status: 'contradicted' | 'disproven'
+  /** The contradiction reason (from the final verdict note). */
+  note: string
 }
 
 /**
@@ -285,9 +366,13 @@ export function buildManifest(plan: ReportPlan, reportSha256: string): ReportMan
       title: record.title,
       capturedAt: record.capturedAt,
       bytes: record.bytes,
+      ...(record.sessionRef === undefined ? {} : { sessionRef: record.sessionRef }),
     })),
     claims: plan.request.claims.map(claim => ({ id: claim.id, text: claim.text, evidenceIds: claim.evidenceIds })),
     verdicts: plan.verdicts,
+    driftCount: plan.driftCount,
+    ...(plan.verification === undefined ? {} : { verification: plan.verification }),
+    ...(plan.disconfirmation === undefined ? {} : { disconfirmation: plan.disconfirmation }),
   }
 }
 
@@ -299,4 +384,26 @@ export function buildManifest(plan: ReportPlan, reportSha256: string): ReportMan
  */
 export function serializeManifest(manifest: ReportManifest): string {
   return `${JSON.stringify(manifest, null, 2)}\n`
+}
+
+/**
+ * Serialize the pre-delivery re-audit journal (`verification.jsonl`). Field
+ * order is fixed by construction, so the bytes (and the manifest seal that
+ * covers them) are deterministic for the same inputs.
+ * @param entries - the re-audit records in claim order.
+ * @returns the canonical JSONL content.
+ */
+export function serializeVerificationJournal(entries: readonly VerificationEntry[]): string {
+  return entries.map(entry => `${JSON.stringify(entry)}\n`).join('')
+}
+
+/**
+ * Serialize the falsification journal (`disconfirmation.jsonl`). Field order
+ * is fixed by construction, so the bytes (and the manifest seal that covers
+ * them) are deterministic for the same inputs.
+ * @param entries - the falsified-claim records in claim order.
+ * @returns the canonical JSONL content.
+ */
+export function serializeDisconfirmationJournal(entries: readonly DisconfirmationEntry[]): string {
+  return entries.map(entry => `${JSON.stringify(entry)}\n`).join('')
 }

@@ -18,6 +18,8 @@
  * @module dsh-research-report/verify
  */
 
+import type { VerdictStatus } from './service.ts'
+
 // ── Frozen contract (do not edit — see the module doc) ──────────────────────
 
 export interface CitationCheckRequest {
@@ -149,8 +151,8 @@ function numberAfter(text: string, from: number): string | undefined {
 
 /** The outcome of the byte-level check of one claim. */
 export interface ByteCheckOutcome {
-  /** The three-state verdict. */
-  status: 'verified' | 'unverified' | 'contradicted'
+  /** The byte-level verdict. */
+  status: VerdictStatus
   /** Human-readable evidence note. */
   note: string
   /** Citations that could not be located verbatim. */
@@ -216,16 +218,16 @@ export function verifyClaimText(claimText: string, evidenceContents: readonly st
   }
   if (contradictions.length > 0) {
     return {
-      status: 'contradicted',
-      note: `contradicts the snapshot: ${contradictions.slice(0, NOTE_LIST_CAP).join('; ')}`,
+      status: 'disproven',
+      note: `disproves the claim: ${contradictions.slice(0, NOTE_LIST_CAP).join('; ')}`,
       missing,
       contradictions,
     }
   }
   if (missing.length > 0) {
     return {
-      status: 'unverified',
-      note: `citation(s) not found in bound evidence: ${missing.slice(0, NOTE_LIST_CAP).join(', ')}`,
+      status: 'insufficient',
+      note: `insufficient evidence: citation(s) not found in bound evidence: ${missing.slice(0, NOTE_LIST_CAP).join(', ')}`,
       missing,
       contradictions,
     }
@@ -241,20 +243,20 @@ export function verifyClaimText(claimText: string, evidenceContents: readonly st
 // ── The numeric bridge mapping ──────────────────────────────────────────────
 
 /**
- * Map one bridge result set onto the three-state verdict vocabulary.
- * `mismatch` maps to `contradicted`; `not-found`/`unverifiable` map to
- * `unverified`.
+ * Map one bridge result set onto the verdict vocabulary. `mismatch` maps to
+ * `disproven` (the dataset content explicitly falsifies the citation);
+ * `not-found`/`unverifiable` map to `unverified`.
  * @param result - the dataQuality outcome.
  * @returns the mapped status plus a human-readable note.
  */
-export function mapBridgeResults(result: CitationCheckResult): { status: 'verified' | 'unverified' | 'contradicted'; note: string } {
+export function mapBridgeResults(result: CitationCheckResult): { status: 'verified' | 'unverified' | 'disproven'; note: string } {
   const mismatch = result.results.filter(entry => entry.status === 'mismatch')
   if (mismatch.length > 0) {
     const detail = mismatch
       .slice(0, NOTE_LIST_CAP)
       .map(entry => `${entry.id}: dataset has ${String(entry.actual ?? '?')}${entry.note === undefined ? '' : ` (${entry.note})`}`)
       .join('; ')
-    return { status: 'contradicted', note: `dataset cross-check mismatch: ${detail}` }
+    return { status: 'disproven', note: `dataset cross-check disproves: ${detail}` }
   }
   const unresolved = result.results.filter(entry => entry.status === 'not-found' || entry.status === 'unverifiable')
   if (unresolved.length > 0) {
@@ -268,18 +270,18 @@ export function mapBridgeResults(result: CitationCheckResult): { status: 'verifi
 }
 
 /**
- * Combine the byte-level and bridge outcomes: `contradicted` wins, then
- * `unverified`, then `verified`.
+ * Combine the byte-level and bridge outcomes: `disproven` wins, then
+ * `contradicted`, then `unverified`, then `insufficient`, then `verified`.
  * @param byte - the byte-level outcome.
  * @param bridge - the bridge outcome, when the numeric bridge ran.
  * @returns the combined status and a merged note.
  */
 export function combineOutcomes(
   byte: ByteCheckOutcome,
-  bridge: { status: 'verified' | 'unverified' | 'contradicted'; note: string } | undefined,
-): { status: 'verified' | 'unverified' | 'contradicted'; note: string } {
+  bridge: { status: 'verified' | 'unverified' | 'disproven'; note: string } | undefined,
+): { status: VerdictStatus; note: string } {
   if (bridge === undefined) return { status: byte.status, note: byte.note }
-  const rank = { verified: 0, unverified: 1, contradicted: 2 } as const
+  const rank: Record<VerdictStatus, number> = { verified: 0, insufficient: 1, unverified: 2, contradicted: 3, disproven: 4 }
   const status = rank[bridge.status] > rank[byte.status] ? bridge.status : byte.status
   return { status, note: `${byte.note} | ${bridge.note}` }
 }

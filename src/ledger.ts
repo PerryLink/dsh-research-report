@@ -52,6 +52,10 @@ export interface LedgerIndexLine {
   origin: string
   capturedAt: string
   bytes: number
+  journal?: string
+  year?: string
+  /** Session-event anchor, when the evidence is anchored to a session log range. */
+  sessionRef?: { sessionId: string; eventRange: { start: number; end: number } }
 }
 
 /** One line of `claims.jsonl` — the durable claim registration. */
@@ -67,9 +71,25 @@ export interface LedgerClaimLine {
 /** One line of `verdicts.jsonl` — the durable verdict record. */
 export interface LedgerVerdictLine {
   claimId: string
-  status: 'verified' | 'unverified' | 'contradicted'
+  status: 'verified' | 'unverified' | 'contradicted' | 'insufficient' | 'disproven'
   note?: string
   at: string
+}
+
+/** One line of `disproofs.jsonl` — the negative-knowledge (disproven) record. */
+export interface LedgerDisproofLine {
+  /** SHA-256 of the claim text (content address, independent of the claim id). */
+  claimHash: string
+  /** The claim id that carried the disproof. */
+  claimId: string
+  /** The falsified claim text. */
+  text: string
+  /** SHA-256 object addresses of the evidence that falsified the claim (sorted). */
+  evidenceHashes: string[]
+  /** ISO-8601 record time. */
+  at: string
+  /** The disproof reason (from the verdict note). */
+  note: string
 }
 
 /** Outcome of one {@link EvidenceLedger.putEvidence}. */
@@ -138,6 +158,10 @@ export class EvidenceLedger {
     return path.join(this.root, 'verdicts.jsonl')
   }
 
+  private get disproofsFile(): string {
+    return path.join(this.root, 'disproofs.jsonl')
+  }
+
   /** Run `work` after all previously queued writes settle. */
   private enqueue<T>(work: () => Promise<T>): Promise<T> {
     const run = this.queue.then(work)
@@ -192,6 +216,9 @@ export class EvidenceLedger {
     origin: string
     content: string
     capturedAt: string
+    journal?: string
+    year?: string
+    sessionRef?: { sessionId: string; eventRange: { start: number; end: number } }
   }): Promise<PutOutcome> {
     return this.enqueue(async () => {
       await this.ensureLayout()
@@ -216,6 +243,9 @@ export class EvidenceLedger {
         origin: input.origin,
         capturedAt: input.capturedAt,
         bytes: Buffer.byteLength(input.content, 'utf8'),
+        ...(input.journal === undefined ? {} : { journal: input.journal }),
+        ...(input.year === undefined ? {} : { year: input.year }),
+        ...(input.sessionRef === undefined ? {} : { sessionRef: input.sessionRef }),
       }
       await appendFile(this.indexFile, `${JSON.stringify(record)}\n`, 'utf8')
       return { record, created: true }
@@ -318,6 +348,31 @@ export class EvidenceLedger {
     const journal = await readJournal<LedgerVerdictLine>(this.verdictsFile)
     const latest = new Map<string, LedgerVerdictLine>()
     for (const line of journal) latest.set(line.claimId, line)
+    return latest
+  }
+
+  /**
+   * Append one negative-knowledge (disproven) record, keyed by claim content
+   * hash so the same text cannot be re-reported under a different claim id.
+   * @param disproof - claimHash, claimId, text, evidenceHashes, note.
+   * @param at - ISO-8601 write time.
+   */
+  async recordDisproof(disproof: Omit<LedgerDisproofLine, 'at'>, at: string): Promise<void> {
+    await this.enqueue(async () => {
+      await this.ensureLayout()
+      const line: LedgerDisproofLine = { ...disproof, at }
+      await appendFile(this.disproofsFile, `${JSON.stringify(line)}\n`, 'utf8')
+    })
+  }
+
+  /**
+   * Fold the disproof journal to the latest disproof per claim content hash.
+   * @returns claimHash → latest stored disproof.
+   */
+  async latestDisproofs(): Promise<Map<string, LedgerDisproofLine>> {
+    const journal = await readJournal<LedgerDisproofLine>(this.disproofsFile)
+    const latest = new Map<string, LedgerDisproofLine>()
+    for (const line of journal) latest.set(line.claimHash, line)
     return latest
   }
 

@@ -56,16 +56,18 @@ describe('verifyClaimText', () => {
     expect(outcome.missing).toHaveLength(0)
   })
 
-  it('marks a claim unverified when a citation is absent from the snapshot', () => {
+  it('marks a claim insufficient when a citation is absent from the snapshot', () => {
     const outcome = verifyClaimText('市场规模为 9,999 亿元', evidence)
-    expect(outcome.status).toBe('unverified')
+    expect(outcome.status).toBe('insufficient')
     expect(outcome.missing).toContain('9,999')
+    expect(outcome.note).toContain('insufficient evidence')
   })
 
-  it('marks a claim contradicted when the label context carries a different number', () => {
+  it('marks a claim disproven when the label context carries a different number', () => {
     const outcome = verifyClaimText('同比增长率为 25.0%', evidence)
-    expect(outcome.status).toBe('contradicted')
+    expect(outcome.status).toBe('disproven')
     expect(outcome.contradictions.length).toBeGreaterThan(0)
+    expect(outcome.note).toContain('disproves the claim')
   })
 
   it('marks a claim with no checkable citation unverified', () => {
@@ -87,9 +89,9 @@ describe('verifyClaimText', () => {
 })
 
 describe('mapBridgeResults', () => {
-  it('maps mismatch to contradicted with the actual value', () => {
+  it('maps mismatch to disproven with the actual value', () => {
     const mapped = mapBridgeResults({ results: [{ id: 'x', status: 'mismatch', actual: 42 }] })
-    expect(mapped.status).toBe('contradicted')
+    expect(mapped.status).toBe('disproven')
     expect(mapped.note).toContain('42')
   })
 
@@ -106,8 +108,8 @@ describe('mapBridgeResults', () => {
 describe('combineOutcomes', () => {
   const byte = { status: 'verified' as const, note: 'byte ok', missing: [], contradictions: [] }
 
-  it('lets contradicted win over verified', () => {
-    expect(combineOutcomes(byte, { status: 'contradicted', note: 'bridge' }).status).toBe('contradicted')
+  it('lets disproven win over verified', () => {
+    expect(combineOutcomes(byte, { status: 'disproven', note: 'bridge' }).status).toBe('disproven')
   })
 
   it('lets the byte-level result stand when the bridge agrees', () => {
@@ -118,5 +120,10 @@ describe('combineOutcomes', () => {
   it('lets a byte-level contradiction win over a verified bridge', () => {
     const contra = { status: 'contradicted' as const, note: 'byte contra', missing: [], contradictions: ['x'] }
     expect(combineOutcomes(contra, { status: 'verified', note: 'bridge ok' }).status).toBe('contradicted')
+  })
+
+  it('lets a byte-level disproof win over a verified bridge', () => {
+    const disproof = { status: 'disproven' as const, note: 'byte disproof', missing: [], contradictions: ['x'] }
+    expect(combineOutcomes(disproof, { status: 'verified', note: 'bridge ok' }).status).toBe('disproven')
   })
 })

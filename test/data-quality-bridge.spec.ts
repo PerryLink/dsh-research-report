@@ -97,14 +97,14 @@ describe('dataQuality bridge integration (optional ctx.get seam)', () => {
     const sealed = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args))
     expect(sealed.kind).toBe('sealed')
     if (sealed.kind !== 'sealed') return
-    // c1 is contradicted by the bridge mismatch; c2 is verified by the bridge
+    // c1 is disproven by the bridge mismatch; c2 is verified by the bridge
     // (byte-level check on the local fixture also passes).
-    expect(sealed.counts).toEqual({ verified: 1, unverified: 0, contradicted: 1 })
+    expect(sealed.counts).toEqual({ verified: 1, unverified: 0, contradicted: 0, insufficient: 0, disproven: 1 })
     const c1 = sealed.verdicts.find(verdict => verdict.claimId === 'c1')
-    expect(c1?.status).toBe('contradicted')
+    expect(c1?.status).toBe('disproven')
     expect(c1?.note).toContain('dataset row 3.nav is 9.7')
     const report = await readFile(sealed.reportFile, 'utf8')
-    expect(report).toContain('[与证据矛盾]')
+    expect(report).toContain('[已证伪]')
   })
 
   it('notes the absence of the bridge (claim declares dataset citations, verdict conservatively unverified)', async () => {
@@ -142,7 +142,7 @@ describe('dataQuality bridge integration (optional ctx.get seam)', () => {
     const sealed = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args))
     expect(sealed.kind).toBe('sealed')
     if (sealed.kind !== 'sealed') return
-    expect(sealed.counts).toEqual({ verified: 0, unverified: 1, contradicted: 0 })
+    expect(sealed.counts).toEqual({ verified: 0, unverified: 1, contradicted: 0, insufficient: 0, disproven: 0 })
     const c1 = sealed.verdicts.find(verdict => verdict.claimId === 'c1')
     expect(c1?.status).toBe('unverified')
     expect(c1?.note).toContain('ctx.dataQuality is not mounted')
@@ -188,7 +188,7 @@ describe('dataQuality bridge integration (optional ctx.get seam)', () => {
     const sealed = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args))
     expect(sealed.kind).toBe('sealed')
     if (sealed.kind !== 'sealed') return
-    expect(sealed.counts).toEqual({ verified: 0, unverified: 1, contradicted: 0 })
+    expect(sealed.counts).toEqual({ verified: 0, unverified: 1, contradicted: 0, insufficient: 0, disproven: 0 })
     const c1 = sealed.verdicts.find(verdict => verdict.claimId === 'c1')
     expect(c1?.status).toBe('unverified')
     expect(c1?.note).toContain('numeric dataset bridge failed: provider exploded')

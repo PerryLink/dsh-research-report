@@ -29,8 +29,9 @@ interface SealedValue {
   manifestFile: string
   sealHash: string
   verdicts: ClaimVerdict[]
-  counts: { verified: number; unverified: number; contradicted: number }
+  counts: { verified: number; unverified: number; contradicted: number; insufficient: number; disproven: number }
   evidenceCount: number
+  driftCount: number
 }
 
 /** The background branch: the typed job handle. */
@@ -63,7 +64,7 @@ const verdictSchema = {
   additionalProperties: false,
   properties: {
     claimId: { type: 'string', required: true },
-    status: { type: 'string', required: true, enum: ['verified', 'unverified', 'contradicted'] },
+    status: { type: 'string', required: true, enum: ['verified', 'unverified', 'contradicted', 'insufficient', 'disproven'] },
     note: { type: 'string' },
   },
 } as const
@@ -86,9 +87,12 @@ const OUTPUT_SCHEMA = {
         verified: { type: 'integer', required: true },
         unverified: { type: 'integer', required: true },
         contradicted: { type: 'integer', required: true },
+        insufficient: { type: 'integer', required: true },
+        disproven: { type: 'integer', required: true },
       },
     },
     evidenceCount: { type: 'integer' },
+    driftCount: { type: 'integer' },
     jobId: { type: 'string' },
     topic: { type: 'string' },
     candidates: {
@@ -167,8 +171,11 @@ function renderSealed(value: SealedValue): string {
   const lines = [
     `report sealed: ${value.reportDir}`,
     `seal (sha256 of manifest.json): ${value.sealHash}`,
-    `claims: ${value.counts.verified} verified / ${value.counts.unverified} unverified / ${value.counts.contradicted} contradicted (of ${value.verdicts.length}); evidence bound: ${value.evidenceCount}`,
+    `claims: ${value.counts.verified} verified / ${value.counts.unverified} unverified / ${value.counts.contradicted} contradicted / ${value.counts.insufficient} insufficient / ${value.counts.disproven} disproven (of ${value.verdicts.length}); evidence bound: ${value.evidenceCount}`,
   ]
+  if (value.driftCount > 0) {
+    lines.push(`drift: ${value.driftCount} claim(s) drifted from a prior verified verdict during the pre-delivery re-audit`)
+  }
   const problems = value.verdicts.filter(verdict => verdict.status !== 'verified')
   if (problems.length > 0) {
     lines.push('', 'claims needing attention (visible markers kept in the report body):')
@@ -284,8 +291,8 @@ export function makeResearchReportTool(deps: ResearchReportToolDeps) {
         return { kind: 'background' as const, jobId }
       }
 
-      const result = await service.assemble(request, session === undefined ? {} : { session })
-      return sealedValue(result.reportDir, result.sealHash, result.verdicts, request.evidence.length)
+      const detail = await service.assembleDetailed(request, session === undefined ? {} : { session })
+      return sealedValue(detail.reportDir, detail.sealHash, detail.verdicts, request.evidence.length, detail.driftCount)
     },
     presentCall: (args) => {
       const topic = (args as { topic?: unknown }).topic
@@ -313,8 +320,8 @@ function sealedMeta(value: SealedValue): { reportFile: string; manifestFile: str
 }
 
 /** Shape the sealed canonical value. */
-function sealedValue(reportDir: string, sealHash: string, verdicts: ClaimVerdict[], evidenceCount: number): SealedValue {
-  const counts = { verified: 0, unverified: 0, contradicted: 0 }
+function sealedValue(reportDir: string, sealHash: string, verdicts: ClaimVerdict[], evidenceCount: number, driftCount: number): SealedValue {
+  const counts = { verified: 0, unverified: 0, contradicted: 0, insufficient: 0, disproven: 0 }
   for (const verdict of verdicts) counts[verdict.status] += 1
   return {
     kind: 'sealed',
@@ -325,6 +332,7 @@ function sealedValue(reportDir: string, sealHash: string, verdicts: ClaimVerdict
     verdicts,
     counts,
     evidenceCount,
+    driftCount,
   }
 }
 
@@ -395,11 +403,11 @@ function startAssembleJob(
     settled = true
     done.resolve(outcome)
   }
-  void service.assemble(request, context)
-    .then((result) => {
-      const value = sealedValue(result.reportDir, result.sealHash, result.verdicts, request.evidence.length)
+  void service.assembleDetailed(request, context)
+    .then((detail) => {
+      const value = sealedValue(detail.reportDir, detail.sealHash, detail.verdicts, request.evidence.length, detail.driftCount)
       progress.push(renderSealed(value))
-      settle({ status: 'completed', detail: `sealed ${result.sealHash.slice(0, 12)}`, output: renderSealed(value) })
+      settle({ status: 'completed', detail: `sealed ${detail.sealHash.slice(0, 12)}`, output: renderSealed(value) })
     })
     .catch((error: unknown) => {
       const message = error instanceof CaptureError || error instanceof Error ? error.message : String(error)

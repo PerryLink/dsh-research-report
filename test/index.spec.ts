@@ -167,7 +167,7 @@ describe('research_report + ledger_query', () => {
     expect(sealed.kind).toBe('sealed')
     if (sealed.kind !== 'sealed') return
     expect(sealed.sealHash).toMatch(/^[0-9a-f]{64}$/u)
-    expect(sealed.counts).toEqual({ verified: 1, unverified: 0, contradicted: 0 })
+    expect(sealed.counts).toEqual({ verified: 1, unverified: 0, contradicted: 0, insufficient: 0, disproven: 0 })
     expect(sealed.evidenceCount).toBe(3)
     // The sealed directory holds both files; the manifest recomputes the seal.
     const manifest = JSON.parse(await readFile(sealed.manifestFile, 'utf8')) as { verdicts: Array<{ status: string }> }

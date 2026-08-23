@@ -74,15 +74,40 @@ export function makeEvidenceAddTool(service: LocalResearchReportService) {
       origin: {
         type: 'string',
         required: true,
-        description: 'Where the evidence comes from: an http(s) URL or a workspace-relative path.',
+        description: 'Where the evidence comes from: an http(s) URL, a DOI (10.xxxx/xxxx), or a workspace-relative path.',
       },
       content: {
         type: 'string',
-        description: 'The verbatim snapshot text. When omitted, the origin is captured (URL fetched / file read).',
+        description: 'The verbatim snapshot text. When omitted, the origin is captured (URL fetched / file read); DOI evidence requires inline content.',
       },
       title: {
         type: 'string',
         description: 'Display title (defaults to the origin).',
+      },
+      journal: {
+        type: 'string',
+        description: 'Journal name (optional; required for DOI evidence when requireJournalMetadata is enabled).',
+      },
+      year: {
+        type: 'string',
+        description: 'Publication year (optional; required for DOI evidence when requireJournalMetadata is enabled).',
+      },
+      sessionRef: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          sessionId: { type: 'string', required: true, description: 'The session whose log holds the source events.' },
+          eventRange: {
+            type: 'object',
+            required: true,
+            additionalProperties: false,
+            properties: {
+              start: { type: 'integer', required: true, description: 'Inclusive start event index.' },
+              end: { type: 'integer', required: true, description: 'Inclusive end event index (>= start).' },
+            },
+          },
+        },
+        description: 'Optional session-event anchor (sessionId + eventRange); session-anchored evidence verifies as unverified (manual session-log review).',
       },
     },
     output: {
@@ -104,7 +129,14 @@ export function makeEvidenceAddTool(service: LocalResearchReportService) {
       try {
         const added = args.content !== undefined
           ? await service.addEvidence(
-            { title: args.title ?? args.origin, origin: args.origin, content: args.content },
+            {
+              title: args.title ?? args.origin,
+              origin: args.origin,
+              content: args.content,
+              ...(args.journal === undefined ? {} : { journal: args.journal }),
+              ...(args.year === undefined ? {} : { year: args.year }),
+              ...(args.sessionRef === undefined ? {} : { sessionRef: args.sessionRef }),
+            },
             session,
           )
           : await service.captureAndRegister(args.origin, args.title, exec.signal, session)
