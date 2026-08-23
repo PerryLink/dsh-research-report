@@ -11,7 +11,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { executeTool, mountBase, mountPlugin, unmountBase, type BaseHarness } from './harness.ts'
 import type { EvidenceAddValue } from '../src/tools/evidence-add.ts'
 import type { ResearchReportValue } from '../src/tools/research-report.ts'
-import type { DataQualityBridge } from '../src/verify.ts'
+import type { CitationCheckRequest, DataQualityBridge } from '../src/verify.ts'
 
 const disposers: Array<{ dispose(): unknown }> = []
 const bases: BaseHarness[] = []
@@ -192,5 +192,48 @@ describe('dataQuality bridge integration (optional ctx.get seam)', () => {
     const c1 = sealed.verdicts.find(verdict => verdict.claimId === 'c1')
     expect(c1?.status).toBe('unverified')
     expect(c1?.note).toContain('numeric dataset bridge failed: provider exploded')
+  })
+
+  it('passes the frozen CitationCheckRequest across the ctx.get boundary', async () => {
+    const base = await mountBase('bridge-request')
+    bases.push(base)
+    disposers.push(await mountPlugin(base))
+    // Capture the exact request the plugin hands the bridge: it must carry the
+    // frozen CitationCheckRequest field set (dataset + citations[id/path/value/
+    // tolerance]), byte-stable with the real dsh-data-quality service.
+    let captured: CitationCheckRequest | undefined
+    const bridge: DataQualityBridge = {
+      async verifyCitations(request: CitationCheckRequest) {
+        captured = request
+        return { results: request.citations.map(citation => ({ id: citation.id, status: 'verified' as const, actual: citation.value })) }
+      },
+    }
+    disposers.push(asDisposer(base.ctx.provide('dataQuality', bridge)))
+
+    const added = valueOf<EvidenceAddValue>(await executeTool(base, 'evidence_add', { origin: 'fixtures/growth.md', title: '增长率快照' }))
+    expect(added.ok).toBe(true)
+    if (!added.ok) return
+    const id = added.evidenceId
+
+    const args = {
+      topic: '契约边界',
+      title: '契约边界（数据质量）',
+      sections: [{ heading: '增长率', paragraphs: [{ text: '2025 年同比增长率为 11.3%。', claimIds: ['c1'] }] }],
+      claims: [{
+        id: 'c1',
+        text: '同比增长率为 11.3%',
+        evidenceIds: [id],
+        dataset: 'fixtures/growth.csv',
+        citations: [{ id: 'c1', path: 'rows[3].nav', value: 11.3, tolerance: 0.01 }],
+      }],
+      evidenceRefs: [id],
+    }
+
+    const sealed = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args))
+    expect(sealed.kind).toBe('sealed')
+    if (sealed.kind !== 'sealed') return
+    expect(sealed.verdicts.find(verdict => verdict.claimId === 'c1')?.status).toBe('verified')
+    expect(captured?.dataset).toBe('fixtures/growth.csv')
+    expect(captured?.citations[0]).toMatchObject({ id: 'c1', path: 'rows[3].nav', value: 11.3, tolerance: 0.01 })
   })
 })
