@@ -65,7 +65,19 @@ export async function mountBase(sessionId = 'rr-harness', options: { jobs?: bool
 export async function unmountBase(base: BaseHarness): Promise<void> {
   const expected = path.join(tmpdir(), 'rr-test-')
   if (!base.root.startsWith(expected)) throw new Error(`refusing to remove non-harness dir: ${base.root}`)
-  await rm(base.root, { recursive: true, force: true })
+  // Async fire-and-forget jobs (the read-only verifier appends to the sealed
+  // note after `assemble` returns) race the removal: their O_CREAT append can
+  // re-create a file between the recursive unlink pass and the final rmdir,
+  // surfacing as ENOTEMPTY on Linux. Retry briefly to close that window.
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await rm(base.root, { recursive: true, force: true })
+      return
+    } catch (error) {
+      if (attempt >= 20) throw error
+      await new Promise(resolve => setTimeout(resolve, 25))
+    }
+  }
 }
 
 /** Mount the plugin under test on a harness context with temp-rooted config. */
