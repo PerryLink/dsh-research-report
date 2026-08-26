@@ -118,6 +118,21 @@ Todos os ajustes são campos `Config` de Schemastery; valores inválidos falham 
 - **Profiles por omissão não montam provider de fetch** — o `dsh-base` distribuído monta apenas pesquisa, por isso a captura de URLs falha ruidosamente (`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`) até configurar um provider de fetch; o `gather` baseado em pesquisa lista as fontes não capturadas na lista de lacunas.
 - **Âmbito de um só workspace** — as raízes de livro e relatórios resolvem contra o diretório de trabalho do harness no mount; deployments multi-workspace devem configurar raízes absolutas por profile.
 
+## Verifier CLI
+
+O binário independente `dsh-research-verify` (empacotado como `lib/cli.js`, sem imports de `@deepseek-ai`) audita qualquer diretório de relatório selado sem montar o plugin:
+
+```sh
+dsh-research-verify --report <dir> [--seal <sha256>] [--ledger <dir>] [--format json|sarif]
+```
+
+- `--report <dir>` — diretório selado (`manifest.json` + `report.md` + diários de auditoria).
+- `--seal <sha256>` — hash de selo esperado para comparar com o hash do manifest recalculado; omitido = apenas o valor é informado, sem comparação.
+- `--ledger <dir>` — raiz do ledger de evidências (`objects/<sha256>` + `index.jsonl`) para re-verificar claims byte a byte; omitido = os re-checks de claims são omitidos honestamente.
+- `--format` — `json` (padrão) ou `sarif` (SARIF 2.1.0).
+
+Recalcula o hash de selo, o hash de `report.md` e os hashes dos diários, re-executa a verificação byte-level + integridade por claim, e sai com código não nulo se alguma checagem falhar. `verifySealedReport` / `buildVerificationReport` / `renderSarif` / `renderVerificationJson` são exportados do pacote para uso como biblioteca.
+
 ## Development
 
 ```sh

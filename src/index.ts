@@ -108,8 +108,8 @@ export {
   toWorkspaceRelative,
 } from './gather.ts'
 export type { CaptureDeps, GatherCandidate, GatherOutcome } from './gather.ts'
-export { renderMachineCheckMarkdown, verifySealedReport } from './verify-sealed.ts'
-export type { SealedVerificationClaim, SealedVerificationDeps, SealedVerificationResult } from './verify-sealed.ts'
+export { renderMachineCheckMarkdown, verifySealedReport, SARIF_SCHEMA, VERIFIER_TOOL, buildVerificationReport, renderVerificationJson, renderSarif } from './verify-sealed.ts'
+export type { SealedVerificationClaim, SealedVerificationDeps, SealedVerificationResult, VerificationReport } from './verify-sealed.ts'
 export { LocalResearchReportService, ResearchReportError, SealBlockedError } from './provider-local.ts'
 
 /** The short prompt section: one role statement plus the workflow. */

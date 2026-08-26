@@ -118,6 +118,21 @@ dsh plugin --profile demo remove dsh-research-report    # अनइंस्ट�
 - **डिफ़ॉल्ट profile में fetch provider नहीं** — shipped `dsh-base` केवल search माउंट करता है, इसलिए fetch provider कॉन्फ़िगर होने तक URL कैप्चर ठोंककर विफल होता है (`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`); search-आधारित `gather` अकैप्चर स्रोतों को गैप-सूची में डालता है।
 - **एकल-workspace दायरा** — बही-खाता व रिपोर्ट रूट माउंट पर harness वर्किंग डायरेक्टरी के सापेक्ष resolve होते हैं; बहु-workspace डिप्लॉयमेंट को प्रति-profile निरपेक्ष रूट कॉन्फ़िगर करने चाहिए।
 
+## Verifier CLI
+
+स्वतंत्र `dsh-research-verify` बाइनरी (`lib/cli.js` के रूप में बंडल, कोई `@deepseek-ai` import नहीं) प्लगिन माउंट किए बिना किसी भी सील्ड रिपोर्ट निर्देशिका का ऑडिट करता है:
+
+```sh
+dsh-research-verify --report <dir> [--seal <sha256>] [--ledger <dir>] [--format json|sarif]
+```
+
+- `--report <dir>` — सील्ड रिपोर्ट निर्देशिका (`manifest.json` + `report.md` + ऑडिट जर्नल)।
+- `--seal <sha256>` — पुनः गणित manifest हैश से तुलना हेतु अपेक्षित सील हैश; छोड़ने पर केवल मान बताया जाता है, तुलना नहीं।
+- `--ledger <dir>` — एविडेंस लेजर रूट (`objects/<sha256>` + `index.jsonl`) दावों की बाइट-स्तरीय पुनः जाँच हेतु; छोड़ने पर दावों की पुनः जाँच ईमानदारी से छोड़ दी जाती है।
+- `--format` — `json` (डिफ़ॉल्ट) या `sarif` (SARIF 2.1.0)।
+
+यह सील हैश, `report.md` हैश और ऑडिट जर्नल हैश की पुनः गणना करता है, प्रत्येक दावे की बाइट-स्तरीय + अखंडता जाँच दोहराता है, और कोई भी जाँच विफल होने पर गैर-शून्य कोड से बाहर निकलता है। `verifySealedReport` / `buildVerificationReport` / `renderSarif` / `renderVerificationJson` पैकेज से लाइब्रेरी उपयोग हेतु निर्यात किए जाते हैं।
+
 ## Development
 
 ```sh

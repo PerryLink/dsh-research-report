@@ -118,6 +118,21 @@ dsh plugin --profile demo remove dsh-research-report    # 卸载
 - **默认 profile 不挂载 fetch provider**——官方 `dsh-base` 只挂搜索，所以配置 fetch provider 之前 URL 抓取会响亮失败（`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`）；基于搜索的 `gather` 会把未捕获的来源列入缺口清单。
 - **单 workspace 作用域**——账本与报告根目录在挂载时相对 harness 工作目录解析；多 workspace 部署应在各 profile 配置绝对路径。
 
+## Verifier CLI
+
+独立的 `dsh-research-verify` 二进制（打包为 `lib/cli.js`，零 `@deepseek-ai` 导入）无需挂载插件即可审计任意密封报告目录：
+
+```sh
+dsh-research-verify --report <dir> [--seal <sha256>] [--ledger <dir>] [--format json|sarif]
+```
+
+- `--report <dir>`：密封报告目录（`manifest.json` + `report.md` + 审计日志）。
+- `--seal <sha256>`：期望的 seal 哈希，用于与重算的 manifest 哈希比对；缺省则只报告重算值、不比对。
+- `--ledger <dir>`：证据账本根目录（`objects/<sha256>` + `index.jsonl`），用于逐 claim 字节级复检；缺省则如实跳过 claim 复检。
+- `--format`：`json`（默认）或 `sarif`（SARIF 2.1.0）。
+
+它重算 seal 哈希（`manifest.json` 的 SHA-256）、`report.md` 哈希与审计日志哈希，逐 claim 重跑字节级 + 完整性检查，任一已执行检查失败则以非零码退出。`verifySealedReport` / `buildVerificationReport` / `renderSarif` / `renderVerificationJson` 亦从包导出供库调用。
+
 ## Development
 
 ```sh
