@@ -1,6 +1,6 @@
 {
   "name": "dsh-research-report",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Verifiable research-report engine for DeepSeek Harness: a content-addressed evidence ledger (claim ↔ snapshot binding, tamper-evident) plus versioned sealed reports where every claim carries a verification verdict and the manifest hash seals the directory. Retrieval orchestration reuses the official ctx.web / ctx.jobs seams — no deep-research loop.",
   "author": "dsh-research-report contributors",
   "repository": {
