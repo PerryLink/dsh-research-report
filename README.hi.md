@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📑 dsh-research-report
+- **1024 स्टोर चैनल**: एक बार `npm i -g dsh1024`, फिर `dsh1024 plugin --profile web add dsh-research-report` ([deepseek1024.com](https://deepseek1024.com) इंस्टॉल रैंकिंग में गिना जाता है)।
 
 **DeepSeek Harness के लिए सत्यापन-योग्य (verifiable) रिसर्च-रिपोर्ट इंजन।**
 

@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📑 dsh-research-report
+- **Canal 1024 store**: `npm i -g dsh1024` uma vez, depois `dsh1024 plugin --profile web add dsh-research-report` (conta para o ranking de instalações do [deepseek1024.com](https://deepseek1024.com)).
 
 **Um motor de relatórios de pesquisa verificáveis para DeepSeek Harness.**
 
