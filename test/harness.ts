@@ -108,6 +108,7 @@ export async function executeTool(
   options: { agent?: boolean } = {},
 ): Promise<ToolExecutionResult> {
   callCounter += 1
+  const CallId = ((id: string) => id) as unknown as (id: string) => ToolExecution['callId']
   return base.ctx.tools.execute({
     callId: CallId(`rr-test-${callCounter}`),
     name,
