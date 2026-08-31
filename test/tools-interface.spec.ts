@@ -9,7 +9,7 @@
  */
 
 import { afterEach, describe, expect, it } from 'vitest'
-import type { JsonValue } from '@deepseek-ai/dsh-tools'
+import type { JsonValue } from '@deepseek-ai/dsh-util-values'
 import { mountBase, mountPlugin, unmountBase, type BaseHarness } from './harness.ts'
 
 const fibers: Array<{ dispose(): Promise<void> }> = []

@@ -120,7 +120,7 @@
     "tsdown": "^0.22.14",
     "typescript": "^5.9.0"
   },
-  "devDependencies": {"@deepseek-ai/dsh-attachment": "0.1.2-alpha.2", 
+  "devDependencies": {"@deepseek-ai/dsh-util-values": "0.1.2-alpha.2", "@deepseek-ai/dsh-attachment": "0.1.2-alpha.2", 
     "@deepseek-ai/cordis": "^4.0.1",
     "@deepseek-ai/cordis-plugin-include": "1.0.6",
     "@deepseek-ai/cordis-plugin-loader": "1.0.2",

@@ -10,3 +10,4 @@ minimumReleaseAgeExclude:
   - '@deepseek-ai/*'
 allowBuilds:
   esbuild: true
+verifyDepsBeforeRun: false
