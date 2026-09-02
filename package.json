@@ -70,7 +70,7 @@
     ],
     "compatibility": {
       "dshVersions": [
-        "0.1.2-alpha.3"
+        "0.1.2-alpha.5"
       ]
     },
     "capability": {
@@ -121,19 +121,19 @@
     "typescript": "^5.9.0"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-util-values": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-attachment": "0.1.2-alpha.3",
+    "@deepseek-ai/dsh-util-values": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-attachment": "0.1.2-alpha.5",
     "@deepseek-ai/cordis": "^4.0.2",
     "@deepseek-ai/cordis-plugin-include": "1.0.6",
     "@deepseek-ai/cordis-plugin-loader": "1.0.2",
-    "@deepseek-ai/dsh-agent": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-jobs": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-jobs-local": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-llm": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-session": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-system-prompt": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-tools": "0.1.2-alpha.3",
-    "@deepseek-ai/dsh-web": "0.1.2-alpha.3",
+    "@deepseek-ai/dsh-agent": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-jobs": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-jobs-local": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-llm": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-session": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-system-prompt": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-tools": "0.1.2-alpha.5",
+    "@deepseek-ai/dsh-web": "0.1.2-alpha.5",
     "@deepseek-ai/schemastery": "^3.18.2",
     "@types/node": "^22.19.0",
     "@vitest/coverage-v8": "^3.2.0",
