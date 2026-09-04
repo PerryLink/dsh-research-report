@@ -80,9 +80,9 @@ export class SealBlockedError extends Error {
 }
 
 /**
- * The rc.2 persistence layer still refuses a session log carrying an event
+ * The rc.2/rc.1 persistence layer still refuses a session log carrying an event
  * type it does not know (unless the event carries the envelope's `ignorable`
- * marker, which live `Session.append` does not expose), and rc.2 offers no
+ * marker, which live `Session.append` does not expose), and rc.1 offers no
  * plugin event-registration surface — so the research-report/* events are
  * appended only when the host build already knows them. The ledger journals
  * are always the durable source of truth; these events are the in-log audit

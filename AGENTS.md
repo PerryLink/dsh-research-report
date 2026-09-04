@@ -13,12 +13,12 @@ Standalone DeepSeek Harness plugin repository (`dsh-research-report`). Developme
 - `src/provider-local.ts` — the local Provider (`LocalResearchReportService`): policy caps, ledger orchestration, verdict writeback, adaptive session-event append, seal directory allocation.
 - `src/tools/` — the three Consumers: `evidence_add`, `research_report` (sealed | background | gathered branches), `ledger_query`.
 - `scripts/` — `prepare.mjs` (self-contained build), `verify-self-contained.mjs`, `verify-artifacts.mjs`, `check-readme-sync.mjs` (five-language gate), `verify-frozen-contract.mjs` (cross-plugin contract gate), `loader-runner.mjs` (real Loader composition runner), `release.mjs` (bump + stamp + gate + commit + tag, never pushes), `changelog-section.mjs`, `fix-dts.mjs`.
-- `test/` — vitest; REAL `Context`/`SessionStore`/`Session`/`SystemPrompt`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` from the 0.1.2-alpha.5 peers. Only the network backends are scripted providers registered through the real `ctx.web` registries; background-job tests run unowned (the minimal harness agent is not enrolled in a real agents registry, which job-ownership validation requires).
+- `test/` — vitest; REAL `Context`/`SessionStore`/`Session`/`SystemPrompt`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` from the 0.1.2-rc.1 peers. Only the network backends are scripted providers registered through the real `ctx.web` registries; background-job tests run unowned (the minimal harness agent is not enrolled in a real agents registry, which job-ownership validation requires).
 - `fixtures/` — three local documents for the keyless end-to-end flow (evidence → seal → tamper → contradicted).
 
 ## Hard rules applied here
 
-- **The ledger is the source of truth; session events are an adaptive mirror.** The 0.1.2-alpha.5 `Session.append` still exposes no `ignorable` option and no plugin event-registration surface, so `research-report/*` events append only when `KNOWN_SESSION_EVENT_TYPES` knows them — otherwise the persistence layer would refuse the log on restore. Never append unconditionally.
+- **The ledger is the source of truth; session events are an adaptive mirror.** The 0.1.2-rc.1 `Session.append` still exposes no `ignorable` option and no plugin event-registration surface, so `research-report/*` events append only when `KNOWN_SESSION_EVENT_TYPES` knows them — otherwise the persistence layer would refuse the log on restore. Never append unconditionally.
 - **Snapshots are immutable.** Same content dedupes; an id reused with different content fails loud; a "tampered" object is never "repaired" — verification over it yields `contradicted`.
 - **Gaps and contradictions are explicit.** Unverified/contradicted claims keep body markers and populate Appendix A; gather never fabricates evidence and never auto-assembles.
 - **No tunables hardcoded.** Every knob is a validated `Config` field with a default in `src/config.ts`, an inline comment in `cordis.patch.yml`, and a row in the five-language README configuration table.
@@ -30,7 +30,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-research-report`). Developme
 
 `pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run verify:artifacts && pnpm run verify:frozen-contract && node scripts/check-readme-sync.mjs && pnpm pack`
 
-- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.2-alpha.5 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
+- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.2-rc.1 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
 
 ## Release
 
