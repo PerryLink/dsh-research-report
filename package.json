@@ -104,11 +104,11 @@
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.2",
     "dsh-data-quality": ">=0.1.0 <0.4.0",
-    "@deepseek-ai/dsh-jobs": ">=0.1.0-rc.8 <0.2.0",
-    "@deepseek-ai/dsh-session": ">=0.1.0-rc.8 <0.2.0",
-    "@deepseek-ai/dsh-system-prompt": ">=0.1.0-rc.8 <0.2.0",
-    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.8 <0.2.0",
-    "@deepseek-ai/dsh-web": ">=0.1.0-rc.8 <0.2.0",
+    "@deepseek-ai/dsh-jobs": ">=0.1.2-rc.1 <0.2.0",
+    "@deepseek-ai/dsh-session": ">=0.1.2-rc.1 <0.2.0",
+    "@deepseek-ai/dsh-system-prompt": ">=0.1.2-rc.1 <0.2.0",
+    "@deepseek-ai/dsh-tools": ">=0.1.2-rc.1 <0.2.0",
+    "@deepseek-ai/dsh-web": ">=0.1.2-rc.1 <0.2.0",
     "@deepseek-ai/schemastery": "^3.18.2"
   },
   "peerDependenciesMeta": {
