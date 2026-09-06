@@ -24,8 +24,8 @@
 
 ## Compatibility
 
-- DeepSeek Harness `0.1.2-rc.1` (peers pinned to `0.1.2-rc.1`).
-0.1.2-rc.1 (adapted 2026-09-04): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged.
+- DeepSeek Harness `dsh-v0.1.3-alpha.1` (GitHub tag, verified 2026-09-06). npm dependency line `0.1.2-rc.1`; peers `>=0.1.2-rc.1 <0.2.0`.
+0.1.2-rc.1 (adapted 2026-09-04): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. Verified 2026-09-06 against the dsh-v0.1.3-alpha.1 master checkout (full gate chain + profile install smoke).
 - Node `^22.19.0 || >=24.0.0`, ESM only (`"type": "module"`).
 - Peer dependencies: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, and `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` at `0.1.2-rc.1`.
 - Optional siblings (never required): `ctx.web` providers for URL capture/gather, `ctx.jobs` for background assembly, `ctx.dataQuality` (dsh-data-quality) for dataset citation cross-checks.

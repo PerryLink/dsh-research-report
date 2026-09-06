@@ -23,8 +23,8 @@
 
 ## Compatibility
 
-- DeepSeek Harness `0.1.2-rc.1` (peers fijados a `0.1.2-rc.1`).
-0.1.2-rc.1 (adaptado el 2026-09-04): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia.
+- DeepSeek Harness `dsh-v0.1.3-alpha.1` (GitHub tag, verificado el 2026-09-06). Línea de dependencias npm `0.1.2-rc.1`; peers `>=0.1.2-rc.1 <0.2.0`.
+0.1.2-rc.1 (adaptado el 2026-09-04): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-06 contra el checkout master dsh-v0.1.3-alpha.1 (cadena completa de puertas + smoke de instalación del profile).
 - Node `^22.19.0 || >=24.0.0`, solo ESM (`"type": "module"`).
 - Dependencias peer: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, y `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` en `0.1.2-rc.1`.
 - Hermanos opcionales (nunca obligatorios): proveedores de `ctx.web` para captura URL/recolección, `ctx.jobs` para ensamblado en segundo plano, `ctx.dataQuality` (dsh-data-quality) para verificación de citas sobre datasets.

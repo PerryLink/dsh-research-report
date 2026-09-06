@@ -23,8 +23,8 @@
 
 ## Compatibility
 
-- DeepSeek Harness `0.1.2-rc.1` (peer डिपेंडेंसी `0.1.2-rc.1` पर पिन)।
-0.1.2-rc.1 (2026-09-04 को अनुकूलित): सत्र लिफ़ाफ़ा अपना ignorable फ़ील्ड केवल संग्रहीत-लॉग पठन संगतता के लिए रखता है - Session.append अभी भी इसे स्टैम्प नहीं कर सकता, इसलिए गेट व्यवहार अपरिवर्तित है।
+- DeepSeek Harness `dsh-v0.1.3-alpha.1` (GitHub tag, 2026-09-06 को सत्यापित)। npm डिपेंडेंसी लाइन `0.1.2-rc.1`; peers `>=0.1.2-rc.1 <0.2.0`।
+0.1.2-rc.1 (2026-09-04 को अनुकूलित): सत्र लिफ़ाफ़ा अपना ignorable फ़ील्ड केवल संग्रहीत-लॉग पठन संगतता के लिए रखता है - Session.append अभी भी इसे स्टैम्प नहीं कर सकता, इसलिए गेट व्यवहार अपरिवर्तित है। 2026-09-06 को dsh-v0.1.3-alpha.1 master checkout के विरुद्ध सत्यापित (पूर्ण गेट-शृंखला + profile इंस्टॉल smoke)।
 - Node `^22.19.0 || >=24.0.0`, केवल ESM (`"type": "module"`)।
 - Peer डिपेंडेंसी: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, तथा `0.1.2-rc.1` के `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs`।
 - वैकल्पिक सहयोगी (कभी अनिवार्य नहीं): URL कैप्चर/गैदर के लिए `ctx.web` provider; बैकग्राउंड असेंबली के लिए `ctx.jobs`; डेटासेट उद्धरण जाँच के लिए `ctx.dataQuality` (dsh-data-quality)।
