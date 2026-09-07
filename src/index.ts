@@ -133,8 +133,8 @@ export function apply(ctx: Context, config: Config): void {
     return
   }
 
-  // The provider registers itself as ctx.researchReport on construction and
-  // is unregistered with this fiber (Service base semantics).
+  // Service Provider — the provider registers itself as ctx.researchReport on
+  // construction and is unregistered with this fiber (Service base semantics).
   const service = new LocalResearchReportService(ctx, resolved, process.cwd())
 
   ctx.effect(() => ctx.tools.register(makeEvidenceAddTool(service)), 'research-report: evidence_add tool')
