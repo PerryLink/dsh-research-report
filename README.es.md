@@ -23,10 +23,10 @@
 
 ## Compatibility
 
-- DeepSeek Harness `dsh-v0.1.3-alpha.1` (GitHub tag, verificado el 2026-09-06). Línea de dependencias npm `0.1.2-rc.1`; peers `>=0.1.2-rc.1 <0.2.0`.
-0.1.2-rc.1 (adaptado el 2026-09-04): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-06 contra el checkout master dsh-v0.1.3-alpha.1 (cadena completa de puertas + smoke de instalación del profile).
+- DeepSeek Harness `dsh-v0.1.5-alpha.1` (GitHub tag, verificado el 2026-09-09). Línea de dependencias npm `0.1.5-alpha.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`.
+0.1.5-alpha.1 (adaptado el 2026-09-09): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-09 contra los tipos publicados 0.1.5-alpha.1 (cadena completa de puertas local); el workflow compat fija ambas líneas peer declaradas.
 - Node `^22.19.0 || >=24.0.0`, solo ESM (`"type": "module"`).
-- Dependencias peer: `@deepseek-ai/cordis ^4.0.1`, `@deepseek-ai/schemastery ^3.18.0`, y `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` en `0.1.2-rc.1`.
+- Dependencias peer: `@deepseek-ai/cordis ^4.0.2`, `@deepseek-ai/schemastery ^3.18.2`, y `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` en `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`.
 - Hermanos opcionales (nunca obligatorios): proveedores de `ctx.web` para captura URL/recolección, `ctx.jobs` para ensamblado en segundo plano, `ctx.dataQuality` (dsh-data-quality) para verificación de citas sobre datasets.
 
 ## What you get
@@ -116,7 +116,7 @@ Todos los ajustes son campos `Config` de Schemastery; los valores inválidos fal
 ## Known limitations
 
 - **A nivel de byte, no semántico** — la comprobación incorporada localiza literales numéricos/entrecomillados verbatim; los claims parafraseados sin literal comprobable quedan `unverified`, y un claim verdadero cuyo número está ausente mientras su etiqueta aparece con otro valor queda `contradicted`. Es una decisión deliberada de v1 (auditable antes que listo).
-- **Eventos de sesión adaptativos** — el plugin declara los eventos de sesión tipados `research-report/evidence`, `research-report/verify` y `research-report/seal`, pero el `Session.append` de rc.2 sigue sin opción `ignorable` ni superficie de registro de eventos para plugins, así que los appends se activan solo cuando el build del host conoce los tipos (si no, la capa de persistencia rechazaría el log al restaurar). Los diarios del libro son siempre la fuente durable de verdad.
+- **Eventos de sesión adaptativos** — el plugin declara los eventos de sesión tipados `research-report/evidence`, `research-report/verify` y `research-report/seal`, pero el `Session.append` de 0.1.5-alpha.1 sigue sin opción `ignorable` ni superficie de registro de eventos para plugins, así que los appends se activan solo cuando el build del host conoce los tipos (si no, la capa de persistencia rechazaría el log al restaurar). Los diarios del libro son siempre la fuente durable de verdad.
 - **Los profiles por defecto no montan proveedor de fetch** — el `dsh-base` distribuido monta solo búsqueda, así que la captura de URLs falla ruidosamente (`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`) hasta configurar un proveedor de fetch; el `gather` basado en búsqueda lista las fuentes no capturadas en la lista de brechas.
 - **Ámbito de un solo workspace** — las raíces de libro e informes se resuelven contra el directorio de trabajo del harness al montar; los despliegues multi-workspace deben configurar raíces absolutas por profile.
 
@@ -148,8 +148,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` resuelve `@deepseek-ai/*` a través de los peers 0.1.2-rc.1 instalados; `typecheck:ci` desactiva `skipLibCheck` y activa `verbatimModuleSyntax` contra los tipos publicados. Ambos deben permanecer verdes.
-- Las pruebas usan los `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reales de los peers 0.1.2-rc.1; solo los backends de red son proveedores scriptados registrados a través de los registros reales de `ctx.web`.
+- `typecheck` resuelve `@deepseek-ai/*` a través de los peers 0.1.5-alpha.1 instalados; `typecheck:ci` desactiva `skipLibCheck` y activa `verbatimModuleSyntax` contra los tipos publicados. Ambos deben permanecer verdes.
+- Las pruebas usan los `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reales de los peers 0.1.5-alpha.1; solo los backends de red son proveedores scriptados registrados a través de los registros reales de `ctx.web`.
 - Release: `node scripts/release.mjs <x.y.z>` (sube versión, sella CHANGELOG, re-ejecuta la puerta, commitea + etiqueta; nunca hace push).
 
 ## Topics
