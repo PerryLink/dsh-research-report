@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.8] - 2026-09-09
+
+### Fixed
+
+- Adapt the test harness to the renamed system-prompt persona config: `mountBase` mounts `SystemPrompt` with `{ personaPrefix: '' }` instead of the removed `{ persona: '' }` key, restoring green `typecheck` and `typecheck:ci` against DeepSeek Harness `dsh-v0.1.5-alpha.1`. The mount is behavior-identical (an empty prefix renders no section and `includeHarnessIdentity` keeps its default), so the rendered test prompt is unchanged.
+
+### Changed
+
+- Align the `@deepseek-ai/dsh-*` peer ranges to `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`, pin the dev/test dependencies to the published `0.1.5-alpha.1` line, and record `0.1.5-alpha.1` in `dshWorkshop.compatibility.dshVersions`. The `0.1.5-alpha.1` seams (session format V3, `ctx.agent` removal, type-only `Inbox` interface) need no `src/` change: the plugin consumes none of them, keeps the `SessionEventMap` merges and the adaptive `research-report/*` event gate, and stays compatible with the `0.1.2-rc.1` line. No behavior change.
+- Run the `compat` profile job as a matrix over both declared peer lines (`0.1.2-rc.1`, `0.1.5-alpha.1`), so every supported line keeps a real install/mount/uninstall smoke instead of only the older one.
+
+### Docs
+
+- Refresh the five-language README compatibility sections to the `dsh-v0.1.5-alpha.1` baseline (verified 2026-09-09), the dual peer range, and the `0.1.5-alpha.1` dev pin; correct the stale `rc.2` `Session.append` wording. `AGENTS.md`, `THIRD_PARTY_NOTICES.md`, and the CI typecheck step label record the same facts, and the notices now match the manifest on `@deepseek-ai/cordis ^4.0.2` / `@deepseek-ai/schemastery ^3.18.2`.
+
 ## [0.3.7] - 2026-09-08
 
 ### Docs
