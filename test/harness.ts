@@ -41,7 +41,7 @@ export async function mountBase(sessionId = 'rr-harness', options: { jobs?: bool
   const ctx = new Context()
   await ctx.plugin(SessionStore)
   const session = ctx.sessions.create(SessionId(sessionId))
-  await ctx.plugin(SystemPrompt, { persona: '' })
+  await ctx.plugin(SystemPrompt, { personaPrefix: '' })
   await ctx.plugin(ToolRuntime)
   if (options.jobs !== false) {
     await ctx.plugin(LocalJobRegistry, { maxConcurrentJobsPerOwner: 10 })
