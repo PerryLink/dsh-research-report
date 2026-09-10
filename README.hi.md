@@ -24,8 +24,8 @@
 
 ## Compatibility
 
-- DeepSeek Harness `dsh-v0.1.5-alpha.1` (GitHub tag, 2026-09-09 को सत्यापित)। npm डिपेंडेंसी लाइन `0.1.5-alpha.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`।
-0.1.5-alpha.1 (2026-09-09 को अनुकूलित): सत्र लिफ़ाफ़ा अपना ignorable फ़ील्ड केवल संग्रहीत-लॉग पठन संगतता के लिए रखता है - Session.append अभी भी इसे स्टैम्प नहीं कर सकता, इसलिए गेट व्यवहार अपरिवर्तित है। 2026-09-09 को प्रकाशित 0.1.5-alpha.1 टाइप्स के विरुद्ध सत्यापित (पूर्ण स्थानीय गेट-शृंखला); compat workflow दोनों घोषित peer लाइनों को पिन करता है।
+- DeepSeek Harness `dsh-v0.1.5-rc.1` (GitHub tag, 2026-09-10 को सत्यापित)। npm डिपेंडेंसी लाइन `0.1.5-rc.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`।
+0.1.5-alpha.1 (2026-09-09 को अनुकूलित): सत्र लिफ़ाफ़ा अपना ignorable फ़ील्ड केवल संग्रहीत-लॉग पठन संगतता के लिए रखता है - Session.append अभी भी इसे स्टैम्प नहीं कर सकता, इसलिए गेट व्यवहार अपरिवर्तित है। 2026-09-10 को प्रकाशित 0.1.5-rc.1 टाइप्स के विरुद्ध सत्यापित (पूर्ण स्थानीय गेट-शृंखला); compat workflow दोनों घोषित peer लाइनों को पिन करता है।
 - Node `^22.19.0 || >=24.0.0`, केवल ESM (`"type": "module"`)।
 - Peer डिपेंडेंसी: `@deepseek-ai/cordis ^4.0.2`, `@deepseek-ai/schemastery ^3.18.2`, तथा `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0` के `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs`।
 - वैकल्पिक सहयोगी (कभी अनिवार्य नहीं): URL कैप्चर/गैदर के लिए `ctx.web` provider; बैकग्राउंड असेंबली के लिए `ctx.jobs`; डेटासेट उद्धरण जाँच के लिए `ctx.dataQuality` (dsh-data-quality)।
@@ -149,8 +149,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` इंस्टॉल किए गए 0.1.5-alpha.1 peers से `@deepseek-ai/*` resolve करता है; `typecheck:ci` प्रकाशित टाइप्स के विरुद्ध `skipLibCheck` बंद और `verbatimModuleSyntax` चालू करता है। दोनों हरे रहने चाहिए।
-- टेस्ट 0.1.5-alpha.1 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्री में पंजीकृत scripted providers हैं।
+- `typecheck` इंस्टॉल किए गए 0.1.5-rc.1 peers से `@deepseek-ai/*` resolve करता है; `typecheck:ci` प्रकाशित टाइप्स के विरुद्ध `skipLibCheck` बंद और `verbatimModuleSyntax` चालू करता है। दोनों हरे रहने चाहिए।
+- टेस्ट 0.1.5-rc.1 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्री में पंजीकृत scripted providers हैं।
 - रिलीज़: `node scripts/release.mjs <x.y.z>` (वर्ज़न बम्प, CHANGELOG स्टैम्प, गेट पुनःचालन, कमिट + टैग; कभी push नहीं)।
 
 ## Topics
