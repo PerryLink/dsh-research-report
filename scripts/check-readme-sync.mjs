@@ -10,10 +10,10 @@ import { fileURLToPath } from 'node:url'
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const LANGUAGES = [
   ['README.md', 'en'],
-  ['README.zh.md', 'zh'],
-  ['README.es.md', 'es'],
-  ['README.pt.md', 'pt'],
-  ['README.hi.md', 'hi'],
+  ['README-zh.md', 'zh'],
+  ['README-es.md', 'es'],
+  ['README-pt.md', 'pt'],
+  ['README-hi.md', 'hi'],
 ]
 
 const headingsOf = (text) => text.split(/\r?\n/u)
