@@ -24,8 +24,8 @@
 
 ## Compatibility
 
-- DeepSeek Harness `dsh-v0.1.5-rc.1` (GitHub tag, verificado em 2026-09-10). Linha de dependências npm `0.1.5-rc.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`.
-0.1.5-alpha.1 (adaptado em 2026-09-09): o envelope de sessão mantém seu campo ignorable apenas para compatibilidade de leitura de logs armazenados - o Session.append ainda não consegue estampá-lo, então o comportamento da porta não muda. Verificado em 2026-09-10 contra os tipos publicados 0.1.5-rc.1 (cadeia completa de portas local); o workflow compat fixa ambas as linhas peer declaradas.
+- DeepSeek Harness `dsh-v0.1.5-rc.2` (GitHub tag, verificado em 2026-09-11). Linha de dependências npm `0.1.5-rc.2`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`.
+0.1.5-alpha.1 (adaptado em 2026-09-09): o envelope de sessão mantém seu campo ignorable apenas para compatibilidade de leitura de logs armazenados - o Session.append ainda não consegue estampá-lo, então o comportamento da porta não muda. Verificado em 2026-09-11 contra os tipos publicados 0.1.5-rc.2 (cadeia completa de portas local); o workflow compat fixa ambas as linhas peer declaradas.
 - Node `^22.19.0 || >=24.0.0`, apenas ESM (`"type": "module"`).
 - Dependências peer: `@deepseek-ai/cordis ^4.0.2`, `@deepseek-ai/schemastery ^3.18.2`, e `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` em `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`.
 - Irmãos opcionais (nunca obrigatórios): providers de `ctx.web` para captura de URL/coleta, `ctx.jobs` para montagem em segundo plano, `ctx.dataQuality` (dsh-data-quality) para verificação de citações em datasets.
@@ -149,8 +149,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` resolve `@deepseek-ai/*` através dos peers 0.1.5-rc.1 instalados; `typecheck:ci` desativa `skipLibCheck` e ativa `verbatimModuleSyntax` contra os tipos publicados. Ambos têm de ficar verdes.
-- Os testes usam os `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reais dos peers 0.1.5-rc.1; apenas os backends de rede são providers scriptados registados através dos registos reais de `ctx.web`.
+- `typecheck` resolve `@deepseek-ai/*` através dos peers 0.1.5-rc.2 instalados; `typecheck:ci` desativa `skipLibCheck` e ativa `verbatimModuleSyntax` contra os tipos publicados. Ambos têm de ficar verdes.
+- Os testes usam os `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reais dos peers 0.1.5-rc.2; apenas os backends de rede são providers scriptados registados através dos registos reais de `ctx.web`.
 - Release: `node scripts/release.mjs <x.y.z>` (sobe versão, carimba CHANGELOG, re-executa a gate, commita + etiqueta; nunca faz push).
 
 ## Topics

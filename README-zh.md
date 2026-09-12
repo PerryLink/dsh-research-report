@@ -24,8 +24,8 @@
 
 ## Compatibility
 
-- DeepSeek Harness `dsh-v0.1.5-rc.1`（GitHub tag，2026-09-10 已核验）。npm 依赖线 `0.1.5-rc.1`；peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`。
-0.1.5-alpha.1（2026-09-09 已适配）：会话信封保留 ignorable 字段但仅用于存量日志读取兼容——Session.append 仍无法盖章，门控行为不变。已于 2026-09-10 对照已发布的 0.1.5-rc.1 类型核验通过（完整本地门禁链）；compat workflow 同时钉住两条已声明 peer 线。
+- DeepSeek Harness `dsh-v0.1.5-rc.2`（GitHub tag，2026-09-11 已核验）。npm 依赖线 `0.1.5-rc.2`；peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0`。
+0.1.5-alpha.1（2026-09-09 已适配）：会话信封保留 ignorable 字段但仅用于存量日志读取兼容——Session.append 仍无法盖章，门控行为不变。已于 2026-09-11 对照已发布的 0.1.5-rc.2 类型核验通过（完整本地门禁链）；compat workflow 同时钉住两条已声明 peer 线。
 - Node `^22.19.0 || >=24.0.0`，仅 ESM（`"type": "module"`）。
 - Peer 依赖：`@deepseek-ai/cordis ^4.0.2`、`@deepseek-ai/schemastery ^3.18.2`，以及 `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0` 的 `@deepseek-ai/dsh-session`、`@deepseek-ai/dsh-tools`、`@deepseek-ai/dsh-system-prompt`、`@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-jobs`。
 - 可选协同（绝不强制）：URL 抓取/检索用 `ctx.web` provider；后台组装用 `ctx.jobs`；数据集引文核查用 `ctx.dataQuality`（dsh-data-quality）。
@@ -149,8 +149,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` 经已安装的 0.1.5-rc.1 peer 解析 `@deepseek-ai/*`；`typecheck:ci` 关闭 `skipLibCheck` 并开启 `verbatimModuleSyntax` 对照已发布类型。两者都必须保持绿。
-- 测试使用 0.1.5-rc.1 peer 的真实 `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime`；只有网络后端是注册进真实 `ctx.web` 注册表的脚本化 provider。
+- `typecheck` 经已安装的 0.1.5-rc.2 peer 解析 `@deepseek-ai/*`；`typecheck:ci` 关闭 `skipLibCheck` 并开启 `verbatimModuleSyntax` 对照已发布类型。两者都必须保持绿。
+- 测试使用 0.1.5-rc.2 peer 的真实 `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime`；只有网络后端是注册进真实 `ctx.web` 注册表的脚本化 provider。
 - 发布：`node scripts/release.mjs <x.y.z>`（bump、盖 CHANGELOG、重跑门禁、提交 + 打 tag；绝不 push）。
 
 ## Topics
