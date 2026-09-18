@@ -14,8 +14,9 @@ name: Compat
 # Platform guard: every assertion here is platform-neutral. Platform-specific
 # behavior (Windows/macOS-only rows) is never asserted on this Linux runner.
 on:
+  pull_request:
   schedule:
-    - cron: '0 4 1 * *'
+    - cron: '0 4 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -54,7 +55,7 @@ jobs:
       # the other line's result.
       fail-fast: false
       matrix:
-        dsh: ['0.1.2-rc.1', '0.1.5-rc.2']
+        dsh: ['0.1.2-rc.1', '0.1.6-alpha.2']
     steps:
       - uses: actions/checkout@v5
 
@@ -86,6 +87,7 @@ jobs:
           packages:
             - .
           nodeLinker: hoisted
+          minimumReleaseAge: 0
           autoInstallPeers: false
           allowBuilds:
             '@deepseek-ai/dsh-subprocess-local': true
