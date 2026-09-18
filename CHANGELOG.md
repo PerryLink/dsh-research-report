@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Pin the adaptive audit gate with a regression lock (`test/events-gate.spec.ts`): the host vocabulary size (58 on the `0.1.6-alpha.2` line — a red there means the upstream vocabulary moved and the set must be re-snapshotted), the fact that every `research-report/*` type stays outside that set, and an end-to-end assertion that a real `evidence_add` run writes nothing to the session log. Reverse-verified: making the append unconditional turns the third assertion red.
+
+### Changed
+
+- Raise the `@deepseek-ai/dsh-*` dev/test pins from `0.1.5-rc.2` to `0.1.6-alpha.2` and pin the transitive peers (`dsh-user-approval`, `dsh-invariants`, `dsh-scope`, `dsh-brand`) to the same line: the published-line ruler resolves a consistent graph again (before the alignment `dsh-user-approval` imported a `CallId` export that the alpha.2 `dsh-llm` no longer provides).
+- Declare `dsh.manifestVersion: 1` and the canonical three-clause `engines.dsh` (G-3).
+
+### Docs
+
+- Restate the audit-gate contract version-neutrally and cover the `0.1.6-alpha.2` `SurfaceIntent` third parameter: a non-surface audit type still cannot be stamped, so the gate remains the only correct shape. `research-report/*` events do not land in the session log on this line — the ledger journals stay the durable source of truth. Five-language READMEs re-anchored to `dsh-v0.1.6-alpha.2`.
+
 ## [0.3.10] - 2026-09-12
 
 ### Changed
