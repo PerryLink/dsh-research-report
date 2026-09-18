@@ -80,13 +80,16 @@ export class SealBlockedError extends Error {
 }
 
 /**
- * The rc.2/rc.1 persistence layer still refuses a session log carrying an event
- * type it does not know (unless the event carries the envelope's `ignorable`
- * marker, which live `Session.append` does not expose), and rc.1 offers no
- * plugin event-registration surface — so the research-report/* events are
- * appended only when the host build already knows them. The ledger journals
- * are always the durable source of truth; these events are the in-log audit
- * mirror and activate automatically once the host learns the vocabulary.
+ * The shipped persistence layers refuse a session log carrying an event type
+ * they do not know (unless the event carries the envelope's `ignorable`
+ * marker, which live `Session.append` does not expose), and no released line
+ * offers a plugin event-registration surface — so the `research-report/*`
+ * events are appended only when the host build already knows them. On the
+ * `0.1.6-alpha.2` line `Session.append`'s third parameter is a `SurfaceIntent`
+ * for surface-eligible types only, so a non-surface audit type still cannot be
+ * stamped and this gate stays the only correct shape. The ledger journals are
+ * always the durable source of truth; these events are the in-log audit mirror
+ * and activate automatically once the host learns the vocabulary.
  * @param session - the owning session, when known.
  * @param type - the event type.
  * @param append - the typed append thunk.
