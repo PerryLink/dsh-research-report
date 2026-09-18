@@ -55,7 +55,7 @@ jobs:
       # the other line's result.
       fail-fast: false
       matrix:
-        dsh: ['0.1.2-rc.1', '0.1.6-alpha.2']
+        dsh: ['0.1.2-rc.1', '0.1.5-rc.2', '0.1.6-alpha.2']
     steps:
       - uses: actions/checkout@v5
 
