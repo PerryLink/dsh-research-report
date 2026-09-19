@@ -156,6 +156,7 @@
     "lint": "oxlint",
     "prepare": "node scripts/prepare.mjs",
     "verify:self-contained": "node scripts/verify-self-contained.mjs",
+    "check:lockfile": "node scripts/check-lockfile-drift.mjs",
     "verify:artifacts": "node scripts/verify-artifacts.mjs",
     "verify:readme-sync": "node scripts/check-readme-sync.mjs",
     "verify:frozen-contract": "node scripts/verify-frozen-contract.mjs",
