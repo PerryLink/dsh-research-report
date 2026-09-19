@@ -24,11 +24,11 @@ Standalone DeepSeek Harness plugin repository (`dsh-research-report`). Developme
 - **No tunables hardcoded.** Every knob is a validated `Config` field with a default in `src/config.ts`, an inline comment in `cordis.patch.yml`, and a row in the five-language README configuration table.
 - **No direct network, no workspace escape.** All HTTP goes through `ctx.web`; local reads resolve against the workspace root with both sides `path.resolve`d before comparison.
 - **This plugin registers no waterfall listeners.** If one is ever added, allow/passthrough MUST call `next()`.
-- **Frozen contracts stay byte-exact.** The `assemble` block in `src/service.ts` and the `CitationCheck*` block in `src/verify.ts` are shared verbatim with sibling plugins; `pnpm run verify:frozen-contract && pnpm run check:lockfile` must stay green.
+- **Frozen contracts stay byte-exact.** The `assemble` block in `src/service.ts` and the `CitationCheck*` block in `src/verify.ts` are shared verbatim with sibling plugins; `pnpm run verify:frozen-contract` must stay green.
 
 ## Checks
 
-`pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run check:lockfile && pnpm run verify:artifacts && pnpm run check:lockfile && pnpm run verify:frozen-contract && pnpm run check:lockfile && node scripts/check-readme-sync.mjs && pnpm pack`
+`pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run verify:artifacts && pnpm run verify:frozen-contract && pnpm run check:lockfile && node scripts/check-readme-sync.mjs && pnpm pack`
 
 - `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.5-alpha.1 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
 
