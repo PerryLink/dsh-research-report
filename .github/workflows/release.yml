@@ -66,7 +66,21 @@ jobs:
           if npm view "dsh-research-report@${version}" version >/dev/null 2>&1; then
             echo "dsh-research-report@${version} is already published; skipping npm publish"
           else
-            npm publish --access public --provenance
+            # See the guard above: npm's read side can lag a successful publish, so a re-pushed
+            # tag can miss it and hit E409 ("Cannot publish over previously staged version"). That
+            # means the version already exists, so report it as done instead of failing the job.
+            set +e
+            out="$(npm publish --access public --provenance 2>&1)"
+            status=$?
+            set -e
+            printf '%s\n' "$out"
+            if [ "$status" -ne 0 ]; then
+              if printf '%s' "$out" | grep -q 'E409'; then
+                echo "already on the registry (E409); treating the publish as done"
+              else
+                exit "$status"
+              fi
+            fi
           fi
 
   release:
