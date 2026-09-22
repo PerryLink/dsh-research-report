@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Clarify the host-vocabulary lock's provenance: the size assertion in `test/events-gate.spec.ts` tracks the **installed peer line**, not the checkout. On the `0.1.6-alpha.2` peers it is 58; the `0.1.7-alpha.1` checkout is 60 (it adds `developer/message`; `workspace/changes` is already in alpha.2). No assertion changed. The peer-pin bump that would move this number is tracked separately, because raising it also moves the two `dsh-settings-file` / `dsh-agent-presets` package names this plugin's siblings depend on.
+
+### Fixed
+
+- Repair a mojibake artifact in the `package.json` `description`: two em dashes had been double-encoded into `U+95B3`. The registry metadata and the npm package page rendered the corrupted text, and a raw CJK code point has no business in that field at all.
+- Correct `src/version.ts`, which still declared `0.3.11` while `package.json` and the published tarball were `0.3.12`. `VERSION` is not cosmetic here: it is stamped into every sealed `manifest.json` (`provider-local.ts`) and into the verification record (`verify-sealed.ts`), so the published `0.3.12` labelled its own durable artifacts with the previous release's version. The release script (`scripts/release.mjs`) is documented to bump this file alongside `package.json`; it did not.
+
 ## [0.3.12] - 2026-09-19
 
 ### Added

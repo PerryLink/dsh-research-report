@@ -34,7 +34,12 @@ function valueOf<T>(result: { isError: boolean; value?: unknown }): T {
 
 describe('adaptive audit gate (regression lock)', () => {
   it('pins the host vocabulary size', () => {
-    // 58 is the size of KNOWN_SESSION_EVENT_TYPES on the 0.1.6-alpha.2 line.
+    // 58 is the size of KNOWN_SESSION_EVENT_TYPES at *runtime*: this test file
+    // resolves `@deepseek-ai/dsh-session` from node_modules, i.e. the installed
+    // 0.1.6-alpha.2 peer. It is NOT the checkout's vocabulary — the 0.1.7-alpha.1
+    // checkout declares 60 (it adds `developer/message`; `workspace/changes` is
+    // already in alpha.2), so a peer-pin bump moves this number and this test is
+    // meant to be re-snapshotted then.
     // A red here is the wanted signal: the upstream vocabulary moved, so
     // re-snapshot the set and re-check the two assertions below before
     // touching this number.
