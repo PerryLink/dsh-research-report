@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.13] - 2026-09-22
+
 ### Changed
 
 - Clarify the host-vocabulary lock's provenance: the size assertion in `test/events-gate.spec.ts` tracks the **installed peer line**, not the checkout. On the `0.1.6-alpha.2` peers it is 58; the `0.1.7-alpha.1` checkout is 60 (it adds `developer/message`; `workspace/changes` is already in alpha.2). No assertion changed. The peer-pin bump that would move this number is tracked separately, because raising it also moves the two `dsh-settings-file` / `dsh-agent-presets` package names this plugin's siblings depend on.
