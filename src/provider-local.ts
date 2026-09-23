@@ -8,7 +8,7 @@
 import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import type { Context } from '@deepseek-ai/cordis'
-import type { JobHooks, JobOutcome } from '@deepseek-ai/dsh-jobs'
+import type { JobHandle, JobHooks, JobOutcome } from '@deepseek-ai/dsh-jobs'
 import { KNOWN_SESSION_EVENT_TYPES } from '@deepseek-ai/dsh-session'
 import type { Session } from '@deepseek-ai/dsh-session'
 import type { WebRuntime } from '@deepseek-ai/dsh-web'
@@ -161,7 +161,7 @@ function serializeJournalOrThrow(serialize: () => string, label: string, blocked
 
 /** The optional jobs seam surface (resolved at call time, never injected). */
 interface JobsRuntime {
-  start(input: { kind: string; label: string; run: () => JobHooks }): string
+  start(input: { kind: string; label: string; run: (job: JobHandle) => JobHooks }): string
 }
 
 /**
@@ -185,7 +185,10 @@ function validateSessionRef(ref: SessionRef): void {
 /**
  * Start the read-only verifier job: re-run the deterministic sealed-report
  * verification and append the model-review section to `verifier-note.md`. The
- * model review is an enhancement over the always-run machine check.
+ * model review is an enhancement over the always-run machine check. The review
+ * text rides the job's output ring through {@link JobHandle.append}, which is
+ * this line's only producer-side stream writer.
+ * @param job - the registry-issued producer face (id + ring writers).
  * @param service - the provider (for `verifySealedReport`).
  * @param reportDir - the sealed report directory.
  * @param expectedSealHash - the seal hash to recompute against.
@@ -193,6 +196,7 @@ function validateSessionRef(ref: SessionRef): void {
  * @returns the job hooks.
  */
 function startVerifierJob(
+  job: JobHandle,
   service: LocalResearchReportService,
   reportDir: string,
   expectedSealHash: string,
@@ -220,7 +224,8 @@ function startVerifierJob(
         '',
       ].join('\n')
       await appendFile(notePath, review, 'utf8')
-      settle({ status: 'completed', detail: 'verifier note appended', output: review })
+      job.append(review)
+      settle({ status: 'completed', detail: 'verifier note appended' })
     })
     .catch((error: unknown) => {
       const message = error instanceof Error ? error.message : String(error)
@@ -231,7 +236,6 @@ function startVerifierJob(
       settle({ status: 'killed', detail: `cancelled: ${reason ?? 'no reason given'}` })
     },
     done: done.promise,
-    readOutput: (): string => '',
   }
 }
 
@@ -765,7 +769,7 @@ export class LocalResearchReportService extends ResearchReportService {
     const jobId = jobs.start({
       kind: 'research-report-verify',
       label: `verify sealed report: ${reportDir}`,
-      run: (): JobHooks => startVerifierJob(this, reportDir, expectedSealHash, notePath),
+      run: (job: JobHandle): JobHooks => startVerifierJob(job, this, reportDir, expectedSealHash, notePath),
     })
     return `read-only verifier job ${jobId} started (enhancement over the deterministic machine check)`
   }

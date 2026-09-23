@@ -9,7 +9,7 @@
 
 import path from 'node:path'
 import type { Context } from '@deepseek-ai/cordis'
-import type { JobHooks, JobOutcome } from '@deepseek-ai/dsh-jobs'
+import type { JobHandle, JobHooks, JobOutcome } from '@deepseek-ai/dsh-jobs'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { ToolResult } from '@deepseek-ai/dsh-tools'
 import { CaptureError } from '../gather.ts'
@@ -285,8 +285,9 @@ export function makeResearchReportTool(deps: ResearchReportToolDeps) {
         const jobId = jobs.start({
           kind: 'research-report',
           label: `assemble report: ${args.topic}`,
-          ...exec.agent === undefined ? {} : { owner: exec.agent },
-          run: (): JobHooks => startAssembleJob(service, request, session === undefined ? {} : { session }),
+          // JobSpec.owner is a SessionId; Agent.id is exactly that brand.
+          ...exec.agent === undefined ? {} : { owner: exec.agent.id },
+          run: (job: JobHandle): JobHooks => startAssembleJob(job, service, request, session === undefined ? {} : { session }),
         })
         return { kind: 'background' as const, jobId }
       }
@@ -383,19 +384,24 @@ async function buildRequest(service: LocalResearchReportService, args: ReportArg
 
 /**
  * Start the background assemble job body. The job owns its cancellation
- * signal; settlement flushes the sealed summary into the job output.
+ * signal; settlement flushes the sealed summary into the job output. The
+ * sealed summary is written with {@link JobHandle.append} (the ring) and the
+ * phase line with {@link JobHandle.updateProgress}; `JobOutcome.result` stays
+ * unset because this is a stream job, not a value-returning one.
+ * @param job - the registry-issued producer face (id + ring writers).
  * @param service - the local provider.
  * @param request - the frozen assemble request.
  * @param context - the assemble context (owning session, when known).
  * @returns the job hooks.
  */
 function startAssembleJob(
+  job: JobHandle,
   service: LocalResearchReportService,
   request: AssembleReportRequest,
   context: { session?: import('@deepseek-ai/dsh-session').Session },
 ): JobHooks {
   const abort = new AbortController()
-  const progress: string[] = [`assembling report: ${request.topic}`]
+  job.updateProgress(`assembling report: ${request.topic}`)
   const done = Promise.withResolvers<JobOutcome>()
   let settled = false
   const settle = (outcome: JobOutcome): void => {
@@ -406,12 +412,12 @@ function startAssembleJob(
   void service.assembleDetailed(request, context)
     .then((detail) => {
       const value = sealedValue(detail.reportDir, detail.sealHash, detail.verdicts, request.evidence.length, detail.driftCount)
-      progress.push(renderSealed(value))
-      settle({ status: 'completed', detail: `sealed ${detail.sealHash.slice(0, 12)}`, output: renderSealed(value) })
+      job.append(renderSealed(value))
+      settle({ status: 'completed', detail: `sealed ${detail.sealHash.slice(0, 12)}` })
     })
     .catch((error: unknown) => {
       const message = error instanceof CaptureError || error instanceof Error ? error.message : String(error)
-      progress.push(`assemble failed: ${message}`)
+      job.append(`assemble failed: ${message}`)
       settle({ status: 'failed', detail: message.length > 200 ? `${message.slice(0, 197)}…` : message })
     })
   return {
@@ -420,10 +426,6 @@ function startAssembleJob(
       settle({ status: 'killed', detail: `cancelled: ${reason ?? 'no reason given'}` })
     },
     done: done.promise,
-    readOutput: (): string => {
-      if (progress.length === 0) return ''
-      return `${progress.splice(0, progress.length).join('\n')}\n`
-    },
   }
 }
 

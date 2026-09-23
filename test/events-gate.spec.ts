@@ -4,9 +4,9 @@
  * `research-report/*` events are appended only when the host's own vocabulary
  * knows them: on the shipped host lines the persistence layer refuses a log
  * carrying an unknown non-marked type, so an unconditional append would make
- * the session unresumable. The three assertions below are the anti-hand-slip
- * lock the card asks for — the size assertion in particular is *meant* to go
- * red when the upstream vocabulary changes.
+ * the session unresumable. The assertions below are the anti-hand-slip lock the
+ * card asks for — the size assertion in particular is *meant* to go red when
+ * the upstream vocabulary changes.
  * @module dsh-research-report/test/events-gate.spec
  */
 
@@ -34,16 +34,30 @@ function valueOf<T>(result: { isError: boolean; value?: unknown }): T {
 
 describe('adaptive audit gate (regression lock)', () => {
   it('pins the host vocabulary size', () => {
-    // 58 is the size of KNOWN_SESSION_EVENT_TYPES at *runtime*: this test file
+    // 59 is the size of KNOWN_SESSION_EVENT_TYPES at *runtime*: this test file
     // resolves `@deepseek-ai/dsh-session` from node_modules, i.e. the installed
-    // 0.1.6-alpha.2 peer. It is NOT the checkout's vocabulary — the 0.1.7-alpha.1
-    // checkout declares 60 (it adds `developer/message`; `workspace/changes` is
-    // already in alpha.2), so a peer-pin bump moves this number and this test is
-    // meant to be re-snapshotted then.
+    // 0.1.7-alpha.2 peer. The peer bump moved this number 58 → 59: the 0.1.7
+    // line adds the session-format-V4 `developer/message` event (upstream
+    // e0bd7e1960, "feat(session): add developer changes using historical tool
+    // schemas"). Measured on this machine: 0.1.5-rc.2 = 56, 0.1.6-alpha.2 = 58,
+    // 0.1.7-alpha.2 = 59.
     // A red here is the wanted signal: the upstream vocabulary moved, so
-    // re-snapshot the set and re-check the two assertions below before
-    // touching this number.
-    expect(KNOWN_SESSION_EVENT_TYPES.size).toBe(58)
+    // re-snapshot the set and re-check the assertions below before touching
+    // this number.
+    expect(KNOWN_SESSION_EVENT_TYPES.size).toBe(59)
+  })
+
+  it('names the 0.1.7 addition instead of trusting the count alone', () => {
+    // A set that gained one type and lost another in the same wave would keep
+    // the size assertion green, so the composition is pinned by name too:
+    // `developer/message` is the delta this peer bump brought in, and the
+    // role/user/tool events are the durable vocabulary this plugin's gate
+    // reasons about.
+    expect(KNOWN_SESSION_EVENT_TYPES.has('developer/message')).toBe(true)
+    expect(KNOWN_SESSION_EVENT_TYPES.has('workspace/changes')).toBe(true)
+    expect(KNOWN_SESSION_EVENT_TYPES.has('user/message')).toBe(true)
+    expect(KNOWN_SESSION_EVENT_TYPES.has('assistant/message')).toBe(true)
+    expect(KNOWN_SESSION_EVENT_TYPES.has('tool/result')).toBe(true)
   })
 
   it('keeps every research-report/* type outside the host vocabulary', () => {

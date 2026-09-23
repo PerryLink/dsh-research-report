@@ -237,7 +237,9 @@ describe('research_report + ledger_query', () => {
     const snapshot = await base.ctx.jobs.wait(jobId, 10_000)
     expect(snapshot.status).toBe('completed')
     const read = base.ctx.jobs.read(jobId)
-    expect(read.text).toContain('report sealed:')
+    // 0.1.7-alpha.2's JobRead carries the ring as offset-ordered `chunks`
+    // (the old single `text` field is gone).
+    expect(read.chunks.map(chunk => chunk.text).join('')).toContain('report sealed:')
   })
 
   it('returns the gathered branch without assembling when gather is set (no web → loud)', async () => {
