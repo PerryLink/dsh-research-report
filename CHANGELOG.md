@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The `ctx.jobs` rework broke the declaration build: `JobOutcome.output` is gone, `JobHooks.readOutput` is gone, `JobSpec.run` now receives a `JobHandle`, and `JobSpec.owner` is a `SessionId` rather than an `Agent`. Both producers (`startAssembleJob` in `src/tools/research-report.ts`, `startVerifierJob` in `src/provider-local.ts`) now write their text with `JobHandle.append` and use `JobHandle.updateProgress` for the live phase line, `JobSpec.run` threads the handle in, and `owner: exec.agent` became `owner: exec.agent.id` (`dsh-agent`'s `Agent.id` is a branded `SessionId`); the repo's structural `JobsRuntime.start` face was widened to match. `JobOutcome.result` is deliberately left unset, because both are stream jobs.
+- `test/events-gate.spec.ts` pinned the host vocabulary size at 58; the `0.1.7` line adds the session-format-V4 `developer/message` event, so the count is 59 (measured on this machine: `0.1.5-rc.2` = 56, `0.1.6-alpha.2` = 58, `0.1.7-alpha.2` = 59). This was a stale host fact, not a regression. The expectation is updated AND strengthened: a new test pins the composition by name (`developer/message` present; `workspace/changes`, `user/message`, `assistant/message`, `tool/result` still present), so a future wave that adds one type and removes another can no longer pass on the count alone. The companion assertions — no `research-report/*` type in the host vocabulary, and no audit event appended on a host that does not know it — are unchanged.
+- `test/index.spec.ts`'s background-job test read `read.text`, which the `0.1.7` line replaced with offset-ordered `read.chunks`; it now joins the chunk texts and keeps the same assertion (`toContain('report sealed:')`), because the job really does deliver the sealed summary through `JobHandle.append`.
+
+### Changed
+
+- Move every `@deepseek-ai/*` devDependency to `0.1.7-alpha.2`, and the `@deepseek-ai/cordis` / `@deepseek-ai/schemastery` dev carets to `^4.0.4` / `^3.18.4`, the versions that line declares. `pnpm dedupe` collapsed a second Schemastery copy (3.18.2) that the old lockfile preserved under an optional sibling's dependency — the exact shape that makes `Volatile` resolve differently across the tree — so the lockfile now resolves one `@deepseek-ai/schemastery@3.18.4` and one `@deepseek-ai/cordis@4.0.4`.
+- Every declared host range — `engines.dsh` and the five `peerDependencies` bands — gains the `|| >=0.1.7-0 <0.2.0` arm, so the bands now admit the `0.1.7` prerelease line. Under semver's prerelease rule a range whose only prerelease comparators sit on earlier version tuples cannot admit a later alpha, so the previous three-clause form excluded the very host this release targets. No existing arm was removed or narrowed.
+- `dshWorkshop.compatibility.dshVersions` gains `0.1.7-alpha.2`, and all five READMEs name the verified line.
+- A new `typecheck:checkout` ruler (`tsc -p tsconfig.checkout.json --noEmit`) compiles against the local harness checkout's built type faces alongside the published-face ruler.
+- The compat workflow now exercises the `0.1.7-alpha.2` host line in addition to the earlier declared lines, so the matrix covers every line this package declares.
+
 ## [0.3.13] - 2026-09-22
 
 ### Changed
