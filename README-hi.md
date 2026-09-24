@@ -25,6 +25,13 @@
 
 ---
 
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+यह प्लगइन [DSH प्लगइन परिवार](https://github.com/PerryLink) का हिस्सा है (40+ प्लगइन, सभी Apache-2.0)। अगर यह उपयोगी लगे, तो **एक स्टार दें** — इससे कोई सुविधा अनलॉक नहीं होती, पर अगला व्यक्ति इसे खोज में आसानी से पा लेता है।
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.1.7-rc.1` (2026-09-24 को सत्यापित)। npm dev/test लाइन `0.1.7-rc.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`। compat मैट्रिक्स चारों घोषित peer लाइनों को पिन करता है। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `research-report/*` इवेंट अब भी सत्र लॉग में दर्ज नहीं होते: लेजर जर्नल ही टिकाऊ स्रोत हैं और ऑडिट मिरर तभी सक्रिय होता है जब होस्ट शब्दावली जानता हो (`test/events-gate.spec.ts` का रिग्रेशन लॉक इसे पिन करता है)।

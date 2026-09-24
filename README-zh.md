@@ -25,6 +25,13 @@
 
 ---
 
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.1.7-rc.1`（2026-09-24 已核验）。npm dev/test 线 `0.1.7-rc.1`；peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`。compat 矩阵同时钉住四条已声明 peer 线。该线上 `Session.append` 的第三参仅对表面事件类型为 `SurfaceIntent`，因此 `research-report/*` 事件仍不落盘：账本日志才是持久真相，审计镜像仅在宿主认识该词表后自动激活（`test/events-gate.spec.ts` 的回归锁钉住此语义）。

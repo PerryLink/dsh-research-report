@@ -25,6 +25,13 @@
 
 ---
 
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+Este plugin faz parte da [família de plugins DSH](https://github.com/PerryLink) (mais de 40, todos Apache-2.0). Se for útil, **deixe uma estrela**: não desbloqueia nada, mas ajuda a próxima pessoa a encontrá-lo.
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.1.7-rc.1` (verificado em 2026-09-24). Linha npm dev/test `0.1.7-rc.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`. A matriz compat fixa as quatro linhas peer declaradas. Nesta linha o terceiro parâmetro de `Session.append` é um `SurfaceIntent` apenas para tipos de superfície, então os eventos `research-report/*` continuam sem ser gravados no log de sessão: os diários do ledger são a fonte durável e o espelho de auditoria ativa quando o host conhece o vocabulário (o cadeado de regressão em `test/events-gate.spec.ts` fixa isso).
