@@ -13,7 +13,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-research-report`). Developme
 - `src/provider-local.ts` — the local Provider (`LocalResearchReportService`): policy caps, ledger orchestration, verdict writeback, adaptive session-event append, seal directory allocation.
 - `src/tools/` — the three Consumers: `evidence_add`, `research_report` (sealed | background | gathered branches), `ledger_query`.
 - `scripts/` — `prepare.mjs` (self-contained build), `verify-self-contained.mjs`, `verify-artifacts.mjs`, `check-readme-sync.mjs` (five-language gate), `verify-frozen-contract.mjs` (cross-plugin contract gate), `loader-runner.mjs` (real Loader composition runner), `release.mjs` (bump + stamp + gate + commit + tag, never pushes), `changelog-section.mjs`, `fix-dts.mjs`.
-- `test/` — vitest; REAL `Context`/`SessionStore`/`Session`/`SystemPrompt`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` from the 0.1.7-alpha.2 peers. Only the network backends are scripted providers registered through the real `ctx.web` registries; background-job tests run unowned (the minimal harness agent is not enrolled in a real agents registry, which job-ownership validation requires).
+- `test/` — vitest; REAL `Context`/`SessionStore`/`Session`/`SystemPrompt`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` from the 0.1.7-rc.1 peers. Only the network backends are scripted providers registered through the real `ctx.web` registries; background-job tests run unowned (the minimal harness agent is not enrolled in a real agents registry, which job-ownership validation requires).
 - `fixtures/` — three local documents for the keyless end-to-end flow (evidence → seal → tamper → contradicted).
 
 ## Hard rules applied here
@@ -30,7 +30,7 @@ Standalone DeepSeek Harness plugin repository (`dsh-research-report`). Developme
 
 `pnpm run typecheck && pnpm run typecheck:ci && pnpm test && pnpm run build && pnpm run verify:self-contained && pnpm run verify:artifacts && pnpm run verify:frozen-contract && pnpm run check:lockfile && node scripts/check-readme-sync.mjs && pnpm pack`
 
-- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.7-alpha.2 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
+- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.7-rc.1 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
 
 ## Release
 
