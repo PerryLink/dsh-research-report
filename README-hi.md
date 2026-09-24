@@ -34,7 +34,7 @@
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 ## Compatibility
 
-- DeepSeek Harness `dsh-v0.1.7-rc.1` (2026-09-24 को सत्यापित)। npm dev/test लाइन `0.1.7-rc.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`। compat मैट्रिक्स चारों घोषित peer लाइनों को पिन करता है। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `research-report/*` इवेंट अब भी सत्र लॉग में दर्ज नहीं होते: लेजर जर्नल ही टिकाऊ स्रोत हैं और ऑडिट मिरर तभी सक्रिय होता है जब होस्ट शब्दावली जानता हो (`test/events-gate.spec.ts` का रिग्रेशन लॉक इसे पिन करता है)।
+- DeepSeek Harness `dsh-v0.1.7-rc.2` (2026-09-25 को सत्यापित)। npm dev/test लाइन `0.1.7-rc.2`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`। compat मैट्रिक्स चारों घोषित peer लाइनों को पिन करता है। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `research-report/*` इवेंट अब भी सत्र लॉग में दर्ज नहीं होते: लेजर जर्नल ही टिकाऊ स्रोत हैं और ऑडिट मिरर तभी सक्रिय होता है जब होस्ट शब्दावली जानता हो (`test/events-gate.spec.ts` का रिग्रेशन लॉक इसे पिन करता है)।
 0.1.5-alpha.1 (2026-09-09 को अनुकूलित): सत्र लिफ़ाफ़ा अपना ignorable फ़ील्ड केवल संग्रहीत-लॉग पठन संगतता के लिए रखता है - Session.append अभी भी इसे स्टैम्प नहीं कर सकता, इसलिए गेट व्यवहार अपरिवर्तित है। 2026-09-11 को प्रकाशित 0.1.5-rc.2 टाइप्स के विरुद्ध सत्यापित (पूर्ण स्थानीय गेट-शृंखला); compat workflow दोनों घोषित peer लाइनों को पिन करता है।
 - Node `^22.19.0 || >=24.0.0`, केवल ESM (`"type": "module"`)।
 - Peer डिपेंडेंसी: `@deepseek-ai/cordis ^4.0.2`, `@deepseek-ai/schemastery ^3.18.2`, तथा `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0` के `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs`।
@@ -159,8 +159,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` इंस्टॉल किए गए 0.1.7-rc.1 peers से `@deepseek-ai/*` resolve करता है; `typecheck:ci` प्रकाशित टाइप्स के विरुद्ध `skipLibCheck` बंद और `verbatimModuleSyntax` चालू करता है। दोनों हरे रहने चाहिए।
-- टेस्ट 0.1.7-rc.1 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्री में पंजीकृत scripted providers हैं।
+- `typecheck` इंस्टॉल किए गए 0.1.7-rc.2 peers से `@deepseek-ai/*` resolve करता है; `typecheck:ci` प्रकाशित टाइप्स के विरुद्ध `skipLibCheck` बंद और `verbatimModuleSyntax` चालू करता है। दोनों हरे रहने चाहिए।
+- टेस्ट 0.1.7-rc.2 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्री में पंजीकृत scripted providers हैं।
 - रिलीज़: `node scripts/release.mjs <x.y.z>` (वर्ज़न बम्प, CHANGELOG स्टैम्प, गेट पुनःचालन, कमिट + टैग; कभी push नहीं)।
 
 ## Topics

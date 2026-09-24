@@ -34,7 +34,7 @@ Este plugin faz parte da [família de plugins DSH](https://github.com/PerryLink)
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 ## Compatibility
 
-- DeepSeek Harness `dsh-v0.1.7-rc.1` (verificado em 2026-09-24). Linha npm dev/test `0.1.7-rc.1`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`. A matriz compat fixa as quatro linhas peer declaradas. Nesta linha o terceiro parâmetro de `Session.append` é um `SurfaceIntent` apenas para tipos de superfície, então os eventos `research-report/*` continuam sem ser gravados no log de sessão: os diários do ledger são a fonte durável e o espelho de auditoria ativa quando o host conhece o vocabulário (o cadeado de regressão em `test/events-gate.spec.ts` fixa isso).
+- DeepSeek Harness `dsh-v0.1.7-rc.2` (verificado em 2026-09-25). Linha npm dev/test `0.1.7-rc.2`; peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`. A matriz compat fixa as quatro linhas peer declaradas. Nesta linha o terceiro parâmetro de `Session.append` é um `SurfaceIntent` apenas para tipos de superfície, então os eventos `research-report/*` continuam sem ser gravados no log de sessão: os diários do ledger são a fonte durável e o espelho de auditoria ativa quando o host conhece o vocabulário (o cadeado de regressão em `test/events-gate.spec.ts` fixa isso).
 0.1.5-alpha.1 (adaptado em 2026-09-09): o envelope de sessão mantém seu campo ignorable apenas para compatibilidade de leitura de logs armazenados - o Session.append ainda não consegue estampá-lo, então o comportamento da porta não muda. Verificado em 2026-09-11 contra os tipos publicados 0.1.5-rc.2 (cadeia completa de portas local); o workflow compat fixa ambas as linhas peer declaradas.
 - Node `^22.19.0 || >=24.0.0`, apenas ESM (`"type": "module"`).
 - Dependências peer: `@deepseek-ai/cordis ^4.0.2`, `@deepseek-ai/schemastery ^3.18.2`, e `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` em `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`.
@@ -159,8 +159,8 @@ node scripts/verify-frozen-contract.mjs
 pnpm pack
 ```
 
-- `typecheck` resolve `@deepseek-ai/*` através dos peers 0.1.7-rc.1 instalados; `typecheck:ci` desativa `skipLibCheck` e ativa `verbatimModuleSyntax` contra os tipos publicados. Ambos têm de ficar verdes.
-- Os testes usam os `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reais dos peers 0.1.7-rc.1; apenas os backends de rede são providers scriptados registados através dos registos reais de `ctx.web`.
+- `typecheck` resolve `@deepseek-ai/*` através dos peers 0.1.7-rc.2 instalados; `typecheck:ci` desativa `skipLibCheck` e ativa `verbatimModuleSyntax` contra os tipos publicados. Ambos têm de ficar verdes.
+- Os testes usam os `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reais dos peers 0.1.7-rc.2; apenas os backends de rede são providers scriptados registados através dos registos reais de `ctx.web`.
 - Release: `node scripts/release.mjs <x.y.z>` (sobe versão, carimba CHANGELOG, re-executa a gate, commita + etiqueta; nunca faz push).
 
 ## Topics
