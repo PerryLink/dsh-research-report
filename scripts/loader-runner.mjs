@@ -49,6 +49,7 @@ try {
     config: { path: pathToFileURL(configPath).href },
   })
   await ctx.loader.await()
+  await rethrowFirstFailedRow()
 
   // Authoritative registries carry the plugin's contributions.
   const schemas = ctx.tools.schemas()
@@ -118,4 +119,32 @@ try {
   process.exit(1)
 } finally {
   await ctx.fiber.dispose()
+}
+
+/**
+ * Re-throw the first FAILED loader row's own reason.
+ *
+ * `cordis-plugin-loader` 1.0.6 dropped the failure surface `await()` had in 1.0.4: the old body
+ * collected every `entry._await()` outcome and threw the single failure (or an AggregateError),
+ * while the new body only drains `_initTask || fiber.inertia` and so resolves even when a row's
+ * `apply` threw. Without this the negative composition regressions report the runner's own
+ * downstream symptom instead of the reason they assert. `fiber.await()` still rethrows the
+ * stored error, so the reason comes back without touching the logger.
+ *
+ * `DSH_LOADER_RUNNER_NO_RETHROW=1` disables it for re-measurement only.
+ */
+async function rethrowFirstFailedRow() {
+  if (process.env.DSH_LOADER_RUNNER_NO_RETHROW === '1') return
+  const failures = []
+  for (const entry of ctx.loader.entries()) {
+    // FiberState.FAILED === 3 (const enum, erased at runtime).
+    if (entry?.fiber?.state !== 3) continue
+    try {
+      await entry.fiber.await()
+    } catch (error) {
+      failures.push(error instanceof Error ? error : new Error(String(error)))
+    }
+  }
+  if (failures.length === 1) throw failures[0]
+  if (failures.length > 1) throw new AggregateError(failures, 'loader fibers failed')
 }
