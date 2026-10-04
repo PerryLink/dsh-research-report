@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Changed
+
+- Host pins move to `0.2.1-alpha.1`; re-verified against that host line. Every `@deepseek-ai/dsh-*` dev/test dependency now pins `0.2.1-alpha.1`, the `dshWorkshop.compatibility.dshVersions` timeline appends `0.2.1-alpha.1`, and the compatibility baseline in every README records the `dsh-v0.2.1-alpha.1` host. The declared host ranges (`engines.dsh` and the `peerDependencies` union) gain the `|| >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0` clauses: the previous upper bound was `<0.2.0`, which under semver rejects every 0.2.x host, so the probe host itself was not installable. Nothing was narrowed — the `0.1.x` clauses are unchanged, in place and in order.
+
 ## [0.3.16] - 2026-09-25
 
 ### Changed
