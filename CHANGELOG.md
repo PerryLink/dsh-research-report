@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.21] - 2026-10-06
+
+### Changed
+
+- **The declared peer band did not admit the line the package runs on.** The dev/test pins sit on `0.2.1-alpha.1`, but the band stopped at `>=0.2.0-0 <0.3.0`, which semver's prerelease rule cannot extend to a `0.2.1` prerelease. A `|| >=0.2.1-0 <0.3.0` clause is appended (and mirrored in `engines.dsh`), as every earlier prerelease tuple gained its own clause. The `0.1.6` floor is unchanged and no earlier clause is restored.
+- The five READMEs state the resulting band; the published tarball still carried the pre-`0.2.0` one.
+
+
 ## [0.3.20] - 2026-10-05
 
 ### Changed
