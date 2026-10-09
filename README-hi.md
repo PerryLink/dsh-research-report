@@ -34,6 +34,14 @@
 यह प्लगइन [DSH प्लगइन परिवार](https://github.com/PerryLink) का हिस्सा है (40+ प्लगइन, सभी Apache-2.0)। अगर यह उपयोगी लगे, तो **एक स्टार दें** — इससे कोई सुविधा अनलॉक नहीं होती, पर अगला व्यक्ति इसे खोज में आसानी से पा लेता है।
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-research-report?
+
+DeepSeek Harness के लिए सत्यापन-योग्य (verifiable) रिसर्च-रिपोर्ट इंजन।
+
+हर claim अपरिवर्तनीय साक्ष्य-स्नैपशॉट से बंधता है, बाइट-दर-बाइट जाँचा जाता है, और एक संस्करणित (versioned) रिपोर्ट में सील होता है — जिसका manifest हैश कोई भी दोबारा गिनकर सत्यापित कर सकता है।
+
+![dsh-research-report का टर्मिनल डेमो: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.png)
+
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.2.1-alpha.1` (2026-09-25 को सत्यापित)। npm dev/test लाइन `0.1.7-rc.2`; peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`। compat मैट्रिक्स चारों घोषित peer लाइनों को पिन करता है। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `research-report/*` इवेंट अब भी सत्र लॉग में दर्ज नहीं होते: लेजर जर्नल ही टिकाऊ स्रोत हैं और ऑडिट मिरर तभी सक्रिय होता है जब होस्ट शब्दावली जानता हो (`test/events-gate.spec.ts` का रिग्रेशन लॉक इसे पिन करता है)।
@@ -59,6 +67,10 @@
 - **कोई deep-research लूप नहीं** — रिट्रीवल ऑर्केस्ट्रेशन जानबूझकर पुनः उपयोगित है: खोज/फेच `ctx.web`, लंबे कार्य `ctx.jobs`। योजना और संश्लेषण मॉडल (या अपस्ट्रीम प्लगिन) के पास रहते हैं।
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-research-report
+```
 
 ### git चैनल
 

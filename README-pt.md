@@ -34,6 +34,14 @@
 Este plugin faz parte da [família de plugins DSH](https://github.com/PerryLink) (mais de 40, todos Apache-2.0). Se for útil, **deixe uma estrela**: não desbloqueia nada, mas ajuda a próxima pessoa a encontrá-lo.
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-research-report?
+
+Um motor de relatórios de pesquisa verificáveis para DeepSeek Harness.
+
+Cada afirmação (claim) fica vinculada a snapshots de evidência imutáveis, é verificada byte a byte e é selada num relatório versionado cujo hash de manifesto qualquer pessoa pode recomputar.
+
+![Demonstração de terminal do dsh-research-report: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.png)
+
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.2.1-alpha.1` (verificado em 2026-09-25). Linha npm dev/test `0.1.7-rc.2`; peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`. A matriz compat fixa as quatro linhas peer declaradas. Nesta linha o terceiro parâmetro de `Session.append` é um `SurfaceIntent` apenas para tipos de superfície, então os eventos `research-report/*` continuam sem ser gravados no log de sessão: os diários do ledger são a fonte durável e o espelho de auditoria ativa quando o host conhece o vocabulário (o cadeado de regressão em `test/events-gate.spec.ts` fixa isso).
@@ -59,6 +67,10 @@ Este plugin faz parte da [família de plugins DSH](https://github.com/PerryLink)
 - **Sem ciclo de deep-research** — a orquestração de recuperação é deliberadamente reutilizada: `ctx.web` para pesquisa/download, `ctx.jobs` para trabalhos longos. Planeamento e síntese ficam com o modelo (ou um plugin a montante).
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-research-report
+```
 
 ### Canal git
 

@@ -34,6 +34,14 @@
 这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-research-report?
+
+DeepSeek Harness 的可核查研究报告引擎。
+
+每条结论（claim）都绑定到不可变的证据快照，逐字节核查，并封存进版本化报告——其 manifest 哈希任何人都可重算验证。
+
+![dsh-research-report 终端演示：dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.png)
+
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.2.1-alpha.1`（2026-09-24 已核验）。npm dev/test 线 `0.1.7-rc.2`；peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`。compat 矩阵同时钉住四条已声明 peer 线。该线上 `Session.append` 的第三参仅对表面事件类型为 `SurfaceIntent`，因此 `research-report/*` 事件仍不落盘：账本日志才是持久真相，审计镜像仅在宿主认识该词表后自动激活（`test/events-gate.spec.ts` 的回归锁钉住此语义）。
@@ -59,6 +67,10 @@
 - **不做深研循环**——检索编排刻意复用官方底座：搜索/抓取走 `ctx.web`，长任务走 `ctx.jobs`。规划与综合交给模型（或上游插件）。
 
 ## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-research-report
+```
 
 ### git 通道
 
