@@ -43,6 +43,10 @@ Cada afirmación (claim) queda vinculada a instantáneas de evidencia inmutables
 
 ![Demostración de terminal de dsh-research-report: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.png)
 
+![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+
+*La misma ejecución, animada.*
+
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.2.1-alpha.1` (verificado el 2026-09-25). Línea npm dev/test `0.1.7-rc.2`; peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`. La matriz compat fija las cuatro líneas peer declaradas. En esta línea el tercer parámetro de `Session.append` es un `SurfaceIntent` solo para tipos de superficie, así que los eventos `research-report/*` siguen sin registrarse en el log de sesión: los diarios del ledger son la fuente duradera y el espejo de auditoría se activa cuando el host conoce el vocabulario (el candado de regresión en `test/events-gate.spec.ts` lo fija).

@@ -43,6 +43,10 @@ DeepSeek Harness के लिए सत्यापन-योग्य (verifia
 
 ![dsh-research-report का टर्मिनल डेमो: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.png)
 
+![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+
+*वही रन, एनिमेटेड।*
+
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.2.1-alpha.1` (2026-09-25 को सत्यापित)। npm dev/test लाइन `0.1.7-rc.2`; peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`। compat मैट्रिक्स चारों घोषित peer लाइनों को पिन करता है। इस लाइन पर `Session.append` का तीसरा पैरामीटर केवल सरफ़ेस प्रकारों के लिए `SurfaceIntent` है, इसलिए `research-report/*` इवेंट अब भी सत्र लॉग में दर्ज नहीं होते: लेजर जर्नल ही टिकाऊ स्रोत हैं और ऑडिट मिरर तभी सक्रिय होता है जब होस्ट शब्दावली जानता हो (`test/events-gate.spec.ts` का रिग्रेशन लॉक इसे पिन करता है)।

@@ -43,6 +43,10 @@ DeepSeek Harness 的可核查研究报告引擎。
 
 ![dsh-research-report 终端演示：dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.png)
 
+![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+
+*同一次运行，动图版。*
+
 ## Compatibility
 
 - DeepSeek Harness `dsh-v0.2.1-alpha.1`（2026-09-24 已核验）。npm dev/test 线 `0.1.7-rc.2`；peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`。compat 矩阵同时钉住四条已声明 peer 线。该线上 `Session.append` 的第三参仅对表面事件类型为 `SurfaceIntent`，因此 `research-report/*` 事件仍不落盘：账本日志才是持久真相，审计镜像仅在宿主认识该词表后自动激活（`test/events-gate.spec.ts` 的回归锁钉住此语义）。
