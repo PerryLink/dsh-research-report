@@ -4,4 +4,4 @@
  */
 
 /** The published package version. */
-export const VERSION = '0.3.20'
+export const VERSION = '0.3.22'
