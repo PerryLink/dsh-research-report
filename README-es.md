@@ -304,7 +304,9 @@ Este proyecto es uno de los **87 plugins activamente mantenidos** de DeepSeek Ha
 
 </details>
 
-</details>## License
+</details>
+
+## License
 
 Apache-2.0 — ver [LICENSE](LICENSE).
 

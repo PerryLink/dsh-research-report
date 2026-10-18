@@ -304,7 +304,9 @@ pnpm pack
 
 </details>
 
-</details>## License
+</details>
+
+## License
 
 Apache-2.0 — 见 [LICENSE](LICENSE)。
 
