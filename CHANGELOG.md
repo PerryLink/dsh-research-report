@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.27] - 2026-10-19
+
+### Fixed
+
+- **A verifier failure after the seal is written no longer fails `research_report` (issue #11).** The report directory is already durable at that point; the machine check is now wrapped, a failure is recorded in `verifier-note.md`, and the sealed value is still returned. Regression test covers a rejected verifier.
+
 ## [0.3.26] - 2026-10-19
 
 ### Fixed

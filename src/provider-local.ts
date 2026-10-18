@@ -722,16 +722,26 @@ export class LocalResearchReportService extends ResearchReportService {
     await writeFile(path.join(reportDir, 'disconfirmation.jsonl'), disconfirmationText, 'utf8')
 
     // Read-only verifier: the deterministic machine check always runs and is
-    // written first; the optional model-review job is an enhancement.
-    const machineResult = await this.verifySealedReport(reportDir, sealHash)
+    // written first; the optional model-review job is an enhancement. The seal
+    // is already durable here, so a verifier failure must not turn a successful
+    // seal into a tool error (issue #11) — record the failure in the note.
     const notePath = path.join(reportDir, 'verifier-note.md')
-    const modelStatus = this.spawnVerifier(reportDir, sealHash, notePath)
+    let machineCheck: string
+    let modelStatus: string
+    try {
+      const machineResult = await this.verifySealedReport(reportDir, sealHash)
+      machineCheck = renderMachineCheckMarkdown(machineResult)
+      modelStatus = this.spawnVerifier(reportDir, sealHash, notePath)
+    } catch (error) {
+      machineCheck = `**Verifier failed after the seal was written.** ${error instanceof Error ? error.message : String(error)}`
+      modelStatus = 'skipped: machine verifier failed'
+    }
     const verifierNote = [
       '# Verifier note',
       '',
       '## Machine check (deterministic)',
       '',
-      renderMachineCheckMarkdown(machineResult),
+      machineCheck,
       '',
       '## Model review (read-only)',
       '',

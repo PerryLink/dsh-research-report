@@ -8,7 +8,7 @@
 
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { executeTool, mountBase, mountPlugin, unmountBase, type BaseHarness } from './harness.ts'
 import type { LocalResearchReportService } from '../src/provider-local.ts'
 import type { EvidenceAddValue } from '../src/tools/evidence-add.ts'
@@ -94,6 +94,20 @@ describe('buildVerificationReport', () => {
     const report = buildVerificationReport(result, reportDir, null)
     expect(report.sealHashMatches).toBeNull()
     expect(report.ok).toBe(true) // internal hashes still all match
+  })
+})
+
+describe('post-seal verifier failure', () => {
+  it('returns the sealed report and records the verifier failure instead of failing the tool', async () => {
+    const base = await mountBase('verifier-cli-postseal-failure')
+    bases.push(base)
+    fibers.push(await mountPlugin(base))
+    const service = base.ctx.get('researchReport') as LocalResearchReportService
+    vi.spyOn(service, 'verifySealedReport').mockRejectedValueOnce(new Error('boom'))
+    const detail = await service.assembleDetailed({ title: 'Post-seal failure', topic: 'post-seal-failure', evidence: [], sections: [{ heading: 'Summary', paragraphs: [{ text: 'A sealed section.' }] }], claims: [] })
+    const note = await readFile(path.join(detail.reportDir, 'verifier-note.md'), 'utf8')
+    expect(note).toContain('Verifier failed after the seal was written.')
+    expect(note).toContain('boom')
   })
 })
 
