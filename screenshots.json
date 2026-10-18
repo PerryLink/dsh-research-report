@@ -1,5 +1,14 @@
-{
-  "screenshots": [
-    "docs/assets/dsh-research-report-demo.png"
-  ]
-}
+[
+  {
+    "path": "docs/assets/dsh-research-report-hero.png",
+    "kind": "hero",
+    "alt": "dsh-research-report terminal output",
+    "caption": "Real dsh-research-report test run; 111 tests passed."
+  },
+  {
+    "path": "docs/assets/dsh-research-report-demo.gif",
+    "kind": "demo",
+    "alt": "Animated dsh-research-report terminal session",
+    "caption": "The same run, assembled line by line."
+  }
+]
