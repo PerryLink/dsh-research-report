@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.26] - 2026-10-19
+
+### Fixed
+
+- **Version constant synced to the published package.** `src/version.ts` still said `0.3.23`, so `0.3.25` stamped sealed manifests and verification records with the wrong version. It now matches `package.json` at `0.3.26`.
+
 ## [0.3.25] - 2026-10-19
 
 ### Fixed
