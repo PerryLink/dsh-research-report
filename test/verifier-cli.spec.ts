@@ -67,6 +67,22 @@ describe('buildVerificationReport', () => {
     expect(json.claimChecks).toHaveLength(1)
   })
 
+  it('fails the envelope when a claim re-check mismatches', () => {
+    const report = buildVerificationReport({
+      sealHash: 'a'.repeat(64),
+      sealHashMatches: true,
+      reportHashMatches: true,
+      journalHashesMatch: true,
+      claimChecks: [{ claimId: 'claim-1', recorded: 'verified', recomputed: 'contradicted', match: false }],
+      gapSectionPresent: true,
+      disproofSectionPresent: true,
+      ok: true,
+    }, '/tmp/nonexistent-report', 'a'.repeat(64), 'rechecked')
+    expect(report.claimsChecked).toBe(1)
+    expect(report.claimsMatched).toBe(0)
+    expect(report.ok).toBe(false)
+  })
+
   it('reports a null seal comparison when no expected seal is supplied', async () => {
     const base = await mountBase('verifier-cli-noseal')
     bases.push(base)

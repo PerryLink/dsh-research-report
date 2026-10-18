@@ -218,11 +218,13 @@ export function buildVerificationReport(
   claimRecheck: 'rechecked' | 'skipped-no-ledger' = 'rechecked',
 ): VerificationReport {
   const sealHashMatches = expectedSealHash === null ? null : result.sealHashMatches
+  const claimsOk = claimRecheck === 'skipped-no-ledger' || result.claimChecks.every(check => check.match)
   const ok = (sealHashMatches === null || sealHashMatches)
     && result.reportHashMatches
     && result.journalHashesMatch
     && result.gapSectionPresent
     && result.disproofSectionPresent
+    && claimsOk
   return {
     tool: VERIFIER_TOOL,
     schema: 'dsh-research-report/verification@v1',

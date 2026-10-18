@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.25] - 2026-10-19
+
+### Fixed
+
+- **`verify-sealed` now fails when a claim re-check mismatches (issue #12).** The JSON/SARIF envelope already carried `claimChecks`, but `ok` was computed only from the hashes and the gap/disproof sections, so tampered ledger evidence could still exit 0 while the per-claim section showed a contradiction. `ok` now requires every re-checked claim to match; the no-ledger mode (`skipped-no-ledger`) is unaffected.
+
 ## [0.3.24] - 2026-10-18
 
 ### Changed
