@@ -21,6 +21,11 @@
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-research-report
+```
+
+
 </div>
 
 ---
@@ -29,6 +34,15 @@
 **📖 生态实测知识库**（实测数据，不是营销）：[插件开发指南 · 选型实测数据 · 维护取舍判据](https://perrylink.github.io/dsh-plugin-guide/)。
 
 <!-- star-cta -->
+## Install & uninstall
+
+```sh
+dsh plugin --profile demo add dsh-research-report       # 安装
+dsh plugin --profile demo remove dsh-research-report    # 卸载
+```
+
+验证行已挂载：`dsh --profile demo --dump-config | grep dsh-research-report`。
+
 ## ⭐ 如果它帮到了你
 
 这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
@@ -100,15 +114,6 @@ evidence_add({ origin: "docs/market.md", title: "市场快照" })            # �
 research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
 ledger_query({ claimId: "c1" })                                          # 绑定关系 + 核查结论
 ```
-
-## Install & uninstall
-
-```sh
-dsh plugin --profile demo add dsh-research-report       # 安装
-dsh plugin --profile demo remove dsh-research-report    # 卸载
-```
-
-验证行已挂载：`dsh --profile demo --dump-config | grep dsh-research-report`。
 
 ## Configuration
 

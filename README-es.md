@@ -21,6 +21,11 @@
 
 [English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
+```sh
+dsh plugin --profile <name> add dsh-research-report
+```
+
+
 </div>
 
 ---
@@ -29,6 +34,15 @@
 **📖 Base de conocimiento del ecosistema** — datos medidos, no marketing: [guía de desarrollo · datos de selección · criterios de mantenimiento](https://perrylink.github.io/dsh-plugin-guide/).
 
 <!-- star-cta -->
+## Install & uninstall
+
+```sh
+dsh plugin --profile demo add dsh-research-report       # instalar
+dsh plugin --profile demo remove dsh-research-report    # desinstalar
+```
+
+Verifica que la fila se monta: `dsh --profile demo --dump-config | grep dsh-research-report`.
+
 ## ⭐ 如果它帮到了你
 
 Este plugin forma parte de la [familia de plugins DSH](https://github.com/PerryLink) (más de 40, todos Apache-2.0). Si te resulta útil, **dale una estrella**: no desbloquea nada, pero ayuda a que la siguiente persona lo encuentre antes.
@@ -100,15 +114,6 @@ evidence_add({ origin: "docs/market.md", title: "Market snapshot" })     # → e
 research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
 ledger_query({ claimId: "c1" })                                          # vínculos + veredicto
 ```
-
-## Install & uninstall
-
-```sh
-dsh plugin --profile demo add dsh-research-report       # instalar
-dsh plugin --profile demo remove dsh-research-report    # desinstalar
-```
-
-Verifica que la fila se monta: `dsh --profile demo --dump-config | grep dsh-research-report`.
 
 ## Configuration
 
