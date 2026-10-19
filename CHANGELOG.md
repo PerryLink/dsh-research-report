@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.29] - 2026-10-19
+
+### Fixed
+
+- Update the rc.2 regression locks: the host event vocabulary is 62 (not 59), and background job ids are hex/UUID-shaped rather than numeric.
+
 ## [0.3.28] - 2026-10-19
 
 ### Fixed

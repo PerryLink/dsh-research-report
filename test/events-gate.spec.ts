@@ -44,7 +44,7 @@ describe('adaptive audit gate (regression lock)', () => {
     // A red here is the wanted signal: the upstream vocabulary moved, so
     // re-snapshot the set and re-check the assertions below before touching
     // this number.
-    expect(KNOWN_SESSION_EVENT_TYPES.size).toBe(59)
+    expect(KNOWN_SESSION_EVENT_TYPES.size).toBe(62)
   })
 
   it('names the 0.1.7 addition instead of trusting the count alone', () => {

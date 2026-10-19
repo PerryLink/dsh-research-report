@@ -232,7 +232,7 @@ describe('research_report + ledger_query', () => {
     const started = valueOf<ResearchReportValue>(await executeTool(base, 'research_report', args, { agent: false }))
     expect(started.kind).toBe('background')
     if (started.kind !== 'background') return
-    expect(started.jobId).toMatch(/^research-report-\d+$/u)
+    expect(started.jobId).toMatch(/^research-report-[0-9a-f]+$/u)
     const jobId = JobId(started.jobId)
     const snapshot = await base.ctx.jobs.wait(jobId, 10_000)
     expect(snapshot.status).toBe('completed')
