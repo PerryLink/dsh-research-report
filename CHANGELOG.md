@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.28] - 2026-10-19
+
+### Fixed
+
+- Restore the CI type gate by overriding `@deepseek-ai/schemastery` to 3.18.5 in the workspace, so the 0.2.1 host peer graph no longer loads both 3.18.4 and 3.18.5 type trees (TS6200 duplicate identifiers).
+
 ## [0.3.27] - 2026-10-19
 
 ### Fixed

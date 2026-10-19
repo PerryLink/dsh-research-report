@@ -11,3 +11,6 @@ minimumReleaseAgeExclude:
 allowBuilds:
   esbuild: true
 verifyDepsBeforeRun: false
+
+overrides:
+  '@deepseek-ai/schemastery': 3.18.5
