@@ -300,7 +300,9 @@ Este projeto faz parte da família de plugins do DeepSeek Harness da [PerryLink]
 | **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 RETIRADO — ver o README do repositório |
 | **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 RETIRADO — ver o README do repositório |
 
-</details>## License
+</details>
+
+## License
 
 Apache-2.0 — ver [LICENSE](LICENSE).
 
