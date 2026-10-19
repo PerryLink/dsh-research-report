@@ -143,6 +143,22 @@ claims: 1 verified / 0 unverified / 0 contradicted / 0 insufficient / 0 disprove
 
 *Observado em `README.md:112-118,150; test/index.spec.ts:166-177; src/tools/research-report.ts:170-175`*
 
+#### Ramo de falha
+
+**Entrada**
+
+~~~text
+{"topic":"probe","sections":[{"heading":"Growth","paragraphs":[{"text":"Growth was 42%.","claimIds":["c1"]}]}],"claims":[{"id":"c1","text":"Growth was 42%.","evidenceIds":[]}]}
+~~~
+
+**Saída**
+
+~~~text
+edge-case (no throw): isError=false; kind=sealed; verdicts[0]={"claimId":"c1","status":"unverified","note":"claim binds no evidence snapshot"}; counts={"verified":0,"unverified":1,"contradicted":0,"insufficient":0,"disproven":0}; evidenceCount=0; report.md marker=Growth was 42%. [未核实]
+~~~
+
+*Observado em `plugins/dsh-research-report/src/verify.ts:173-175 (unverified verdict); plugins/dsh-research-report/src/assemble.ts:209-220 (visible mark); plugins/dsh-research-report/README.md:87 (honest gaps); exercised through plugins/dsh-research-report/test/harness.ts`*
+
 #### Exemplos breves
 
 - `research_report`
