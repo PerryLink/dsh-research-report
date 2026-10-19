@@ -122,7 +122,26 @@ ledger_query({ claimId: "c1" })                                          # 绑�
 
 #### 详细示例
 
-- `evidence_add`
+**命令**
+
+~~~sh
+research_report({
+  topic: "示例行业概览",
+  sections: [{ heading: "市场规模", paragraphs: [{ text: "2025 年全球示例行业市场规模为 1,280 亿元。", claimIds: ["c1"] }] }],
+  claims: [{ id: "c1", text: "市场规模为 1,280 亿元", evidenceIds: ["ev-5dc0a84d0e48"] }],
+  evidenceRefs: ["ev-5dc0a84d0e48", "ev-c6cf024e0916", "ev-61f8f4533cb7"]
+})
+~~~
+
+**输出**
+
+~~~text
+report sealed: /tmp/rr-test-4U2mlF/reports/示例行业概览/20261019-124904
+seal (sha256 of manifest.json): 5c85c97597096ced281ca191d7abaaf7434f18b397d35ac81c31aa364a3b12f9
+claims: 1 verified / 0 unverified / 0 contradicted / 0 insufficient / 0 disproven (of 1); evidence bound: 3
+~~~
+
+*来源 `README.md:112-118,150; test/index.spec.ts:166-177; src/tools/research-report.ts:170-175`*
 
 #### 简短示例
 
