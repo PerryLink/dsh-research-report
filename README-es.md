@@ -55,9 +55,10 @@ Un motor de informes de investigación verificables para DeepSeek Harness.
 
 Cada afirmación (claim) queda vinculada a instantáneas de evidencia inmutables, se verifica byte a byte y se sella en un informe versionado cuyo hash de manifiesto cualquiera puede recomputar.
 
-![Demostración de terminal de dsh-research-report: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-hero.png)
+![Diagrama de flujo de dsh-research-report: pregunta → fuentes selladas → informe.](docs/assets/dsh-research-report-flow.svg)
 
-![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+*Resumen del flujo: pregunta → fuentes selladas → informe. Los ejemplos siguientes usan la superficie de comandos real.*
+
 
 *La misma ejecución, animada.*
 
@@ -114,6 +115,19 @@ evidence_add({ origin: "docs/market.md", title: "Market snapshot" })     # → e
 research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
 ledger_query({ claimId: "c1" })                                          # vínculos + veredicto
 ```
+
+### Ejemplos
+
+Son los puntos de entrada reales; instala y llama a uno.
+
+#### Ejemplo detallado
+
+- `evidence_add`
+
+#### Ejemplos breves
+
+- `research_report`
+- `ledger_query`
 
 ## Configuration
 

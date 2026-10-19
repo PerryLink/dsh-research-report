@@ -56,11 +56,11 @@ A verifiable research-report engine for DeepSeek Harness.
 
 Every claim is bound to immutable evidence snapshots, verified byte-for-byte, and sealed into a versioned report whose manifest hash anyone can recompute.
 
-![Terminal demo of dsh-research-report: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-hero.png)
+![Workflow diagram for dsh-research-report: question → sealed sources → report.](docs/assets/dsh-research-report-flow.svg)
 
-![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+*Workflow overview: question → sealed sources → report. The examples below use the real command surface.*
 
-*The same run, animated.*
+
 
 ## Compatibility
 
@@ -116,6 +116,19 @@ evidence_add({ origin: "docs/market.md", title: "Market snapshot" })     # → e
 research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
 ledger_query({ claimId: "c1" })                                          # bindings + verdict
 ```
+
+### Examples
+
+These are the plugin's real entry points; install once, then call one.
+
+#### Detailed example
+
+- `evidence_add`
+
+#### Brief examples
+
+- `research_report`
+- `ledger_query`
 
 ## Configuration
 

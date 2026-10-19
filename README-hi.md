@@ -55,9 +55,10 @@ DeepSeek Harness के लिए सत्यापन-योग्य (verifia
 
 हर claim अपरिवर्तनीय साक्ष्य-स्नैपशॉट से बंधता है, बाइट-दर-बाइट जाँचा जाता है, और एक संस्करणित (versioned) रिपोर्ट में सील होता है — जिसका manifest हैश कोई भी दोबारा गिनकर सत्यापित कर सकता है।
 
-![dsh-research-report का टर्मिनल डेमो: dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-hero.png)
+![dsh-research-report कार्यप्रवाह आरेख: प्रश्न → सीलबंद स्रोत → रिपोर्ट।](docs/assets/dsh-research-report-flow.svg)
 
-![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+*कार्यप्रवाह: प्रश्न → सीलबंद स्रोत → रिपोर्ट। नीचे के उदाहरण वास्तविक कमांड सतह का उपयोग करते हैं।*
+
 
 *वही रन, एनिमेटेड।*
 
@@ -114,6 +115,19 @@ evidence_add({ origin: "docs/market.md", title: "Market snapshot" })     # → e
 research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
 ledger_query({ claimId: "c1" })                                          # बाइंडिंग + निर्णय
 ```
+
+### उदाहरण
+
+ये वास्तविक प्रवेश बिंदु हैं; इंस्टॉल के बाद एक चलाएँ।
+
+#### विस्तृत उदाहरण
+
+- `evidence_add`
+
+#### संक्षिप्त उदाहरण
+
+- `research_report`
+- `ledger_query`
 
 ## Configuration
 

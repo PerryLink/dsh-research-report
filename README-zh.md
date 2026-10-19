@@ -55,9 +55,10 @@ DeepSeek Harness 的可核查研究报告引擎。
 
 每条结论（claim）都绑定到不可变的证据快照，逐字节核查，并封存进版本化报告——其 manifest 哈希任何人都可重算验证。
 
-![dsh-research-report 终端演示：dsh-research-report — evidence ledger, claims, and the seal](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-hero.png)
+![dsh-research-report 工作流图：问题 → 封存来源 → 报告。](docs/assets/dsh-research-report-flow.svg)
 
-![Animated terminal demo of dsh-research-report](https://raw.githubusercontent.com/PerryLink/dsh-research-report/main/docs/assets/dsh-research-report-demo.gif)
+*工作流概览：问题 → 封存来源 → 报告。下面的示例使用实际命令面。*
+
 
 *同一次运行，动图版。*
 
@@ -114,6 +115,19 @@ evidence_add({ origin: "docs/market.md", title: "市场快照" })            # �
 research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
 ledger_query({ claimId: "c1" })                                          # 绑定关系 + 核查结论
 ```
+
+### 示例
+
+以下为插件真实入口；安装后调用一个即可。
+
+#### 详细示例
+
+- `evidence_add`
+
+#### 简短示例
+
+- `research_report`
+- `ledger_query`
 
 ## Configuration
 
