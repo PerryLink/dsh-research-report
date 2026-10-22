@@ -13,6 +13,7 @@ describe('resolveConfig', () => {
     expect(resolved.enabled).toBe(true)
     expect(resolved.ledgerRoot).toBe(path.resolve('.research-ledger'))
     expect(resolved.reportRoot).toBe(path.resolve('research-reports'))
+    expect(resolved.workspaceRoot).toBeUndefined()
     expect(resolved.maxEvidenceBytes).toBe(2 * 1024 * 1024)
     expect(resolved.maxEvidencePerReport).toBe(200)
     expect(resolved.fetchTimeoutMs).toBe(20_000)
@@ -20,9 +21,10 @@ describe('resolveConfig', () => {
   })
 
   it('resolves relative roots against the working directory and keeps absolute ones', () => {
-    const resolved = resolveConfig({ ledgerRoot: 'x/y', reportRoot: '/tmp/rr' })
+    const resolved = resolveConfig({ ledgerRoot: 'x/y', reportRoot: '/tmp/rr', workspaceRoot: 'ws' })
     expect(resolved.ledgerRoot).toBe(path.resolve('x/y'))
     expect(resolved.reportRoot).toBe(path.resolve('/tmp/rr'))
+    expect(resolved.workspaceRoot).toBe(path.resolve('ws'))
   })
 
   it('fails loud on invalid bounds', () => {
@@ -31,5 +33,6 @@ describe('resolveConfig', () => {
     expect(() => resolveConfig({ fetchTimeoutMs: 1.5 })).toThrow(/fetchTimeoutMs/u)
     expect(() => resolveConfig({ ledgerRoot: '  ' })).toThrow(/ledgerRoot/u)
     expect(() => resolveConfig({ reportRoot: '' })).toThrow(/reportRoot/u)
+    expect(() => resolveConfig({ workspaceRoot: '  ' })).toThrow(/workspaceRoot/u)
   })
 })

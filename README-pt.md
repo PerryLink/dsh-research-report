@@ -173,6 +173,7 @@ Todos os ajustes são campos `Config` de Schemastery; valores inválidos falham 
 | `enabled` | `true` | Interruptor mestre; `false` não monta nada. |
 | `ledgerRoot` | `.research-ledger` | Diretório do livro de evidência (objetos + diários JSONL). |
 | `reportRoot` | `research-reports` | Raiz dos relatórios selados (versionados por tópico e timestamp). |
+| `workspaceRoot` | *(diretório de trabalho da sessão do host)* | Raiz para evidência por caminho; padrão: diretório da sessão e depois o cwd do harness. |
 | `maxEvidenceBytes` | `2097152` | Teto rígido de bytes UTF-8 por snapshot de evidência. |
 | `maxEvidencePerReport` | `200` | Teto rígido de evidências vinculadas a um relatório. |
 | `fetchTimeoutMs` | `20000` | Prazo (ms) de cada `ctx.web` fetch durante a captura. |

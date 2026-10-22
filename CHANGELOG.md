@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.30] - 2026-10-22
+
+### Fixed
+
+- **Workspace-path evidence now resolves against the session's working directory (issue #23).** The provider captured `process.cwd()` at mount and used it for every `evidence_add` path origin. On DSH Desktop the main process runs with its cwd set to the profile directory, so a real workspace file was read as `~/.dsh/profiles/<name>/...` (`ORIGIN_UNREADABLE`) and an absolute path was rejected as outside the workspace (`ORIGIN_OUTSIDE_WORKSPACE`). The provider now resolves the root per call: an explicit `workspaceRoot` config wins, otherwise the host's session-scoped `workingDirectory` service, and only then the launch cwd. A missing or throwing host service falls back instead of failing the tool. `workspaceRoot` is documented in all five READMEs; tests cover the session directory, the explicit override, and the fallback.
+
 ## [0.3.29] - 2026-10-19
 
 ### Fixed

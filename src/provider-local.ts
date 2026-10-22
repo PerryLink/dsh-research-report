@@ -240,6 +240,15 @@ function startVerifierJob(
 }
 
 /**
+ * Structural view of the host's session working-directory service. The plugin
+ * does not declare `@deepseek-ai/dsh-working-directory` as a dependency; the
+ * service is looked up at call time and may be absent in headless profiles.
+ */
+interface WorkingDirectoryReader {
+  get(session: Session): string
+}
+
+/**
  * The local `ctx.researchReport` implementation. Everything durable lives in
  * the filesystem ledger; the service adds policy (caps), verification, and
  * sealing on top.
@@ -275,8 +284,32 @@ export class LocalResearchReportService extends ResearchReportService {
   }
 
   /** Capture dependencies for the gather/capture paths. */
-  private get captureDeps(): CaptureDeps {
-    return { web: this.web, fetchTimeoutMs: this.config.fetchTimeoutMs, workspaceRoot: this.workspaceRoot }
+  private captureDeps(session?: Session): CaptureDeps {
+    return { web: this.web, fetchTimeoutMs: this.config.fetchTimeoutMs, workspaceRoot: this.workspaceRootFor(session) }
+  }
+
+  /**
+   * Resolve the workspace root for one call. An explicit `workspaceRoot`
+   * config wins; otherwise the host's session-scoped working directory is
+   * used (on DSH Desktop that is the project, not the profile directory the
+   * main process runs in); only then fall back to the launch cwd captured at
+   * mount. A missing or throwing service falls back, never fails the tool.
+   * @param session - the calling session, when the tool has one.
+   * @returns an absolute workspace root.
+   */
+  private workspaceRootFor(session?: Session): string {
+    if (this.config.workspaceRoot !== undefined) return this.config.workspaceRoot
+    if (session !== undefined) {
+      try {
+        const service = (this.ctx as unknown as { get(name: string): unknown }).get('workingDirectory') as WorkingDirectoryReader | undefined
+        const directory = service?.get(session)
+        if (typeof directory === 'string' && directory !== '') return directory
+      } catch {
+        // A missing or throwing host service is a deployment fact: keep the
+        // documented fallback instead of failing evidence capture.
+      }
+    }
+    return this.workspaceRoot
   }
 
   /**
@@ -365,7 +398,7 @@ export class LocalResearchReportService extends ResearchReportService {
         `DOI evidence requires inline content (zero-network DOI validation); pass content with the DOI as origin`,
       )
     }
-    const snapshot = await captureSnapshot(this.captureDeps, origin, signal)
+    const snapshot = await captureSnapshot(this.captureDeps(session), origin, signal)
     return this.addEvidence({ title: title ?? snapshot.origin, origin: snapshot.origin, content: snapshot.content }, session)
   }
 
@@ -379,7 +412,7 @@ export class LocalResearchReportService extends ResearchReportService {
    * @returns candidates plus gaps.
    */
   async gather(topic: string, depth: 'quick' | 'standard' | 'deep', signal?: AbortSignal, session?: Session): Promise<GatherOutcome> {
-    return gatherCandidates(this.captureDeps, topic, depth, signal, async (input) => {
+    return gatherCandidates(this.captureDeps(session), topic, depth, signal, async (input) => {
       const { record } = await this.addEvidence(input, session)
       return record
     })

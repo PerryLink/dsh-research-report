@@ -173,6 +173,7 @@ edge-case (no throw): isError=false; kind=sealed; verdicts[0]={"claimId":"c1","s
 | `enabled` | `true` | मास्टर स्विच; `false` पर कुछ भी माउंट नहीं होता। |
 | `ledgerRoot` | `.research-ledger` | साक्ष्य बही-खाता डायरेक्टरी (ऑब्जेक्ट + JSONL जर्नल)। |
 | `reportRoot` | `research-reports` | सील्ड रिपोर्ट रूट (विषय + टाइमस्टैम्प से संस्करणित)। |
+| `workspaceRoot` | *(होस्ट सत्र की कार्यशील निर्देशिका)* | पथ-आधारित साक्ष्य का रूट; डिफ़ॉल्ट सत्र निर्देशिका, फिर हार्नेस cwd। |
 | `maxEvidenceBytes` | `2097152` | एक साक्ष्य स्नैपशॉट की UTF-8 बाइट हार्ड सीमा। |
 | `maxEvidencePerReport` | `200` | एक रिपोर्ट में बंधने वाली साक्ष्य-वस्तुओं की हार्ड सीमा। |
 | `fetchTimeoutMs` | `20000` | कैप्चर के दौरान एक `ctx.web` fetch की समय-सीमा (ms)। |

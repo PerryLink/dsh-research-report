@@ -23,6 +23,13 @@ export interface Config {
    * Resolved against the harness working directory when relative.
    */
   reportRoot?: string
+  /**
+   * Workspace root used to resolve and display workspace-path evidence.
+   * Absolute, or resolved against the harness working directory when relative.
+   * When omitted, the session's host working directory is used, then the
+   * harness working directory.
+   */
+  workspaceRoot?: string
   /** Hard cap on one evidence snapshot's UTF-8 byte size. */
   maxEvidenceBytes?: number
   /** Hard cap on how many evidence items one report may bind. */
@@ -42,6 +49,8 @@ export interface ResolvedConfig {
   readonly enabled: boolean
   readonly ledgerRoot: string
   readonly reportRoot: string
+  /** Explicit workspace root, or undefined to resolve per call/session. */
+  readonly workspaceRoot: string | undefined
   readonly maxEvidenceBytes: number
   readonly maxEvidencePerReport: number
   readonly fetchTimeoutMs: number
@@ -53,6 +62,7 @@ export const Config: z<Config> = z.object({
   enabled: z.boolean().default(true),
   ledgerRoot: z.string().default('.research-ledger'),
   reportRoot: z.string().default('research-reports'),
+  workspaceRoot: z.string(),
   maxEvidenceBytes: z.number().default(2 * 1024 * 1024),
   maxEvidencePerReport: z.number().default(200),
   fetchTimeoutMs: z.number().default(20_000),
@@ -98,6 +108,7 @@ export function resolveConfig(config: Config = {}): ResolvedConfig {
     enabled: config.enabled ?? true,
     ledgerRoot: resolveRoot(config.ledgerRoot ?? '.research-ledger', 'ledgerRoot'),
     reportRoot: resolveRoot(config.reportRoot ?? 'research-reports', 'reportRoot'),
+    workspaceRoot: config.workspaceRoot === undefined ? undefined : resolveRoot(config.workspaceRoot, 'workspaceRoot'),
     maxEvidenceBytes,
     maxEvidencePerReport,
     fetchTimeoutMs,

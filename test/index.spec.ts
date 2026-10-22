@@ -6,7 +6,8 @@
  * @module dsh-research-report/test/index.spec
  */
 
-import { readFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { JobId } from '@deepseek-ai/dsh-jobs'
 import { executeTool, mountBase, mountPlugin, unmountBase, type BaseHarness } from './harness.ts'
@@ -91,6 +92,43 @@ describe('evidence_add', () => {
     if (!result.ok) return
     expect(result.hash).toMatch(/^[0-9a-f]{64}$/u)
     expect(result.bytes).toBeGreaterThan(0)
+  })
+
+  it('captures workspace evidence from the host session working directory', async () => {
+    const base = await mountBase('index-working-directory')
+    bases.push(base)
+    const workspace = path.join(base.root, 'session-workspace')
+    await mkdir(workspace, { recursive: true })
+    await writeFile(path.join(workspace, 'note.md'), 'a note from the session workspace', 'utf8')
+    // The host's session-scoped directory: on DSH Desktop this is the project,
+    // not the profile directory the main process runs in.
+    base.ctx.provide('workingDirectory', { get: () => workspace } as never)
+    fibers.push(await mountPlugin(base))
+    const result = valueOf<EvidenceAddValue>(await executeTool(base, 'evidence_add', {
+      origin: 'note.md',
+      title: 'session note',
+    }))
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.origin).toBe('note.md')
+    expect(result.bytes).toBe(Buffer.byteLength('a note from the session workspace', 'utf8'))
+  })
+
+  it('lets an explicit workspaceRoot config override the host working directory', async () => {
+    const base = await mountBase('index-workspace-root-config')
+    bases.push(base)
+    const hostWorkspace = path.join(base.root, 'host-workspace')
+    const configuredWorkspace = path.join(base.root, 'configured-workspace')
+    await mkdir(hostWorkspace, { recursive: true })
+    await mkdir(configuredWorkspace, { recursive: true })
+    await writeFile(path.join(configuredWorkspace, 'only-here.md'), 'explicit root', 'utf8')
+    base.ctx.provide('workingDirectory', { get: () => hostWorkspace } as never)
+    fibers.push(await mountPlugin(base, { workspaceRoot: configuredWorkspace }))
+    const result = valueOf<EvidenceAddValue>(await executeTool(base, 'evidence_add', {
+      origin: 'only-here.md',
+      title: 'configured note',
+    }))
+    expect(result.ok).toBe(true)
   })
 
   it('fails loud when a URL origin needs the absent web capability', async () => {

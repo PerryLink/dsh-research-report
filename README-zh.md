@@ -173,6 +173,7 @@ edge-case (no throw): isError=false; kind=sealed; verdicts[0]={"claimId":"c1","s
 | `enabled` | `true` | 总开关；`false` 时什么都不挂载。 |
 | `ledgerRoot` | `.research-ledger` | 证据账本目录（对象 + JSONL 日志）。 |
 | `reportRoot` | `research-reports` | 封存报告根目录（按主题 + 时间戳版本化）。 |
+| `workspaceRoot` | *（宿主会话工作目录）* | 路径证据的工作区根；默认取会话工作目录，其次取 harness cwd。 |
 | `maxEvidenceBytes` | `2097152` | 单条证据快照的 UTF-8 字节硬上限。 |
 | `maxEvidencePerReport` | `200` | 单份报告可绑定证据条数硬上限。 |
 | `fetchTimeoutMs` | `20000` | 抓取时单次 `ctx.web` fetch 的超时（毫秒）。 |

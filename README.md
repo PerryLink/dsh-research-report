@@ -174,6 +174,7 @@ All tunables are Schemastery `Config` fields; invalid values fail the profile lo
 | `enabled` | `true` | Master switch; `false` mounts nothing. |
 | `ledgerRoot` | `.research-ledger` | Evidence-ledger directory (objects + JSONL journals). |
 | `reportRoot` | `research-reports` | Sealed-report root (versioned per topic and timestamp). |
+| `workspaceRoot` | *(host session working directory)* | Root for workspace-path evidence; defaults to the session working directory, then the harness cwd. |
 | `maxEvidenceBytes` | `2097152` | Hard cap on one evidence snapshot's UTF-8 bytes. |
 | `maxEvidencePerReport` | `200` | Hard cap on evidence items bound into one report. |
 | `fetchTimeoutMs` | `20000` | Deadline (ms) for one `ctx.web` fetch during capture. |
