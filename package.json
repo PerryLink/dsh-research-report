@@ -126,7 +126,7 @@
     "@deepseek-ai/dsh-util-values": "0.2.1-rc.2",
     "@deepseek-ai/dsh-attachment": "0.2.1-rc.2",
     "@deepseek-ai/cordis": "^4.0.5-alpha.1",
-    "@deepseek-ai/cordis-plugin-include": "^1.0.10-alpha.1",
+    "@deepseek-ai/cordis-plugin-include": "^1.0.10",
     "@deepseek-ai/cordis-plugin-loader": "^1.0.6",
     "@deepseek-ai/dsh-agent": "0.2.1-rc.2",
     "@deepseek-ai/dsh-brand": "0.2.1-rc.2",
