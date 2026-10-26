@@ -23,7 +23,7 @@ jobs:
   bare-import:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v6
         with:
@@ -58,7 +58,7 @@ jobs:
       matrix:
         dsh: ['0.1.6-alpha.2', '0.1.7-rc.2']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v6
         with:
