@@ -36,7 +36,9 @@
     "README-es.md",
     "README-pt.md",
     "README-hi.md",
-    "LICENSE"
+    "LICENSE",
+    "PRIVACY.md",
+    "icon.svg"
   ],
   "sideEffects": false,
   "dsh": {
@@ -169,5 +171,6 @@
     "type": "individual",
     "url": "https://github.com/sponsors/PerryLink"
   },
-  "pnpm": {}
+  "pnpm": {},
+  "icon": "icon.svg"
 }
