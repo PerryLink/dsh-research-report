@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Host 0.2.2 line support.** devDependencies move from 0.2.1-rc.2 to 0.2.2-rc.1, cordis to 4.1.0 / include 1.1.0 / loader 1.1.0, and schemastery to ~3.19.0 so a single copy resolves against `@deepseek-ai/dsh-llm` 0.2.2. `engines.dsh` appends `>=0.2.2-0 <0.3.0` (append-only) and `engines.node` becomes `^22.19.0 || >=24.9.0`.
+
+### Fixed
+
+- **Tool dispatch uses the 0.2.2 batch executor.** `ctx.tools.execute()` now takes `{ calls, signal }` with JSON-encoded `arguments` and settles `{ results }`; the native executor is mounted in the test harness and listed in the loader composition rows because raw batch execution moved behind a pluggable executor in 0.2.2.
+- **Loader composition surfaces row failures again.** cordis 4.1.0 settles a failed row on its fiber instead of rejecting `loader.await()`; the runner awaits every row fiber so a broken row fails loud.
+- Add `@deepseek-ai/dsh-package-manifest`: `@deepseek-ai/dsh-llm` 0.2.2's published types import it but its manifest does not declare it.
+
 ## [0.3.30] - 2026-10-22
 
 ### Fixed

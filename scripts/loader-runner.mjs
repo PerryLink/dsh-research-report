@@ -49,6 +49,8 @@ try {
     config: { path: pathToFileURL(configPath).href },
   })
   await ctx.loader.await()
+  // cordis 4.1.0 settles a failed row on its fiber instead of rejecting await().
+  for (const entry of ctx.loader.entries()) await entry.fiber
   await rethrowFirstFailedRow()
 
   // Authoritative registries carry the plugin's contributions.
@@ -83,25 +85,25 @@ try {
       steer: () => undefined,
       inject: () => undefined,
     })
-    const added = await ctx.tools.execute({
-      callId: /** @type {any} */ ('loader-1'),
-      name: 'evidence_add',
-      arguments: { origin: fixturePath, title: 'loader fixture' },
+    const addedBatch = await ctx.tools.execute({
+      calls: [{ type: 'tool-call', id: /** @type {any} */ ('loader-1'), name: 'evidence_add', arguments: JSON.stringify({ origin: fixturePath, title: 'loader fixture' }) }],
       agent,
       signal: new AbortController().signal,
     })
+    const added = addedBatch.results[0]?.result
+    if (added === undefined) throw new Error('evidence_add settled no result')
     const addedText = added.content.map(block => ('text' in block ? block.text : '')).join('')
     if (added.isError || !addedText.includes('ev-')) {
       throw new Error(`Loader composition: evidence_add failed: ${addedText}`)
     }
     addedId = /ev-[0-9a-f]{12}/u.exec(addedText)?.[0]
-    const queried = await ctx.tools.execute({
-      callId: /** @type {any} */ ('loader-2'),
-      name: 'ledger_query',
-      arguments: { evidenceId: addedId },
+    const queriedBatch = await ctx.tools.execute({
+      calls: [{ type: 'tool-call', id: /** @type {any} */ ('loader-2'), name: 'ledger_query', arguments: JSON.stringify({ evidenceId: addedId }) }],
       agent,
       signal: new AbortController().signal,
     })
+    const queried = queriedBatch.results[0]?.result
+    if (queried === undefined) throw new Error('ledger_query settled no result')
     const queriedText = queried.content.map(block => ('text' in block ? block.text : '')).join('')
     if (queried.isError || !queriedText.includes(addedId ?? '')) {
       throw new Error(`Loader composition: ledger_query failed: ${queriedText}`)

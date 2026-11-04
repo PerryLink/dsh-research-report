@@ -13,6 +13,7 @@ import path from 'node:path'
 import SessionStore, { SessionId, type Session } from '@deepseek-ai/dsh-session'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
 import ToolRuntime from '@deepseek-ai/dsh-tools'
+import * as NativeToolExecutor from '@deepseek-ai/dsh-tool-executor-native'
 import type { ToolExecution, ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 import { LocalJobRegistry } from '@deepseek-ai/dsh-jobs-local'
 import type { Agent } from '@deepseek-ai/dsh-agent'
@@ -43,6 +44,8 @@ export async function mountBase(sessionId = 'rr-harness', options: { jobs?: bool
   const session = ctx.sessions.create(SessionId(sessionId))
   await ctx.plugin(SystemPrompt, { personaPrefix: '' })
   await ctx.plugin(ToolRuntime)
+  // 0.2.2: raw batch execution lives behind a pluggable executor.
+  await ctx.plugin(NativeToolExecutor)
   if (options.jobs !== false) {
     await ctx.plugin(LocalJobRegistry, { maxConcurrentJobsPerOwner: 10 })
     // A root-attached controller serves every owner (dsh-tool-jobs plays this
@@ -109,11 +112,13 @@ export async function executeTool(
 ): Promise<ToolExecutionResult> {
   callCounter += 1
   const CallId = ((id: string) => id) as unknown as (id: string) => ToolExecution['callId']
-  return base.ctx.tools.execute({
-    callId: CallId(`rr-test-${callCounter}`),
-    name,
-    arguments: args,
+  // 0.2.2: execute() takes a whole batch and settles one result per call.
+  const batch = await base.ctx.tools.execute({
+    calls: [{ type: 'tool-call', id: CallId(`rr-test-${callCounter}`), name, arguments: JSON.stringify(args) }],
     ...(options.agent === false ? {} : { agent: base.agent }),
     signal: new AbortController().signal,
   })
+  const outcome = batch.results[0]
+  if (outcome === undefined) throw new Error(`tool executor settled no result for ${name}`)
+  return outcome.result
 }

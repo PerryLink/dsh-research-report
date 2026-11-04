@@ -36,20 +36,14 @@
     "README-es.md",
     "README-pt.md",
     "README-hi.md",
-    "LICENSE",
-    "PRIVACY.md",
-    "icon.svg"
+    "LICENSE"
   ],
   "sideEffects": false,
   "dsh": {
     "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
-    },
-    "capabilities": [
-      "network:egress"
-    ],
-    "labels": []
+    }
   },
   "dshWorkshop": {
     "schema": "omdsh-workshop-package/v1",
@@ -108,18 +102,18 @@
     "citation-verification"
   ],
   "engines": {
-    "node": "^22.19.0 || >=24.0.0",
-    "dsh": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0"
+    "node": "^22.19.0 || >=24.9.0",
+    "dsh": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0"
   },
   "packageManager": "pnpm@11.7.0",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.5",
+    "@deepseek-ai/cordis": "^4.0.5-alpha.1",
     "dsh-data-quality": ">=0.1.0 <0.4.0",
-    "@deepseek-ai/dsh-jobs": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0",
-    "@deepseek-ai/dsh-session": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0",
-    "@deepseek-ai/dsh-system-prompt": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0",
-    "@deepseek-ai/dsh-tools": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0",
-    "@deepseek-ai/dsh-web": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0",
+    "@deepseek-ai/dsh-jobs": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
+    "@deepseek-ai/dsh-session": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
+    "@deepseek-ai/dsh-system-prompt": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
+    "@deepseek-ai/dsh-tools": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
+    "@deepseek-ai/dsh-web": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
     "@deepseek-ai/schemastery": "^3.18.5-alpha.1"
   },
   "peerDependenciesMeta": {
@@ -129,30 +123,32 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@deepseek-ai/dsh-util-values": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-attachment": "0.2.1-rc.2",
-    "@deepseek-ai/cordis": "^4.0.5",
-    "@deepseek-ai/cordis-plugin-include": "^1.0.10",
-    "@deepseek-ai/cordis-plugin-loader": "^1.0.6",
-    "@deepseek-ai/dsh-agent": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-brand": "0.2.1-rc.2",
+    "@deepseek-ai/dsh-util-values": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-attachment": "0.2.2-rc.1",
+    "@deepseek-ai/cordis": "^4.1.0",
+    "@deepseek-ai/cordis-plugin-include": "^1.1.0",
+    "@deepseek-ai/cordis-plugin-loader": "^1.1.0",
+    "@deepseek-ai/dsh-agent": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-brand": "0.2.2-rc.1",
     "@deepseek-ai/dsh-invariants": "0.2.0-rc.2",
-    "@deepseek-ai/dsh-scope": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-user-approval": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-jobs": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-jobs-local": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-llm": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-session": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-system-prompt": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-tools": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-web": "0.2.1-rc.2",
-    "@deepseek-ai/schemastery": "^3.18.5-alpha.1",
+    "@deepseek-ai/dsh-scope": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-user-approval": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-jobs": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-jobs-local": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-llm": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-session": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-system-prompt": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-web": "0.2.2-rc.1",
+    "@deepseek-ai/schemastery": "~3.19.0",
     "@types/node": "^22.20.5",
     "@vitest/coverage-v8": "^3.2.0",
     "oxlint": "0.18.1",
     "vitest": "^3.2.0",
-    "tsdown": "^0.23.2",
-    "typescript": "^5.9.0"
+    "tsdown": "^0.23.1",
+    "typescript": "^5.9.0",
+    "@deepseek-ai/dsh-package-manifest": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-tool-executor-native": "0.2.2-rc.1"
   },
   "scripts": {
     "build": "node scripts/prepare.mjs",
@@ -175,6 +171,5 @@
     "type": "individual",
     "url": "https://github.com/sponsors/PerryLink"
   },
-  "pnpm": {},
-  "icon": "icon.svg"
+  "pnpm": {}
 }
