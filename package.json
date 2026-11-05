@@ -170,5 +170,6 @@
     "type": "individual",
     "url": "https://github.com/sponsors/PerryLink"
   },
-  "pnpm": {}
+  "pnpm": {},
+  "version": "0.0.1"
 }
