@@ -1,129 +1,128 @@
 <div align="center">
 
-# 📑 dsh-research-report
-- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-research-report` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
-[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-research-report)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-dark.svg">
+  <img src="docs/assets/dsh-research-report-flow-light.svg" width="100%" alt="dsh-research-report 数据流：evidence_add → objects/&lt;sha256&gt; 内容寻址账本 → research_report 逐 claim 字节核查 → manifest.json 封印 → dsh-research-verify --report">
+</picture>
+
+# dsh-research-report
+
+**交出一份报告，每条结论都能被任何人在自己机器上离线复核——改过任何一个字节，密封哈希就会对不上。**
+
+面向 DeepSeek Harness 的可核查研究报告引擎：claim 绑定不可变证据快照，数字与引文按字节核对，结果封存为版本化报告目录，封印就是 `manifest.json` 的 SHA-256。
+
+[安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
+[![DSH](https://img.shields.io/badge/DSH-%E2%89%A50.1.6%20%3C0.3.0-4B67B4?style=flat-square&labelColor=2B3245)](#兼容性)
+[![npm](https://img.shields.io/npm/v/dsh-research-report?style=flat-square&labelColor=2B3245&color=CB3837)](https://www.npmjs.com/package/dsh-research-report)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-research-report/ci.yml?branch=main&label=CI&style=flat-square&labelColor=2B3245)](https://github.com/PerryLink/dsh-research-report/actions/workflows/ci.yml)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-339933?style=flat-square&labelColor=2B3245)](#兼容性)
+
+[![Stars](https://img.shields.io/github/stars/PerryLink/dsh-research-report?style=flat-square&labelColor=2B3245)](https://github.com/PerryLink/dsh-research-report/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-research-report?style=flat-square&labelColor=2B3245&color=CB3837)](https://www.npmjs.com/package/dsh-research-report)
 [![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-research-report?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-research-report?ref=badge)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-research-report/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-research-report)
-
-**A verifiable research-report engine for DeepSeek Harness.**
-
-*Every claim is bound to immutable evidence snapshots, verified byte-for-byte, and sealed into a versioned report whose manifest hash anyone can recompute.*
-
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
-[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-research-report.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
-[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-top-rated.svg)](https://dsh.market/)
-[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
-[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-research-report/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-research-report/actions)
-[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-research-report?label=version)](https://github.com/PerryLink/dsh-research-report/releases)
-[![npm version](https://img.shields.io/npm/v/dsh-research-report)](https://www.npmjs.com/package/dsh-research-report)
-[![npm downloads](https://img.shields.io/npm/dm/dsh-research-report)](https://www.npmjs.com/package/dsh-research-report)
-
-[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-research-report/badge)](https://securityscorecards.dev/viewer/?uri=github.com/PerryLink/dsh-research-report)
+[![DSH Market](https://img.shields.io/badge/DSH_Market-listed-4B67B4?style=flat-square&labelColor=2B3245)](https://dsh.market/)
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-C71D23?style=flat-square&labelColor=2B3245&logo=gitee)](https://gitee.com/perrylink/dsh-research-report)
 
 ```sh
 dsh plugin --profile <name> add dsh-research-report
 ```
 
-
 </div>
 
----
+<sub>社区插件，与 DeepSeek 官方无关。唯一仓库：<https://github.com/PerryLink/dsh-research-report>（Gitee 为镜像）。</sub>
 
-**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
+## 它是什么
 
-<!-- star-cta -->
-## Install & uninstall
+给模型一个主题和一组来源，`dsh-research-report` 把每条结论（claim）绑定到不可变的证据快照、逐字节核对数字与引文，再把结果封存成一份可独立复核的版本化报告。报告目录里有 `report.md`、`manifest.json` 和审计日志；封印哈希就是 `manifest.json` 的 SHA-256，拿到目录的人用 `dsh-research-verify` 就能离线重算，不需要挂载插件。它刻意不做深研循环：检索与抓取走 `ctx.web`，长任务走 `ctx.jobs`，规划与综合留给模型或上游插件。
 
-```sh
-dsh plugin --profile demo add dsh-research-report       # install
-dsh plugin --profile demo remove dsh-research-report    # uninstall
-```
+## 三步上手
 
-Verify the row mounts: `dsh --profile demo --dump-config | grep dsh-research-report`.
+1. **安装**（三选一）：
 
-## ⭐ 如果它帮到了你
+   ```sh
+   # npm 通道（已发布版本）
+   dsh plugin --profile web add dsh-research-report
+   # git 通道（最新 main；等价于 git+https://github.com/PerryLink/dsh-research-report.git）
+   dsh plugin --profile web add github:PerryLink/dsh-research-report
+   # tarball 通道：本仓库 pnpm pack 后
+   dsh plugin --profile web add ./dsh-research-report-<version>.tgz
+   ```
 
-这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（95 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+   两条在线通道都会把 bundle 行（见 [`cordis.patch.yml`](cordis.patch.yml)）装入 profile 的 `dsh.profile.bundles` 层栈，**重启生效**。
 
-*English:* part of a 95 plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+2. **最小配置**（默认即可用；相对路径相对 harness 工作目录解析）：
 
+   ```yaml
+   - insert:
+       - id: dsh-research-report
+         name: dsh-research-report
+         config:
+           ledgerRoot: .research-ledger
+           reportRoot: research-reports
+   ```
 
-## What is dsh-research-report?
+3. **验证已生效**：
 
-A verifiable research-report engine for DeepSeek Harness.
+   ```sh
+   dsh --profile web --dump-config | grep dsh-research-report
+   ```
 
-Every claim is bound to immutable evidence snapshots, verified byte-for-byte, and sealed into a versioned report whose manifest hash anyone can recompute.
+   然后在会话里跑一遍最小闭环，再用 CLI 复核封印：
 
-![Workflow diagram for dsh-research-report: question → sealed sources → report.](docs/assets/dsh-research-report-flow.svg)
+   ```text
+   evidence_add({ origin: "docs/market.md", title: "市场快照" })      # → ev-1a2b3c4d5e6f
+   research_report({ topic: "...", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
+   ledger_query({ claimId: "c1" })                                   # 绑定关系 + 核查结论
+   ```
 
-*Workflow overview: question → sealed sources → report. The examples below use the real command surface.*
+   ```sh
+   dsh-research-verify --report research-reports/<topic>/<YYYYMMDD-HHmmss>
+   ```
 
+**卸载**：`dsh plugin --profile web remove dsh-research-report`（或从 profile patch 删掉该行）。
 
+<details>
+<summary>从 DSH Desktop 市场安装</summary>
 
-## Compatibility
+所有 PerryLink 插件均可在 DSH Desktop 内置市场中浏览：**市场 → 来源 → 添加来源 → 粘贴** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ 选中**。安装仍需通过市场的 npm 身份校验与你的确认。
 
-- DeepSeek Harness `dsh-v0.2.1-alpha.1` (verified 2026-09-25). npm dev/test line `0.1.7-rc.2`; peers `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`. The compat matrix pins all four declared peer lines. On this line `Session.append`'s third parameter is a `SurfaceIntent` for surface-eligible types only, so `research-report/*` events still do not land in the session log: the ledger journals are the durable source of truth and the audit mirror activates only once a host knows the vocabulary (the regression lock in `test/events-gate.spec.ts` pins that).
-0.1.5-alpha.1 (adapted 2026-09-09): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. Verified 2026-09-11 against the published 0.1.5-rc.2 types (full local gate chain); the compat workflow pins both declared peer lines.
-- Node `^22.19.0 || >=24.0.0`, ESM only (`"type": "module"`).
-- Peer dependencies: `@deepseek-ai/cordis ^4.0.2`, `@deepseek-ai/schemastery ^3.18.2`, and `@deepseek-ai/dsh-session`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/dsh-system-prompt`, `@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-jobs` at `>=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`.
-- Optional siblings (never required): `ctx.web` providers for URL capture/gather, `ctx.jobs` for background assembly, `ctx.dataQuality` (dsh-data-quality) for dataset citation cross-checks.
+</details>
 
-## What you get
+## 核心能力
 
-- **Evidence ledger** — a content-addressed snapshot store (`<ledgerRoot>/objects/<sha256>` + JSONL journals). The same content is stored exactly once; snapshots are immutable; every read recomputes the hash, so tampering or deletion is detected instead of trusted.
-- **Claim ↔ evidence binding** — claims register with the evidence ids they rely on; the ledger keeps the binding and every verification verdict (latest wins).
-- **Byte-level verification** — every number and quoted span in a claim must be locatable verbatim in the bound snapshots. No bound evidence, or no checkable literal, marks the claim `unverified`; bound evidence that cannot confirm or deny the claimed literals marks it `insufficient`; a label whose snapshot value differs (the claimed value absent) marks it `disproven`; tampered/missing snapshots mark it `contradicted`. No semantics, no embeddings — auditable byte checks.
-- **Optional numeric bridge** — when a claim cites a structured workspace dataset (CSV/JSON) and `dsh-data-quality` is mounted, citations are cross-checked with tolerances through its frozen `verifyCitations` contract; a dataset mismatch disproves the claim.
-- **DOI evidence (zero network)** — DOI origins are validated deterministically (`10.xxxx/xxxx` structure, a prefix whitelist, and a DOI character set); invalid DOIs fail loud. Optional journal/year metadata is accepted, and `requireJournalMetadata` gates academic DOI evidence only when enabled.
-- **Versioned sealed reports** — `<reportRoot>/<slug(topic)>/<YYYYMMDD-HHmmss>/report.md` + `manifest.json` + `verification.jsonl` + `disconfirmation.jsonl`; the seal hash is the SHA-256 of the manifest, which itself carries the report hash, every evidence hash, and the hash of each audit journal.
-- **Pre-delivery re-audit & seal interception** — before sealing, every bound claim is re-verified offline and journaled to `verification.jsonl`; verdict drift, tampered/missing bound evidence, or a journal serialization failure blocks the seal (fail loud, no tunable).
-- **Falsification ledger** — every contradicted or disproven claim is recorded in `disconfirmation.jsonl` (claim + evidence references + reason) and listed in the report's `falsification log` appendix.
-- **Negative knowledge** — a disproven claim is remembered by its content hash (`disproofs.jsonl`); the same text re-reported against unchanged evidence is forced back to `disproven` and only re-verifies once the evidence changes.
-- **Read-only verifier loop** — after sealing, a deterministic `verifySealedReport` fallback (zero network, zero model) recomputes the seal and audit hashes and re-checks every claim, writing the machine check to `verifier-note.md`; when `ctx.jobs` is mounted a read-only verifier job is also spawned (the model review is an enhancement, never a replacement).
-- **Standalone verifier CLI** — `dsh-research-verify --report <dir> [--seal <sha256>] [--ledger <dir>] [--format json|sarif]` recomputes the seal hash + per-claim re-checks from the sealed directory alone and prints a JSON envelope or a SARIF 2.1.0 document (see [Verifier CLI](#verifier-cli)).
-- **Session-anchored evidence** — `evidence_add` accepts an optional `sessionRef` (`sessionId` + `eventRange`, validated loud); the anchor is stored, rendered in Appendix B, and registered in the manifest and `verification.jsonl`. Session-anchored evidence verifies honestly as `unverified` (`session-anchored evidence requires a manual check against the session log`).
-- **Honest gaps** — unverified, insufficient, contradicted, and disproven claims keep a visible `[未核实]` / `[证据不足]` / `[与证据矛盾]` / `[已证伪]` marker in the report body and are listed in Appendix A. Nothing is silently passed.
-- **No deep-research loop** — retrieval orchestration is deliberately reused: `ctx.web` for search/fetch, `ctx.jobs` for long runs. Planning and synthesis stay with the model (or an upstream plugin).
+`dsh-research-report` 的可信度来自三件事：证据不可变、核查可重算、缺口不隐藏。
 
-## Quick start
+- **证据账本**——内容寻址快照存储（`<ledgerRoot>/objects/<sha256>` + JSONL 日志）。同一内容只存一份；快照不可变；每次读取都重算哈希——篡改或删除会被发现，而不是被信任。
+- **claim ↔ 证据绑定**——claim 登记时声明其依赖的证据 id；账本保存绑定关系与每一次核查结论（最新为准）。
+- **字节级核查**——claim 文本中的每个数字与引文子串都必须能在其绑定快照中字面定位。无绑定证据或无核查字面量 → `unverified`；证据存在但不足以证实或证伪声称字面量 → `insufficient`；标签在快照中对应不同数值（且声称值不存在）→ `disproven`；快照被篡改/缺失 → `contradicted`。不做语义理解、不做向量相似——只做可审计的字节核对。
+- **可选数字核查桥**——当 claim 引用 workspace 内结构化数据集（CSV/JSON）且 `dsh-data-quality` 已挂载时，经其冻结的 `verifyCitations` 契约做容差核对；数据集不一致即证伪该 claim。
+- **DOI 证据（零网络）**——DOI 源做确定性语法校验（`10.xxxx/xxxx` 结构 + 前缀白名单 + DOI 字符集）；非法 DOI 响亮失败。可选期刊/年份元数据被接受；`requireJournalMetadata` 仅在启用时门禁学术 DOI 证据。
+- **版本化封存报告**——`<reportRoot>/<slug(topic)>/<YYYYMMDD-HHmmss>/report.md` + `manifest.json` + `verification.jsonl` + `disconfirmation.jsonl`；封印哈希 = manifest 的 SHA-256，manifest 内含报告哈希、全部证据哈希与各审计日志哈希。
+- **交付前重审计与封存拦截**——封存前对每条绑定证据的 claim 离线重跑一次核查并写入 `verification.jsonl`；verdict drift、绑定证据被篡改/缺失、或审计日志序列化失败都会拦截封存（响亮失败，无 tunable）。
+- **证伪账本**——每条被证伪（disproven）或矛盾（contradicted）的 claim 记录进 `disconfirmation.jsonl`（claim + 证据引用 + 原因），并在报告的「证伪记录」附录列明。
+- **负知识**——被证伪的 claim 按其内容哈希记入 `disproofs.jsonl`；同一文本在证据未变时被复报会被强制置回 `disproven`，证据变化后才允许重新核验。
+- **只读 verifier 回环**——封存后先跑确定性兜底 `verifySealedReport`（零网络零模型）：重算封印与审计哈希、逐 claim 复核，把 machine-check 段落写入 `verifier-note.md`；挂载 `ctx.jobs` 时再派生只读 verifier job（模型复核为增强，绝不替代）。
+- **会话锚定证据**——`evidence_add` 支持可选 `sessionRef`（`sessionId` + `eventRange`，格式校验响亮失败）；锚点入账并在附录 B、manifest、`verification.jsonl` 登记。会话锚定证据诚实判 `unverified`（`会话锚定证据需人工回查会话日志`）。
+- **诚实缺口**——未核实/证据不足/有矛盾/已证伪的 claim 在正文中保留醒目标记 `[未核实]` / `[证据不足]` / `[与证据矛盾]` / `[已证伪]`，并在附录 A 列明。绝不静默通过。
+- **不做深研循环**——检索编排刻意复用官方底座：搜索/抓取走 `ctx.web`，长任务走 `ctx.jobs`。规划与综合交给模型（或上游插件）。
 
-```sh
-dsh plugin --profile web add github:PerryLink/dsh-research-report
-```
+### 工具面
 
-### git channel
+- **`evidence_add({ origin, content?, title? })`**——登记一条证据。给 `content` 则按原文存储；不给时 URL 源经 `ctx.web` 抓取、workspace 相对路径从磁盘读取（读取绝不逃逸 workspace）。返回证据 id 与 SHA-256 哈希。
+- **`research_report({ topic, title?, sections, claims, evidenceRefs, gather?, depth?, background? })`**——组装并封存报告：校验（claim 引用不全响亮拒绝）→ 逐条核查 → 渲染带醒目标记的 `report.md` → 写 `manifest.json` → 返回封印哈希。`gather: true` 先经 `ctx.web` 做一轮检索，返回已捕获候选证据与显式缺口清单——绝不自动成稿。`background: true` 经 `ctx.jobs` 返回 `{ kind: 'background', jobId }`。
+- **`ledger_query({ claimId? | evidenceId? })`**——只读查询绑定关系与核查结论；证据读取时重算哈希，篡改/丢失会显式报告。不带 id 时返回账本摘要。
+- **`ctx.researchReport.assemble(request)`**——面向兄弟插件的冻结服务表面（见 `src/service.ts`；由 [`scripts/verify-frozen-contract.mjs`](scripts/verify-frozen-contract.mjs) 逐字节门禁）。
 
-```sh
-# From a scratch profile (pins the commit; runs the self-contained `prepare` build)
-dsh plugin --profile demo add "github:YOUR_ORG/dsh-research-report#<sha>"
-# The profile's pnpm-workspace.yaml gains an allowBuilds entry for dsh-research-report on first add.
-```
+### 示例
 
-### npm channel
+以下为插件真实入口；安装后调用一个即可。
 
-```sh
-dsh plugin --profile demo add dsh-research-report
-```
+**详细示例**
 
-Both channels install the bundle row (see `cordis.patch.yml`) into the profile's `dsh.profile.bundles` stack and take effect on restart.
-
-Then, in a session:
-
-```
-evidence_add({ origin: "docs/market.md", title: "Market snapshot" })     # → ev-1a2b3c4d5e6f
-research_report({ topic: "示例行业概览", sections: [...], claims: [...], evidenceRefs: ["ev-1a2b…"] })
-ledger_query({ claimId: "c1" })                                          # bindings + verdict
-```
-
-### Examples
-
-These are the plugin's real entry points; install once, then call one.
-
-#### Detailed example
-
-**Command**
+**命令**
 
 ~~~sh
 research_report({
@@ -134,7 +133,7 @@ research_report({
 })
 ~~~
 
-**Output**
+**输出**
 
 ~~~text
 report sealed: /tmp/rr-test-4U2mlF/reports/示例行业概览/20261019-124904
@@ -144,15 +143,15 @@ claims: 1 verified / 0 unverified / 0 contradicted / 0 insufficient / 0 disprove
 
 *Observed from `README.md:112-118,150; test/index.spec.ts:166-177; src/tools/research-report.ts:170-175`*
 
-#### Failure branch
+**失败分支**
 
-**Input**
+**输入**
 
 ~~~text
 {"topic":"probe","sections":[{"heading":"Growth","paragraphs":[{"text":"Growth was 42%.","claimIds":["c1"]}]}],"claims":[{"id":"c1","text":"Growth was 42%.","evidenceIds":[]}]}
 ~~~
 
-**Output**
+**输出**
 
 ~~~text
 edge-case (no throw): isError=false; kind=sealed; verdicts[0]={"claimId":"c1","status":"unverified","note":"claim binds no evidence snapshot"}; counts={"verified":0,"unverified":1,"contradicted":0,"insufficient":0,"disproven":0}; evidenceCount=0; report.md marker=Growth was 42%. [未核实]
@@ -160,68 +159,158 @@ edge-case (no throw): isError=false; kind=sealed; verdicts[0]={"claimId":"c1","s
 
 *Observed from `plugins/dsh-research-report/src/verify.ts:173-175 (unverified verdict); plugins/dsh-research-report/src/assemble.ts:209-220 (visible mark); plugins/dsh-research-report/README.md:87 (honest gaps); exercised through plugins/dsh-research-report/test/harness.ts`*
 
-#### Brief examples
+**简短示例**：`research_report` · `ledger_query`
 
-- `research_report`
-- `ledger_query`
+### dsh-research-verify CLI
 
-## Configuration
-
-All tunables are Schemastery `Config` fields; invalid values fail the profile load loudly. Relative roots resolve against the harness working directory (the workspace).
-
-| Key | Default | Description |
-| --- | --- | --- |
-| `enabled` | `true` | Master switch; `false` mounts nothing. |
-| `ledgerRoot` | `.research-ledger` | Evidence-ledger directory (objects + JSONL journals). |
-| `reportRoot` | `research-reports` | Sealed-report root (versioned per topic and timestamp). |
-| `workspaceRoot` | *(host session working directory)* | Root for workspace-path evidence; defaults to the session working directory, then the harness cwd. |
-| `maxEvidenceBytes` | `2097152` | Hard cap on one evidence snapshot's UTF-8 bytes. |
-| `maxEvidencePerReport` | `200` | Hard cap on evidence items bound into one report. |
-| `fetchTimeoutMs` | `20000` | Deadline (ms) for one `ctx.web` fetch during capture. |
-| `requireJournalMetadata` | `false` | When true, DOI-typed evidence must carry a journal name and publication year at registration (fails loud otherwise). |
-
-## Tools & surfaces
-
-- **`evidence_add({ origin, content?, title? })`** — register one evidence snapshot. With `content` the text is stored verbatim; without it a URL origin is fetched through `ctx.web` and a workspace-relative path is read from disk (reads never escape the workspace). Returns the evidence id and SHA-256 hash.
-- **`research_report({ topic, title?, sections, claims, evidenceRefs, gather?, depth?, background? })`** — assemble and seal a report: validate (unregistered claim references are rejected loudly), verify every claim, render `report.md` with visible markers, write `manifest.json`, and return the seal hash. `gather: true` runs ONE search round over `ctx.web` and returns captured candidate evidence plus an explicit gap list — it never auto-assembles. `background: true` returns `{ kind: 'background', jobId }` over `ctx.jobs`.
-- **`ledger_query({ claimId? | evidenceId? })`** — read-only binding/verdict queries; evidence is re-hashed on read so a tampered or missing snapshot is reported explicitly. With no id, returns a ledger summary.
-- **`ctx.researchReport.assemble(request)`** — the frozen service surface for sibling plugins (see `src/service.ts`; gated byte-for-byte by `scripts/verify-frozen-contract.mjs`).
-
-## Permissions & data
-
-`dsh-research-report` consumes only public seams: `ctx.tools`, `ctx.systemPrompt`, and optionally `ctx.web` / `ctx.jobs` / `ctx.dataQuality` (looked up at call time, never injected). It writes only inside the configured ledger and report roots (both default to workspace-local directories), reads workspace files only inside the workspace, and reaches the network exclusively through the harness web seam — never a direct `fetch`. Evidence snapshots are immutable and content-addressed; claim registrations are immutable; verdicts are append-only.
-
-## Security boundaries
-
-- **Tamper-evidence by construction** — every snapshot read recomputes SHA-256 against the index; a mismatch verifies the bound claims `contradicted` and `ledger_query` reports `integrity: tampered`/`missing`.
-- **Workspace confinement** — local evidence reads resolve against the workspace root and refuse escapes (both sides are `path.resolve`d before comparison).
-- **Fail-loud configuration** — invalid bounds throw at mount; unregistered claim references, unknown evidence ids, and id/content conflicts throw at assemble.
-- **No credential handling, no hidden network** — URL capture rides `ctx.web` (provider selection, error taxonomy, and any SSRF policy stay with the deployment's web providers).
-- **Reversible registrations** — every contribution goes through `ctx.effect()` / `register()`, so uninstall and hot reload are clean.
-
-## Known limitations
-
-- **Byte-level, not semantic** — the built-in check locates number/quote literals verbatim; paraphrased claims without a checkable literal verify as `unverified`, and a true claim whose number is absent while its label appears with a different value reads `contradicted`. This is a deliberate v1 choice (auditable beats clever).
-- **Session events are adaptive** — the plugin declares typed `research-report/evidence`, `research-report/verify`, and `research-report/seal` session events, but the 0.1.5-alpha.1 `Session.append` still exposes no `ignorable` option and no plugin event-registration surface, so appends activate only when the host build knows the types (otherwise the persistence layer would refuse the log on restore). The ledger journals are always the durable source of truth.
-- **Default profiles mount no fetch provider** — the shipped `dsh-base` mounts search only, so URL capture fails loud (`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`) until a fetch provider is configured; search-based `gather` lists uncaptured sources in the gap list.
-- **Single-workspace scope** — ledger and report roots resolve against the harness working directory at mount; multi-workspace deployments should configure absolute roots per profile.
-
-## Verifier CLI
-
-The standalone `dsh-research-verify` binary (bundled as `lib/cli.js`, zero `@deepseek-ai` imports) audits any sealed report directory without mounting the plugin:
+独立二进制（打包为 `lib/cli.js`，零 `@deepseek-ai` 导入）无需挂载插件即可审计任意密封报告目录：
 
 ```sh
 dsh-research-verify --report <dir> [--seal <sha256>] [--ledger <dir>] [--format json|sarif]
 ```
 
-- `--report <dir>` — the sealed report directory (`manifest.json` + `report.md` + the audit journals).
-- `--seal <sha256>` — the expected seal hash to compare the recomputed manifest hash against. Omitted = the recomputed hash is reported without comparison.
-- `--ledger <dir>` — the evidence ledger root (`objects/<sha256>` + `index.jsonl`) enabling per-claim byte-level re-checks. Omitted = claim re-checks are skipped honestly.
-- `--format` — `json` (default) or `sarif` (SARIF 2.1.0).
+- `--report <dir>`：密封报告目录（`manifest.json` + `report.md` + 审计日志）。
+- `--seal <sha256>`：期望的 seal 哈希，用于与重算的 manifest 哈希比对；缺省则只报告重算值、不比对。
+- `--ledger <dir>`：证据账本根目录（`objects/<sha256>` + `index.jsonl`），用于逐 claim 字节级复检；缺省则如实跳过 claim 复检。
+- `--format`：`json`（默认）或 `sarif`（SARIF 2.1.0）。
 
-It recomputes the seal hash (SHA-256 of `manifest.json`), the `report.md` hash, and the audit-journal hashes, re-runs the byte-level + integrity check for every claim, and exits non-zero when any performed check fails. The same `verifySealedReport` / `buildVerificationReport` / `renderSarif` / `renderVerificationJson` functions are exported from the package for library use.
+它重算 seal 哈希（`manifest.json` 的 SHA-256）、`report.md` 哈希与审计日志哈希，逐 claim 重跑字节级 + 完整性检查，任一已执行检查失败则以非零码退出。`verifySealedReport` / `buildVerificationReport` / `renderSarif` / `renderVerificationJson` 亦从包导出供库调用。
 
-## Development
+## 配置
+
+全部可调项都是 Schemastery `Config` 字段；非法值在加载期响亮失败。相对路径根目录相对 harness 工作目录（workspace）解析。`cordis.patch.yml` 逐键内联注释。
+
+最常用键：
+
+| 键 | 默认值 | 含义 |
+| --- | --- | --- |
+| `enabled` | `true` | 总开关；`false` 时什么都不挂载。 |
+| `ledgerRoot` | `.research-ledger` | 证据账本目录（对象 + JSONL 日志）。 |
+| `reportRoot` | `research-reports` | 封存报告根目录（按主题 + 时间戳版本化）。 |
+| `workspaceRoot` | *（宿主会话工作目录）* | 路径证据的工作区根；默认取会话工作目录，其次取 harness cwd。 |
+| `maxEvidenceBytes` | `2097152` | 单条证据快照的 UTF-8 字节硬上限。 |
+| `maxEvidencePerReport` | `200` | 单份报告可绑定证据条数硬上限。 |
+
+<details>
+<summary>完整配置表（8 个键）</summary>
+
+| 键 | 默认值 | 含义 |
+| --- | --- | --- |
+| `enabled` | `true` | 总开关；`false` 时什么都不挂载。 |
+| `ledgerRoot` | `.research-ledger` | 证据账本目录（对象 + JSONL 日志）。 |
+| `reportRoot` | `research-reports` | 封存报告根目录（按主题 + 时间戳版本化）。 |
+| `workspaceRoot` | *（宿主会话工作目录）* | 路径证据的工作区根；默认取会话工作目录，其次取 harness cwd。 |
+| `maxEvidenceBytes` | `2097152` | 单条证据快照的 UTF-8 字节硬上限。 |
+| `maxEvidencePerReport` | `200` | 单份报告可绑定证据条数硬上限。 |
+| `fetchTimeoutMs` | `20000` | 抓取时单次 `ctx.web` fetch 的超时（毫秒）。 |
+| `requireJournalMetadata` | `false` | 为 `true` 时，DOI 类证据登记必须带期刊名与出版年份（否则响亮失败）。 |
+
+</details>
+
+profile patch 覆盖示例：
+
+```yaml
+- insert:
+    - id: dsh-research-report
+      name: dsh-research-report
+      config:
+        reportRoot: research-reports/acme
+        maxEvidencePerReport: 100
+        requireJournalMetadata: true
+```
+
+## FAQ
+
+<details>
+<summary>账本和报告到底写在哪？删掉会怎样？</summary>
+
+两者都在配置的根目录内：`ledgerRoot`（默认 `.research-ledger`）与 `reportRoot`（默认 `research-reports`），相对路径相对 harness 工作目录解析。快照按内容寻址且不可变，同一内容只存一份；删除或改写对象后，下一次读取重算哈希就会失败，绑定它的 claim 判 `contradicted`，`ledger_query` 报告 `integrity: missing`/`tampered`——不会悄悄当没事发生。
+
+</details>
+
+<details>
+<summary>没有配置 fetch provider 时会怎样？会静默降级吗？</summary>
+
+不会静默。官方 `dsh-base` 只挂搜索，配置 fetch provider 之前 URL 抓取会响亮失败（`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`）；基于搜索的 `gather` 会把未捕获的来源列进缺口清单，绝不编造证据、绝不自动成稿。
+
+</details>
+
+<details>
+<summary>和 dsh-data-quality 会冲突吗？</summary>
+
+不冲突。`ctx.dataQuality` 是可选的，只在调用时经 `ctx.get` 判空使用，从不写入 `inject`；存在时按它冻结的 `verifyCitations` 契约做数据集引文核对，不存在时该分支如实跳过。本插件本身不注册任何 waterfall 监听器。
+
+</details>
+
+<details>
+<summary>性能开销多大？</summary>
+
+核查是纯字节操作：零网络、零模型调用，代价随 claim 中的数字/引文字面量与绑定快照大小线性增长。封存前的重审计同样是确定性的重复核对。唯一的外部等待是证据抓取，受 `fetchTimeoutMs`（默认 20000 ms）约束；长报告可走 `background: true` 交给 `ctx.jobs`。
+
+</details>
+
+<details>
+<summary>为什么我的转述结论被判 unverified？</summary>
+
+这是字节级设计的必然结果：内置核查只定位数字与引文字面量，不能判断改写前后的语义等价。见「已知限制」第一条——可审计优先于聪明。
+
+</details>
+
+## 安全边界
+
+- **构造级防篡改**——每次快照读取都对照索引重算 SHA-256；不匹配时绑定 claim 核查为 `contradicted`，`ledger_query` 报告 `integrity: tampered`/`missing`。
+- **workspace 限制**——本地证据读取相对 workspace 根解析并拒绝逃逸（比较前两侧都经 `path.resolve`）。
+- **配置响亮失败**——非法边界在挂载期抛错；claim 引用不全、未知证据 id、id/内容冲突在组装期抛错。
+- **不碰凭据、无隐藏网络**——URL 抓取走 `ctx.web`（provider 选择、错误分类、SSRF 策略都留在部署方的 web provider）。
+- **注册可逆**——所有贡献经 `ctx.effect()` / `register()`，卸载与热重载干净。
+
+## 权限与数据
+
+`dsh-research-report` 只消费公开 seam：`ctx.tools`、`ctx.systemPrompt`，以及可选的 `ctx.web` / `ctx.jobs` / `ctx.dataQuality`（调用时经 `ctx.get` 判空使用，绝不写入 inject）。写入只发生在配置的账本与报告根目录内（默认都是 workspace 本地目录）；本地文件读取不越出 workspace；网络访问只经 harness web seam——绝不直接 `fetch`。证据快照不可变且内容寻址；claim 登记不可变；核查结论只追加。
+
+- **manifest 声明的权限**：`fs:workspace-write`、`network:ctx-web-only`、`session:read`、`session:write`、`native-code:none`（见 `package.json` 的 `dshWorkshop` 段）。
+- **会话事件**：`research-report/evidence`、`research-report/verify`、`research-report/seal` 是自适应镜像；宿主认识该词表时才落盘，否则账本日志单独承担持久真相（见「已知限制」）。
+
+## 已知限制
+
+- **字节级而非语义级**——内置核查只做数字/引文字面定位；没有可核查字面量的转述性 claim 判 `unverified`；声称值缺失而标签对应其他数值时判 `contradicted`。这是 v1 的刻意选择（可审计优先于聪明）。
+- **会话事件自适应**——插件声明了类型化的 `research-report/evidence`、`research-report/verify`、`research-report/seal` 会话事件，但 0.1.5-alpha.1 的 `Session.append` 仍不提供 `ignorable` 选项、也没有插件事件注册面，所以只有宿主 build 认识这些类型时才真正落盘（否则持久化层会在恢复时拒绝该日志）。账本日志始终是权威的持久事实源。
+- **默认 profile 不挂载 fetch provider**——官方 `dsh-base` 只挂搜索，所以配置 fetch provider 之前 URL 抓取会响亮失败（`WEB_UNAVAILABLE`/`WEB_PROVIDER_UNAVAILABLE`）；基于搜索的 `gather` 会把未捕获的来源列入缺口清单。
+- **单 workspace 作用域**——账本与报告根目录在挂载时相对 harness 工作目录解析；多 workspace 部署应在各 profile 配置绝对路径。
+
+## 与其他 DSH 插件的互操作性
+
+本插件在结构上不争夺其他插件的资源：
+
+- **唯一服务键 `ctx.researchReport`**——由 `src/service.ts` 的 Service Definition 提供，不注册第二个服务键。
+- **不注册 waterfall 监听器**——本插件没有 `ctx.on()` 监听器，因而不参与任何顺序敏感事件链；若未来新增，放行分支必须调用 `next()`。
+- **不注册 HTTP 路由与客户端面**——没有 `webServer` 前缀、没有客户端 slot；它是纯 host 插件（仓库无 `client/`）。
+- **patch 层只 insert 自己**——bundle patch 只插入 `dsh-research-report` 一行，不覆写内置行的 `config`。
+- **可选协同按需取用**——`ctx.web` / `ctx.jobs` / `ctx.dataQuality` 都在调用时经 `ctx.get` 判空；未挂载时对应路径响亮失败并说明原因，而不是静默走另一条路。
+- **冻结契约有门禁**——`ctx.researchReport.assemble`（`src/service.ts`）与 `CitationCheck*`（`src/verify.ts`）是兄弟插件共用的逐字节冻结块，`scripts/verify-frozen-contract.mjs` 在 CI 里守住漂移。
+
+## 兼容性
+
+| 维度 | 状态 |
+| --- | --- |
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（2026-09-25 已核验）。npm dev/test 线 `0.1.7-rc.2`；compat 矩阵同时钉住四条已声明 peer 线。0.1.5-alpha.1（2026-09-09 已适配）的会话信封保留 ignorable 字段但仅用于存量日志读取兼容——`Session.append` 仍无法盖章，门控行为不变。 |
+| Node | `^22.19.0 \|\| >=24.9.0`，仅 ESM（`"type": "module"`） |
+| 平台 | 任何 DSH 可运行处（纯 host；网络只经 `ctx.web`） |
+| 模型 | 文本模型完全支持；核查是字节比对，不需要额外模型能力 |
+
+Peer 依赖：`@deepseek-ai/cordis ^4.0.5-alpha.1`、`@deepseek-ai/schemastery ^3.18.5-alpha.1`，以及 `@deepseek-ai/dsh-session`、`@deepseek-ai/dsh-tools`、`@deepseek-ai/dsh-system-prompt`、`@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-jobs`（范围见 `package.json`）。可选兄弟（绝不强制）：`ctx.web` 抓取、`ctx.jobs` 后台组装、`ctx.dataQuality` 数据集引文交叉核对。
+
+## 生态与质量
+
+- [Gitee 镜像](https://gitee.com/perrylink/dsh-research-report)（同步镜像，以 GitHub 为准）
+- [dshfind 插件页](https://dshfind.com/plugins/PerryLink/dsh-research-report)（安装量与排名）
+- [OpenSSF Scorecard 报告](https://securityscorecards.dev/viewer/?uri=github.com/PerryLink/dsh-research-report)（由 [.github/workflows/scorecard.yml](.github/workflows/scorecard.yml) 驱动）
+- [dsh-plugin-doctor 验证报告](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
+- [DSH Market](https://dsh.market/)（已上架）
+- **1024 商店渠道**：先 `npm i -g dsh1024`，再 `dsh1024 plugin --profile web add dsh-research-report`（计入 [deepseek1024.com](https://deepseek1024.com) 安装排行）
+- [生态实测知识库](https://perrylink.github.io/dsh-plugin-guide/)：插件开发指南 · 选型实测数据 · 维护取舍判据
+
+## 开发
 
 ```sh
 pnpm install
@@ -229,39 +318,51 @@ pnpm run typecheck && pnpm run typecheck:ci
 pnpm test
 pnpm run build
 pnpm run verify:self-contained && pnpm run verify:artifacts
+pnpm run verify:frozen-contract
 node scripts/check-readme-sync.mjs
-node scripts/verify-frozen-contract.mjs
+pnpm run check:lockfile
 pnpm pack
 ```
 
-- `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.7-rc.2 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
-- Tests use the real `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` from the 0.1.7-rc.2 peers; only network backends are scripted providers registered through the real `ctx.web` registries.
-- Release: `node scripts/release.mjs <x.y.z>` (bumps, stamps CHANGELOG, re-runs the gate, commits + tags; never pushes).
+- `typecheck` 经已安装的 0.1.7-rc.2 peer 解析 `@deepseek-ai/*`；`typecheck:ci` 关闭 `skipLibCheck` 并开启 `verbatimModuleSyntax` 对照已发布类型。两者都必须保持绿。
+- 测试使用 0.1.7-rc.2 peer 的真实 `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime`；只有网络后端是注册进真实 `ctx.web` 注册表的脚本化 provider。
+- 发布：`node scripts/release.mjs <x.y.z>`（bump、盖 CHANGELOG、重跑门禁、提交 + 打 tag；绝不 push）。
+- 配图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Python + Pillow）：手写 SVG 流程图，输出 `docs/assets/dsh-research-report-flow-{light,dark}.svg`，可重复执行、深浅两版共用。
 
-## Topics
+目录布局：
 
-`dsh`, `dsh-plugin`, `deepseek-harness`, `cordis`, `research`, `evidence-ledger`, `verifiable-report`, `audit`, `citation-verification`
+| 路径 | 内容 |
+| --- | --- |
+| `src/index.ts` | function-plugin 契约（`name`/`inject`/`Config`/`apply`，无 default export） |
+| `src/service.ts` | `ctx.researchReport` Service Definition + 逐字节冻结的 `assemble` 契约块 |
+| `src/ledger.ts` | 内容寻址证据账本（对象 + JSONL 日志、读取重算哈希） |
+| `src/verify.ts` | 字节级核查器 + 冻结的 `CitationCheck*` 桥类型 |
+| `src/assemble.ts` | 纯组装：请求校验、`report.md` 渲染、确定性 `manifest.json`、封印 |
+| `src/gather.ts` | 抓取（`ctx.web` / workspace 文件）与 `gather` 候选轮 |
+| `src/tools/` | 三个消费者：`evidence_add`、`research_report`、`ledger_query` |
+| `test/` | vitest，使用真实 host 运行时；仅网络后端是脚本化 provider |
+| `fixtures/` | 三条本地文档，覆盖 evidence → seal → tamper → contradicted 全流程 |
 
-## Contributors
+Topics：`dsh`、`dsh-plugin`、`deepseek-harness`、`cordis`、`research`、`evidence-ledger`、`verifiable-report`、`audit`、`citation-verification`
 
-- [PerryLink](https://github.com/PerryLink) — original author and maintainer: plugin architecture, evidence ledger, byte-level verification, sealed reports, five-language documentation, CI and release automation.
+## 家族与致谢
 
-## PerryLink DSH Plugin Family
+本项目是 [PerryLink](https://github.com/PerryLink) 维护的 DeepSeek Harness 插件家族成员（全部 Apache-2.0）。如果这个插件帮到了你，**给个 star**——它不解锁任何功能，但会让下一个人更容易找到它。
 
-This project is part of the DeepSeek Harness plugin family from [PerryLink](https://github.com/PerryLink). The roster stays collapsed below so every README keeps a short first screen; expand it to see every row and its status.
+- [@PerryLink](https://github.com/PerryLink) —— 原作者与维护者：插件架构、证据账本、字节级核验、密封报告、五语文档、CI 与发布自动化。
 
 <details>
-<summary>Expand all plugins</summary>
+<summary>展开全部插件</summary>
 
-| Plugin | Status |
+| 插件 | 状态 |
 |---|---|
 | **[dsh-aqua-input-check](https://github.com/PerryLink/dsh-aqua-input-check)** |  |
 | **[dsh-archive-check](https://github.com/PerryLink/dsh-archive-check)** |  |
 | **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** |  |
-| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | 🧊 FROZEN — see the repo README |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-bid-ca-precheck](https://github.com/PerryLink/dsh-bid-ca-precheck)** |  |
 | **[dsh-bid-qual-check](https://github.com/PerryLink/dsh-bid-qual-check)** |  |
-| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | 🧊 FROZEN — see the repo README |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | 🧊 已冻结 — 见仓库 README |
 | **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** |  |
 | **[dsh-click](https://github.com/PerryLink/dsh-click)** |  |
 | **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** |  |
@@ -312,10 +413,10 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-permit-report-check](https://github.com/PerryLink/dsh-permit-report-check)** |  |
 | **[dsh-pipeline-check](https://github.com/PerryLink/dsh-pipeline-check)** |  |
 | **[dsh-pleading-draft](https://github.com/PerryLink/dsh-pleading-draft)** |  |
-| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** |  |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | 🚫 已退役（仓库已归档） |
 | **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** |  |
-| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** |  |
-| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** |  |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | 🚫 已退役（仓库已归档） |
+| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | 🚫 已退役（仓库已归档） |
 | **[dsh-policy-brief-draft](https://github.com/PerryLink/dsh-policy-brief-draft)** |  |
 | **[dsh-power-loss-split](https://github.com/PerryLink/dsh-power-loss-split)** |  |
 | **[dsh-power-ticket-check](https://github.com/PerryLink/dsh-power-ticket-check)** |  |
@@ -339,20 +440,22 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-tender-extract](https://github.com/PerryLink/dsh-tender-extract)** |  |
 | **[dsh-tender-matrix](https://github.com/PerryLink/dsh-tender-matrix)** |  |
 | **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** |  |
-| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** |  |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | 🚫 已退役（仓库已归档） |
 | **[dsh-translate](https://github.com/PerryLink/dsh-translate)** |  |
 | **[dsh-warranty-calc](https://github.com/PerryLink/dsh-warranty-calc)** |  |
-| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | 🧊 FROZEN — see the repo README |
-| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | 🧊 FROZEN — see the repo README |
-| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | 🧊 FROZEN — see the repo README |
-| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | 🧊 FROZEN — see the repo README |
-| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | 🧊 FROZEN — see the repo README |
-| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | 🚫 RETIRED — see the repo README |
-| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 RETIRED — see the repo README |
-| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 RETIRED — see the repo README |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | 🧊 已冻结 — 见仓库 README |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | 🚫 已退役（仓库已归档） |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 已退役（仓库已归档） |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 已退役（仓库已归档） |
 
 </details>
 
 ## License
 
-Apache-2.0 — see [LICENSE](LICENSE).
+[LICENSE](LICENSE)（Apache License 2.0）© 2026 dsh-research-report contributors
+
+<p align="center"><sub>Apache-2.0 · 社区插件，与 DeepSeek 无关。</sub></p>
