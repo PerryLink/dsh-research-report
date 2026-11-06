@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-dark.svg">
-  <img src="docs/assets/dsh-research-report-flow-light.svg" width="100%" alt="dsh-research-report डेटा फ़्लो: evidence_add → objects/&lt;sha256&gt; कंटेंट-एड्रेस्ड लेजर → research_report प्रति-claim बाइट जाँच → manifest.json सील → dsh-research-verify --report">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-hero-en-dark.webp">
+  <img src="docs/assets/dsh-research-report-hero-en-light.webp" width="100%" alt="dsh-research-report बैनर: सीलबंद रिपोर्ट डायरेक्टरी हैश फ़ैन-इन के रूप में — report.md, लेजर में रखे एविडेंस हैश, verification.jsonl और disconfirmation.jsonl manifest.json में जुड़ते हैं, जिसका SHA-256 ही सील है; नीचे की पट्टी स्वतंत्र dsh-research-verify है">
 </picture>
 
 # dsh-research-report
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-research-report
 ## यह क्या है
 
 मॉडल को एक विषय और स्रोतों का समूह दीजिए, और `dsh-research-report` हर claim को अपरिवर्तनीय एविडेंस स्नैपशॉट से बाँधता है, संख्याओं और उद्धरणों को बाइट-दर-बाइट जाँचता है, फिर परिणाम को एक संस्करणित रिपोर्ट डायरेक्टरी में सील करता है जिसे कोई भी स्वतंत्र रूप से दोबारा जाँच सकता है। डायरेक्टरी में `report.md`, `manifest.json` और ऑडिट जर्नल होते हैं; सील `manifest.json` का SHA-256 है, और `dsh-research-verify` प्लगइन माउंट किए बिना उसे ऑफ़लाइन पुनर्गणना करता है। यह जानबूझकर कोई deep-research लूप नहीं रखता: रिट्रीवल `ctx.web` से, लंबे रन `ctx.jobs` से, और योजना व संश्लेषण मॉडल या अपस्ट्रीम प्लगइन के पास रहते हैं।
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report संरचना: पैनल 1 कंटेंट-एड्रेस्ड एविडेंस लेजर (कैप्चर, sha256, objects स्नैपशॉट, चार JSONL जर्नल); पैनल 2 प्रति-claim वर्डिक्ट कंघी (इंटेग्रिटी, बाइंडिंग, लिटरल लोकेशन; पाँच वर्डिक्ट, पहला मेल जीतता है और लेजर में वापस लिखा जाता है); पैनल 3 सीलबंद रिपोर्ट डायरेक्टरी (report.md और दो ऑडिट जर्नल manifest.json में जुड़ते हैं, जिसका SHA-256 सील है); नीचे की पट्टी वर्कस्पेस से बाहर की dsh-research-verify बाइनरी है">
+</picture>
 
 ## तीन चरणों में शुरुआत
 
@@ -327,7 +332,7 @@ pnpm pack
 - `typecheck` इंस्टॉल किए गए 0.1.7-rc.2 peers से `@deepseek-ai/*` हल करता है; `typecheck:ci` `skipLibCheck` हटाकर प्रकाशित प्रकारों के विरुद्ध `verbatimModuleSyntax` सक्षम करता है। दोनों हरे रहने चाहिए।
 - परीक्षण 0.1.7-rc.2 peers के वास्तविक `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` उपयोग करते हैं; केवल नेटवर्क बैकएंड वास्तविक `ctx.web` रजिस्ट्रियों में पंजीकृत स्क्रिप्टेड प्रोवाइडर हैं।
 - रिलीज़: `node scripts/release.mjs <x.y.z>` (bump, CHANGELOG स्टाम्प, दोबारा गेट, commit + tag; कभी push नहीं)।
-- README चित्र [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python + Pillow) से प्रोग्रामेटिक रूप से बनते हैं: हस्तलिखित SVG फ़्लो डायग्राम `docs/assets/dsh-research-report-flow-{light,dark}.svg` में, दोबारा चलाने योग्य और पाँचों भाषाओं में साझा।
+- README चित्र [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python + Pillow) से प्रोग्रामेटिक रूप से बनते हैं: रैस्टर बैनर `docs/assets/dsh-research-report-hero-{zh,en}-{light,dark}.webp` (1440×576) और हस्तलिखित SVG संरचना चित्र `docs/assets/dsh-research-report-flow-v5-{light,dark}.svg` (1100×660), दोबारा चलाने योग्य और पाँचों भाषाओं में साझा।
 
 डायरेक्टरी लेआउट:
 

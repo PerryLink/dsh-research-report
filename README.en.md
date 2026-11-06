@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-dark.svg">
-  <img src="docs/assets/dsh-research-report-flow-light.svg" width="100%" alt="dsh-research-report data flow: evidence_add → objects/&lt;sha256&gt; content-addressed ledger → research_report per-claim byte checks → manifest.json seal → dsh-research-verify --report">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-hero-en-dark.webp">
+  <img src="docs/assets/dsh-research-report-hero-en-light.webp" width="100%" alt="dsh-research-report banner: the sealed report directory as a hash fan-in — report.md, the evidence hashes held in the ledger, verification.jsonl and disconfirmation.jsonl fold into manifest.json, whose SHA-256 is the seal; the strip below is the standalone dsh-research-verify recompute">
 </picture>
 
 # dsh-research-report
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-research-report
 ## What it is
 
 Give the model a topic and a set of sources, and `dsh-research-report` binds every claim to immutable evidence snapshots, checks the numbers and quotes byte-for-byte, then seals the result into a versioned report directory anyone can re-check independently. The directory holds `report.md`, `manifest.json`, and the audit journals; the seal is the SHA-256 of `manifest.json`, and `dsh-research-verify` recomputes it offline without mounting the plugin. It deliberately ships no deep-research loop: retrieval runs over `ctx.web`, long runs over `ctx.jobs`, and planning and synthesis stay with the model or an upstream plugin.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report structure: panel 1 is the content-addressed evidence ledger (capture, sha256, objects snapshot, four JSONL journals); panel 2 is the per-claim verdict comb (integrity, binding, literal location; five verdicts, first match wins, written back to the ledger); panel 3 is the sealed report directory (report.md and the two audit journals fold into manifest.json, whose SHA-256 is the seal); the rail underneath is the out-of-workspace dsh-research-verify binary">
+</picture>
 
 ## Three-step setup
 
@@ -327,7 +332,7 @@ pnpm pack
 - `typecheck` resolves `@deepseek-ai/*` through the installed 0.1.7-rc.2 peers; `typecheck:ci` clears `skipLibCheck` and enables `verbatimModuleSyntax` against the published types. Both must stay green.
 - Tests use the real `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` from the 0.1.7-rc.2 peers; only network backends are scripted providers registered through the real `ctx.web` registries.
 - Release: `node scripts/release.mjs <x.y.z>` (bumps, stamps CHANGELOG, re-runs the gate, commits + tags; never pushes).
-- README images are generated programmatically by [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python + Pillow): hand-written SVG flow diagrams written to `docs/assets/dsh-research-report-flow-{light,dark}.svg`, safe to re-run, shared by all five languages.
+- README images are generated programmatically by [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python + Pillow): the raster banner is `docs/assets/dsh-research-report-hero-{zh,en}-{light,dark}.webp` (1440×576) and the hand-written structure diagram is `docs/assets/dsh-research-report-flow-v5-{light,dark}.svg` (1100×660), safe to re-run, shared by all five languages.
 
 Directory layout:
 

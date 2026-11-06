@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-dark.svg">
-  <img src="docs/assets/dsh-research-report-flow-light.svg" width="100%" alt="Flujo de datos de dsh-research-report: evidence_add → objects/&lt;sha256&gt; libro direccionado por contenido → research_report verificación byte a byte por claim → manifest.json sello → dsh-research-verify --report">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-hero-en-dark.webp">
+  <img src="docs/assets/dsh-research-report-hero-en-light.webp" width="100%" alt="dsh-research-report: el directorio de informe sellado como entrada de hashes — report.md, los hashes de evidencia del libro, verification.jsonl y disconfirmation.jsonl se pliegan en manifest.json, cuyo SHA-256 es el sello; la franja inferior es el verificador autónomo dsh-research-verify">
 </picture>
 
 # dsh-research-report
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-research-report
 ## Qué es
 
 Dale al modelo un tema y un conjunto de fuentes, y `dsh-research-report` vincula cada claim a instantáneas de evidencia inmutables, comprueba números y citas byte a byte y sella el resultado en un directorio de informe versionado que cualquiera puede reverificar de forma independiente. El directorio contiene `report.md`, `manifest.json` y los diarios de auditoría; el sello es el SHA-256 de `manifest.json`, y `dsh-research-verify` lo recalcula sin conexión sin montar el plugin. No incluye un bucle de deep-research: la recuperación pasa por `ctx.web`, las ejecuciones largas por `ctx.jobs`, y la planificación y la síntesis quedan en el modelo o en un plugin upstream.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report: panel 1, el libro de evidencias direccionado por contenido (captura, sha256, instantánea de objetos, cuatro diarios JSONL); panel 2, el peine de veredictos por claim (integridad, vínculo, localización literal; cinco veredictos, gana la primera coincidencia y se escribe de vuelta al libro); panel 3, el directorio de informe sellado (report.md y los dos diarios de auditoría se pliegan en manifest.json, cuyo SHA-256 es el sello); la franja inferior es el binario autónomo dsh-research-verify">
+</picture>
 
 ## Instalación en tres pasos
 
@@ -327,7 +332,7 @@ pnpm pack
 - `typecheck` resuelve `@deepseek-ai/*` con los peers 0.1.7-rc.2 instalados; `typecheck:ci` quita `skipLibCheck` y habilita `verbatimModuleSyntax` contra los tipos publicados. Ambos deben mantenerse en verde.
 - Las pruebas usan los `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime` reales de los peers 0.1.7-rc.2; solo los backends de red son proveedores scriptados registrados en los registros reales de `ctx.web`.
 - Release: `node scripts/release.mjs <x.y.z>` (bump, sella CHANGELOG, re-ejecuta la puerta, commit + tag; nunca hace push).
-- Las imágenes del README se generan programáticamente con [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python + Pillow): diagramas de flujo SVG escritos a mano en `docs/assets/dsh-research-report-flow-{light,dark}.svg`, seguros de re-ejecutar y compartidos por los cinco idiomas.
+- Las imágenes del README se generan programáticamente con [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python + Pillow): la banda ráster es `docs/assets/dsh-research-report-hero-{zh,en}-{light,dark}.webp` (1440×576) y el diagrama de estructura SVG escrito a mano es `docs/assets/dsh-research-report-flow-v5-{light,dark}.svg` (1100×660), seguros de re-ejecutar y compartidos por los cinco idiomas.
 
 Estructura de directorios:
 

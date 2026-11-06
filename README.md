@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-dark.svg">
-  <img src="docs/assets/dsh-research-report-flow-light.svg" width="100%" alt="dsh-research-report 数据流：evidence_add → objects/&lt;sha256&gt; 内容寻址账本 → research_report 逐 claim 字节核查 → manifest.json 封印 → dsh-research-verify --report">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-hero-zh-dark.webp">
+  <img src="docs/assets/dsh-research-report-hero-zh-light.webp" width="100%" alt="dsh-research-report 横幅：封存报告目录的哈希汇封——正文 report.md、账本中的证据哈希、verification.jsonl 与 disconfirmation.jsonl 汇入 manifest.json，封印就是该文件的 SHA-256；下方 dsh-research-verify 可从目录本身重算">
 </picture>
 
 # dsh-research-report
@@ -37,6 +37,11 @@ dsh plugin --profile <name> add dsh-research-report
 ## 它是什么
 
 给模型一个主题和一组来源，`dsh-research-report` 把每条结论（claim）绑定到不可变的证据快照、逐字节核对数字与引文，再把结果封存成一份可独立复核的版本化报告。报告目录里有 `report.md`、`manifest.json` 和审计日志；封印哈希就是 `manifest.json` 的 SHA-256，拿到目录的人用 `dsh-research-verify` 就能离线重算，不需要挂载插件。它刻意不做深研循环：检索与抓取走 `ctx.web`，长任务走 `ctx.jobs`，规划与综合留给模型或上游插件。
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-research-report-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report 结构图：左栏是内容寻址证据账本（抓取 → sha256 → objects 快照 + 四本 JSONL 日志），中栏是逐 claim 判定梳（完整性 → 绑定 → 字面定位，五种结论首中即止并回写账本），右栏是封存报告目录（正文与两本审计日志折进 manifest.json，封印为其 SHA-256）；底部是墙外离线复核 dsh-research-verify">
+</picture>
 
 ## 三步上手
 
@@ -327,7 +332,7 @@ pnpm pack
 - `typecheck` 经已安装的 0.1.7-rc.2 peer 解析 `@deepseek-ai/*`；`typecheck:ci` 关闭 `skipLibCheck` 并开启 `verbatimModuleSyntax` 对照已发布类型。两者都必须保持绿。
 - 测试使用 0.1.7-rc.2 peer 的真实 `Context`/`Session`/`ToolRuntime`/`LocalJobRegistry`/`WebRuntime`；只有网络后端是注册进真实 `ctx.web` 注册表的脚本化 provider。
 - 发布：`node scripts/release.mjs <x.y.z>`（bump、盖 CHANGELOG、重跑门禁、提交 + 打 tag；绝不 push）。
-- 配图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Python + Pillow）：手写 SVG 流程图，输出 `docs/assets/dsh-research-report-flow-{light,dark}.svg`，可重复执行、深浅两版共用。
+- 配图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Python + Pillow）：Pillow 画 `docs/assets/dsh-research-report-hero-{zh,en}-{light,dark}.webp`（1440×576），手写 SVG 画 `docs/assets/dsh-research-report-flow-v5-{light,dark}.svg`（1100×660），可重复执行、深浅两版与五语共用。
 
 目录布局：
 
