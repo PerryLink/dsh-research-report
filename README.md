@@ -118,6 +118,7 @@ dsh plugin --profile <name> add dsh-research-report
 
 - **`evidence_add({ origin, content?, title? })`**——登记一条证据。给 `content` 则按原文存储；不给时 URL 源经 `ctx.web` 抓取、workspace 相对路径从磁盘读取（读取绝不逃逸 workspace）。返回证据 id 与 SHA-256 哈希。
 - **`research_report({ topic, title?, sections, claims, evidenceRefs, gather?, depth?, background? })`**——组装并封存报告：校验（claim 引用不全响亮拒绝）→ 逐条核查 → 渲染带醒目标记的 `report.md` → 写 `manifest.json` → 返回封印哈希。`gather: true` 先经 `ctx.web` 做一轮检索，返回已捕获候选证据与显式缺口清单——绝不自动成稿。`background: true` 经 `ctx.jobs` 返回 `{ kind: 'background', jobId }`。
+- **`research_trail({ limit?, format? })`**——只读的 claim → 证据 → 结论轨迹：把已注册 claim 与证据、已存结论拼起来，把没有可解析证据的 claim 标为 **unbound**，列出悬空 evidence id，输出可交给审稿人的 Markdown（以及结构化行）。不新增存储、不改写结论。
 - **`ledger_query({ claimId? | evidenceId? })`**——只读查询绑定关系与核查结论；证据读取时重算哈希，篡改/丢失会显式报告。不带 id 时返回账本摘要。
 - **`ctx.researchReport.assemble(request)`**——面向兄弟插件的冻结服务表面（见 `src/service.ts`；由 [`scripts/verify-frozen-contract.mjs`](scripts/verify-frozen-contract.mjs) 逐字节门禁）。
 
@@ -164,7 +165,7 @@ edge-case (no throw): isError=false; kind=sealed; verdicts[0]={"claimId":"c1","s
 
 *Observed from `plugins/dsh-research-report/src/verify.ts:173-175 (unverified verdict); plugins/dsh-research-report/src/assemble.ts:209-220 (visible mark); plugins/dsh-research-report/README.md:87 (honest gaps); exercised through plugins/dsh-research-report/test/harness.ts`*
 
-**简短示例**：`research_report` · `ledger_query`
+**简短示例**：`research_report` · `ledger_query` · `research_trail`
 
 ### dsh-research-verify CLI
 
@@ -344,7 +345,7 @@ pnpm pack
 | `src/verify.ts` | 字节级核查器 + 冻结的 `CitationCheck*` 桥类型 |
 | `src/assemble.ts` | 纯组装：请求校验、`report.md` 渲染、确定性 `manifest.json`、封印 |
 | `src/gather.ts` | 抓取（`ctx.web` / workspace 文件）与 `gather` 候选轮 |
-| `src/tools/` | 三个消费者：`evidence_add`、`research_report`、`ledger_query` |
+| `src/tools/` | 四个消费者：`evidence_add`、`research_report`、`ledger_query`、`research_trail` |
 | `test/` | vitest，使用真实 host 运行时；仅网络后端是脚本化 provider |
 | `fixtures/` | 三条本地文档，覆盖 evidence → seal → tamper → contradicted 全流程 |
 

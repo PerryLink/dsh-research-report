@@ -41,15 +41,25 @@ const canonicalValues: Record<string, JsonValue> = {
     claimIds: [],
   },
   research_report: { kind: 'gathered', topic: 'topic', candidates: [], gaps: [] },
+  research_trail: {
+    ok: true,
+    generatedAt: '2026-11-10T00:00:00.000Z',
+    summary: { evidenceCount: 0, claimCount: 0, verdictCount: 0, tamperedCount: 0 },
+    claims: [],
+    evidence: [],
+    missingEvidence: [],
+    unboundClaims: [],
+    markdown: '# Research trail\n',
+  },
 }
 
 describe('tool triple interface (U2)', () => {
-  it('declares parameter schema + canonical output + content blocks for all three tools', async () => {
+  it('declares parameter schema + canonical output + content blocks for all four tools', async () => {
     const base = await mountBase('tools-interface')
     bases.push(base)
     fibers.push(await mountPlugin(base))
 
-    for (const name of ['evidence_add', 'research_report', 'ledger_query'] as const) {
+    for (const name of ['evidence_add', 'research_report', 'ledger_query', 'research_trail'] as const) {
       // 1. Model-facing parameter schema.
       const schema = base.ctx.tools.schemas().find(entry => entry.name === name)
       expect(schema, `${name}: parameter schema should be registered`).toBeDefined()

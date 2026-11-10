@@ -24,6 +24,7 @@ import { Config, resolveConfig } from './config.ts'
 import { LocalResearchReportService } from './provider-local.ts'
 import { makeEvidenceAddTool } from './tools/evidence-add.ts'
 import { makeLedgerQueryTool } from './tools/ledger-query.ts'
+import { makeResearchTrailTool } from './tools/research-trail.ts'
 import { makeResearchReportTool } from './tools/research-report.ts'
 
 export const name = 'research-report'
@@ -140,6 +141,7 @@ export function apply(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.tools.register(makeEvidenceAddTool(service)), 'research-report: evidence_add tool')
   ctx.effect(() => ctx.tools.register(makeResearchReportTool({ ctx, service })), 'research-report: research_report tool')
   ctx.effect(() => ctx.tools.register(makeLedgerQueryTool(service)), 'research-report: ledger_query tool')
+  ctx.effect(() => ctx.tools.register(makeResearchTrailTool(service)), 'research-report: research_trail tool')
 
   ctx.systemPrompt.section({
     name: 'dsh-research-report:workflow',

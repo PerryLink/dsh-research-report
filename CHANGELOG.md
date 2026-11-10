@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0] - 2026-11-10
+
+### Added
+
+- `research_trail`: read-only claim → evidence → verdict trail. Joins the
+  registered claims with their evidence and stored verdicts, marks claims with
+  no resolvable evidence as unbound, lists dangling evidence ids, and returns
+  Markdown plus structured rows. No new storage, no verdict changes.
+
 ## [0.0.1] - 2026-11-05
 
 ### Changed

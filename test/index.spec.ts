@@ -37,10 +37,10 @@ function valueOf<T>(result: { isError: boolean; value?: unknown }): T {
 }
 
 describe('apply', () => {
-  it('registers the service and all three tools', async () => {
+  it('registers the service and all four tools', async () => {
     const base = await setup('index-register')
     expect(base.ctx.get('researchReport')).toBeDefined()
-    for (const tool of ['evidence_add', 'research_report', 'ledger_query']) {
+    for (const tool of ['evidence_add', 'research_report', 'ledger_query', 'research_trail']) {
       expect(base.ctx.tools.get(tool)).toBeDefined()
     }
   })
@@ -53,7 +53,7 @@ describe('apply', () => {
     expect(base.ctx.tools.get('evidence_add')).toBeUndefined()
   })
 
-  it('unregisters the service and all three tools on dispose (reversible registration)', async () => {
+  it('unregisters the service and all four tools on dispose (reversible registration)', async () => {
     const base = await mountBase('index-dispose')
     bases.push(base)
     const fiber = await mountPlugin(base)
@@ -66,6 +66,7 @@ describe('apply', () => {
     expect(base.ctx.tools.get('evidence_add')).toBeUndefined()
     expect(base.ctx.tools.get('research_report')).toBeUndefined()
     expect(base.ctx.tools.get('ledger_query')).toBeUndefined()
+    expect(base.ctx.tools.get('research_trail')).toBeUndefined()
   })
 })
 
