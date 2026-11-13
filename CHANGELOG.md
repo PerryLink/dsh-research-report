@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1] - 2026-11-13
+
+### Changed
+
+- **The sibling-facing seam is now declared, not implied.** `src/service.ts` documents the two supported surfaces: the frozen in-process `assemble()` → `AssembleReportResult.reportDir`, and the event-driven `tool/result.meta.{reportFile,manifestFile}` projection (absolute paths, sealed results only, additive-only fields, never renamed). `test/meta-contract.spec.ts` pins the projection's shape. No behavior change. Addresses #27.
+
 ## [0.4.0] - 2026-11-10
 
 ### Added
