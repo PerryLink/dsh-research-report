@@ -34,25 +34,24 @@ function valueOf<T>(result: { isError: boolean; value?: unknown }): T {
 
 describe('adaptive audit gate (regression lock)', () => {
   it('pins the host vocabulary size', () => {
-    // 59 is the size of KNOWN_SESSION_EVENT_TYPES at *runtime*: this test file
+    // 63 is the size of KNOWN_SESSION_EVENT_TYPES at *runtime*: this test file
     // resolves `@deepseek-ai/dsh-session` from node_modules, i.e. the installed
-    // 0.1.7-alpha.2 peer. The peer bump moved this number 58 → 59: the 0.1.7
-    // line adds the session-format-V4 `developer/message` event (upstream
-    // e0bd7e1960, "feat(session): add developer changes using historical tool
-    // schemas"). Measured on this machine: 0.1.5-rc.2 = 56, 0.1.6-alpha.2 = 58,
-    // 0.1.7-alpha.2 = 59.
+    // 0.2.2-rc.3 peer. The rc.1 → rc.3 bump moved this number 62 → 63: the
+    // 0.2.2 line adds the `team/mode` event. Measured on this machine:
+    // 0.2.2-rc.1 = 62, 0.2.2-rc.3 = 63.
     // A red here is the wanted signal: the upstream vocabulary moved, so
     // re-snapshot the set and re-check the assertions below before touching
     // this number.
-    expect(KNOWN_SESSION_EVENT_TYPES.size).toBe(62)
+    expect(KNOWN_SESSION_EVENT_TYPES.size).toBe(63)
   })
 
-  it('names the 0.1.7 addition instead of trusting the count alone', () => {
+  it('names the 0.2.2 addition instead of trusting the count alone', () => {
     // A set that gained one type and lost another in the same wave would keep
     // the size assertion green, so the composition is pinned by name too:
-    // `developer/message` is the delta this peer bump brought in, and the
-    // role/user/tool events are the durable vocabulary this plugin's gate
-    // reasons about.
+    // `team/mode` is the delta this peer bump brought in (absent from
+    // 0.2.2-rc.1), and the role/user/tool events are the durable vocabulary
+    // this plugin's gate reasons about.
+    expect(KNOWN_SESSION_EVENT_TYPES.has('team/mode')).toBe(true)
     expect(KNOWN_SESSION_EVENT_TYPES.has('developer/message')).toBe(true)
     expect(KNOWN_SESSION_EVENT_TYPES.has('workspace/changes')).toBe(true)
     expect(KNOWN_SESSION_EVENT_TYPES.has('user/message')).toBe(true)
