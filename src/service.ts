@@ -12,6 +12,24 @@
  * (dsh-industry-research) consume `ctx.researchReport.assemble` against this
  * exact text. `scripts/verify-frozen-contract.mjs` gates drift.
  *
+ * ── Sibling-facing surfaces (both supported) ────────────────────────────────
+ * Two seams are contractual for out-of-tree consumers. Pick by integration
+ * style, not by convenience:
+ *
+ * 1. In-process: `ctx.researchReport.assemble()` returns the frozen
+ *    `AssembleReportResult` above. `reportDir` is the sealed directory;
+ *    `report.md` and `manifest.json` are its fixed entry files.
+ * 2. Event-driven: the `tool/result` event for `name === 'research_report'`
+ *    carries `meta.reportFile` / `meta.manifestFile` — absolute, resolved paths
+ *    of those same two artifacts, present only when the result is sealed
+ *    (`kind === 'sealed'`). The projection is durable and replay-safe; its
+ *    fields are additive-only and the pair is never renamed, so a consumer that
+ *    joins `tool/call` to `tool/result` may depend on them.
+ *
+ * The meta projection exists for consumers that cannot reproduce this plugin's
+ * cwd resolution; consumers that call the service directly should use
+ * `reportDir`. Both stay stable across minor versions.
+ *
  * @module dsh-research-report/service
  */
 
