@@ -9,7 +9,7 @@
 
 **Ship a report whose every claim anyone can re-check offline on their own machine — change one byte and the seal hash stops matching.**
 
-A verifiable research-report engine for DeepSeek Harness: claims bind to immutable evidence snapshots, numbers and quotes are checked byte-for-byte, and the result is sealed into a versioned report directory whose seal is the SHA-256 of `manifest.json`.
+A verifiable research-report engine for DeepSeek Harness: claims bind to immutable evidence snapshots, numbers and quotes are checked byte-for-byte, and the result is sealed into a versioned report directory whose seal is the SHA-256 of `dsh-v0.2.2-rc.4`（2026-11-18）；`manifest.json`.
 
 [Install](#three-step-setup) · [Configuration](#configuration) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 

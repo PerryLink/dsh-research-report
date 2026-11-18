@@ -9,7 +9,7 @@
 
 **交出一份报告，每条结论都能被任何人在自己机器上离线复核——改过任何一个字节，密封哈希就会对不上。**
 
-面向 DeepSeek Harness 的可核查研究报告引擎：claim 绑定不可变证据快照，数字与引文按字节核对，结果封存为版本化报告目录，封印就是 `manifest.json` 的 SHA-256。
+面向 DeepSeek Harness 的可核查研究报告引擎：claim 绑定不可变证据快照，数字与引文按字节核对，结果封存为版本化报告目录，封印就是 `dsh-v0.2.2-rc.4`（2026-11-18）；`manifest.json` 的 SHA-256。
 
 [安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
