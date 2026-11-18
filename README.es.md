@@ -298,7 +298,7 @@ Este plugin no compite estructuralmente por los recursos de otro plugin:
 
 | Superficie | Estado |
 | --- | --- |
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (verificado el 2026-09-25). Línea npm dev/test `0.1.7-rc.2`; la matriz compat fija las cuatro líneas peer declaradas. En 0.1.5-alpha.1 (adaptado el 2026-09-09) el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados; `Session.append` aún no puede estamparlo, por lo que el comportamiento de la puerta de auditoría no cambia. |
+| Harness | DeepSeek Harness `dsh-v0.2.2-rc.4` (verificado el 2026-11-18). Línea npm dev/test `0.1.7-rc.2`; la matriz compat fija las cuatro líneas peer declaradas. En 0.1.5-alpha.1 (adaptado el 2026-11-18) el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados; `Session.append` aún no puede estamparlo, por lo que el comportamiento de la puerta de auditoría no cambia. |
 | Node | `^22.19.0 \|\| >=24.9.0`, solo ESM (`"type": "module"`) |
 | Plataformas | Dondequiera que corra DSH (host puro; la red solo se alcanza por `ctx.web`) |
 | Modelo | Modelos de texto totalmente soportados; la verificación es comparación de bytes, sin capacidad de modelo extra |

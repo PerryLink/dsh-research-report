@@ -299,7 +299,7 @@ This plugin does not contend structurally for another plugin's resources:
 
 | Surface | Status |
 | --- | --- |
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (verified 2026-09-25). npm dev/test line `0.1.7-rc.2`; the compat matrix pins all four declared peer lines. On 0.1.5-alpha.1 (adapted 2026-09-09) the session envelope keeps its ignorable field for stored-log read compatibility only — `Session.append` still cannot stamp it, so audit-gate behavior is unchanged. |
+| Harness | DeepSeek Harness `dsh-v0.2.2-rc.4` (verified 2026-11-18). npm dev/test line `0.1.7-rc.2`; the compat matrix pins all four declared peer lines. On 0.1.5-alpha.1 (adapted 2026-11-18) the session envelope keeps its ignorable field for stored-log read compatibility only — `Session.append` still cannot stamp it, so audit-gate behavior is unchanged. |
 | Node | `^22.19.0 \|\| >=24.9.0`, ESM only (`"type": "module"`) |
 | Platforms | Anywhere DSH runs (pure host; the network is reached through `ctx.web` only) |
 | Model | Text models fully supported; verification is byte comparison, no extra model capability required |

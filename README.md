@@ -299,7 +299,7 @@ profile patch 覆盖示例：
 
 | 维度 | 状态 |
 | --- | --- |
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（2026-09-25 已核验）。npm dev/test 线 `0.1.7-rc.2`；compat 矩阵同时钉住四条已声明 peer 线。0.1.5-alpha.1（2026-09-09 已适配）的会话信封保留 ignorable 字段但仅用于存量日志读取兼容——`Session.append` 仍无法盖章，门控行为不变。 |
+| Harness | DeepSeek Harness `dsh-v0.2.2-rc.4`（2026-11-18 已核验）。npm dev/test 线 `0.1.7-rc.2`；compat 矩阵同时钉住四条已声明 peer 线。0.1.5-alpha.1（2026-11-18 已适配）的会话信封保留 ignorable 字段但仅用于存量日志读取兼容——`Session.append` 仍无法盖章，门控行为不变。 |
 | Node | `^22.19.0 \|\| >=24.9.0`，仅 ESM（`"type": "module"`） |
 | 平台 | 任何 DSH 可运行处（纯 host；网络只经 `ctx.web`） |
 | 模型 | 文本模型完全支持；核查是字节比对，不需要额外模型能力 |
