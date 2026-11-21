@@ -36,6 +36,10 @@ dsh plugin --profile <name> add dsh-research-report
 
 ## 它是什么
 
+![dsh-research-report 真实终端运行](docs/assets/dsh-research-report-demo.gif)
+
+*本仓库一次真实运行的动图回放。*
+
 给模型一个主题和一组来源，`dsh-research-report` 把每条结论（claim）绑定到不可变的证据快照、逐字节核对数字与引文，再把结果封存成一份可独立复核的版本化报告。报告目录里有 `report.md`、`manifest.json` 和审计日志；封印哈希就是 `manifest.json` 的 SHA-256，拿到目录的人用 `dsh-research-verify` 就能离线重算，不需要挂载插件。它刻意不做深研循环：检索与抓取走 `ctx.web`，长任务走 `ctx.jobs`，规划与综合留给模型或上游插件。
 
 <picture>

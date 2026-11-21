@@ -43,6 +43,11 @@ dsh plugin --profile <name> add dsh-research-report
   <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report संरचना: पैनल 1 कंटेंट-एड्रेस्ड एविडेंस लेजर (कैप्चर, sha256, objects स्नैपशॉट, चार JSONL जर्नल); पैनल 2 प्रति-claim वर्डिक्ट कंघी (इंटेग्रिटी, बाइंडिंग, लिटरल लोकेशन; पाँच वर्डिक्ट, पहला मेल जीतता है और लेजर में वापस लिखा जाता है); पैनल 3 सीलबंद रिपोर्ट डायरेक्टरी (report.md और दो ऑडिट जर्नल manifest.json में जुड़ते हैं, जिसका SHA-256 सील है); नीचे की पट्टी वर्कस्पेस से बाहर की dsh-research-verify बाइनरी है">
 </picture>
 
+![dsh-research-report का असली टर्मिनल रन](docs/assets/dsh-research-report-demo.gif)
+
+*इस रिपॉज़िटरी में दर्ज असली रन का एनिमेटेड रीप्ले।*
+
+
 ## तीन चरणों में शुरुआत
 
 1. **इंस्टॉल** (कोई एक चैनल चुनें):

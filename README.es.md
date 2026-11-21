@@ -43,6 +43,11 @@ Dale al modelo un tema y un conjunto de fuentes, y `dsh-research-report` vincula
   <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report: panel 1, el libro de evidencias direccionado por contenido (captura, sha256, instantánea de objetos, cuatro diarios JSONL); panel 2, el peine de veredictos por claim (integridad, vínculo, localización literal; cinco veredictos, gana la primera coincidencia y se escribe de vuelta al libro); panel 3, el directorio de informe sellado (report.md y los dos diarios de auditoría se pliegan en manifest.json, cuyo SHA-256 es el sello); la franja inferior es el binario autónomo dsh-research-verify">
 </picture>
 
+![dsh-research-report: ejecución real de terminal](docs/assets/dsh-research-report-demo.gif)
+
+*Repetición animada de una ejecución real registrada en este repositorio.*
+
+
 ## Instalación en tres pasos
 
 1. **Instalar** (elige un canal):

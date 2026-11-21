@@ -43,6 +43,11 @@ Dê ao modelo um tema e um conjunto de fontes, e o `dsh-research-report` vincula
   <img src="docs/assets/dsh-research-report-flow-v5-light.svg" width="100%" alt="dsh-research-report: painel 1, o livro de evidências endereçado por conteúdo (captura, sha256, snapshot de objetos, quatro diários JSONL); painel 2, o pente de veredictos por claim (integridade, vínculo, localização literal; cinco veredictos, a primeira correspondência vence e é gravada de volta no livro); painel 3, o diretório de relatório selado (report.md e os dois diários de auditoria convergem em manifest.json, cujo SHA-256 é o selo); a faixa inferior é o binário autônomo dsh-research-verify">
 </picture>
 
+![dsh-research-report: execução real de terminal](docs/assets/dsh-research-report-demo.gif)
+
+*Repetição animada de uma execução real registrada neste repositório.*
+
+
 ## Instalação em três passos
 
 1. **Instalar** (escolha um canal):

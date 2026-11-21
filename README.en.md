@@ -124,6 +124,10 @@ Three things carry the trust: evidence is immutable, checks are recomputable, an
 
 ### Examples
 
+![dsh-research-report: real terminal run](docs/assets/dsh-research-report-demo.gif)
+
+*Animated replay of a real run recorded in this repository.*
+
 These are the plugin's real entry points; install once, then call one.
 
 **Detailed example**
