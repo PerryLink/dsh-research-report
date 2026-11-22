@@ -9,7 +9,9 @@
 
 **Entrega un informe cuyas conclusiones cualquiera puede reverificar sin conexión en su propia máquina: cambia un byte y el hash del sello deja de coincidir.**
 
-Motor de informes de investigación verificables para DeepSeek Harness: cada claim se vincula a instantáneas de evidencia inmutables, los números y las citas se comprueban byte a byte, y el resultado se sella en un directorio de informe versionado cuyo sello es el SHA-256 de `dsh-v0.2.2-rc.4`（2026-11-18）；`manifest.json`.
+Motor de informes de investigación verificables para DeepSeek Harness: cada claim se vincula a instantáneas de evidencia inmutables, los números y las citas se comprueban byte a byte, y el resultado se sella en un directorio de informe versionado cuyo sello es el SHA-256 de, `manifest.json`.
+
+Última verificación: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
 
 [Instalar](#instalación-en-tres-pasos) · [Configuración](#configuración) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -46,7 +48,6 @@ Dale al modelo un tema y un conjunto de fuentes, y `dsh-research-report` vincula
 ![dsh-research-report: ejecución real de terminal](docs/assets/dsh-research-report-demo.gif)
 
 *Repetición animada de una ejecución real registrada en este repositorio.*
-
 
 ## Instalación en tres pasos
 

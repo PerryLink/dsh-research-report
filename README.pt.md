@@ -9,7 +9,9 @@
 
 **Entregue um relatório cujas conclusões qualquer pessoa pode reverificar offline na própria máquina: mude um byte e o hash do selo deixa de bater.**
 
-Motor de relatórios de pesquisa verificáveis para o DeepSeek Harness: cada claim é vinculado a snapshots de evidência imutáveis, números e citações são conferidos byte a byte, e o resultado é selado num diretório de relatório versionado cujo selo é o SHA-256 do `dsh-v0.2.2-rc.4`（2026-11-18）；`manifest.json`.
+Motor de relatórios de pesquisa verificáveis para o DeepSeek Harness: cada claim é vinculado a snapshots de evidência imutáveis, números e citações são conferidos byte a byte, e o resultado é selado num diretório de relatório versionado cujo selo é o SHA-256 do, `manifest.json`.
+
+Última verificação: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
 
 [Instalar](#instalação-em-três-passos) · [Configuração](#configuração) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -46,7 +48,6 @@ Dê ao modelo um tema e um conjunto de fontes, e o `dsh-research-report` vincula
 ![dsh-research-report: execução real de terminal](docs/assets/dsh-research-report-demo.gif)
 
 *Repetição animada de uma execução real registrada neste repositório.*
-
 
 ## Instalação em três passos
 
