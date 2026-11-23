@@ -7,6 +7,8 @@
 
 # dsh-research-report
 
+Current version `0.4.5`.
+
 **Ship a report whose every claim anyone can re-check offline on their own machine — change one byte and the seal hash stops matching.**
 
 A verifiable research-report engine for DeepSeek Harness: claims bind to immutable evidence snapshots, numbers and quotes are checked byte-for-byte, and the result is sealed into a versioned report directory whose seal is the SHA-256 of, `manifest.json`.

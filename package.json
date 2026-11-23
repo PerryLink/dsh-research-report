@@ -22,7 +22,8 @@
       "types": "./lib/types/index.d.ts",
       "default": "./lib/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
   },
   "files": [
     "lib",
@@ -36,7 +37,9 @@
     "README.pt.md",
     "README.hi.md",
     "docs/assets/*",
-    "LICENSE"
+    "LICENSE",
+    "locale/*.json",
+    "icon.svg"
   ],
   "sideEffects": false,
   "dsh": {
@@ -172,5 +175,6 @@
     "url": "https://github.com/sponsors/PerryLink"
   },
   "pnpm": {},
-  "version": "0.4.4"
+  "version": "0.4.5",
+  "icon": "icon.svg"
 }
